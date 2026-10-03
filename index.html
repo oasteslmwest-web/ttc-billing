@@ -2,473 +2,404 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0f172a">
-<title>TTC Professional Billing App</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>TTC Professional Billing</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
-
-:root{
- --nav:#0f172a;
- --blue:#2563eb;
- --blue2:#1d4ed8;
- --green:#16a34a;
- --bg:#f4f7fb;
- --border:#e2e8f0;
- --text:#172033;
- --muted:#64748b;
-}
-
-html,body{
+*{
+ box-sizing:border-box;
  margin:0;
  padding:0;
- width:100%;
- min-height:100%;
 }
 
 body{
- background:var(--bg);
- color:var(--text);
  font-family:Arial,Helvetica,sans-serif;
- overflow-x:hidden;
+ background:#f4f6f9;
+ color:#222;
 }
 
-button,input,select{font-family:inherit}
-button{cursor:pointer}
+button,input,select{
+ font-family:inherit;
+}
 
-.app{min-height:100vh}
-
-/* SIDEBAR */
+button{
+ cursor:pointer;
+}
 
 .sidebar{
  position:fixed;
  left:0;
  top:0;
  bottom:0;
- width:245px;
- background:linear-gradient(180deg,#0f172a,#111827);
+ width:250px;
+ background:#111827;
  color:#fff;
- padding:20px 14px;
- z-index:100;
+ z-index:1000;
+ overflow-y:auto;
 }
 
 .logo{
- padding:5px 10px 20px;
- border-bottom:1px solid #263247;
- margin-bottom:20px;
+ padding:20px 18px;
+ font-size:20px;
+ font-weight:800;
+ border-bottom:1px solid rgba(255,255,255,.1);
 }
 
-.logo h2{
- margin:0;
- font-size:21px;
-}
-
-.logo p{
- margin:5px 0 0;
- color:#94a3b8;
+.logo small{
+ display:block;
+ margin-top:5px;
  font-size:11px;
+ color:#9ca3af;
+ font-weight:500;
 }
 
-.nav-title{
- color:#64748b;
- font-size:10px;
- font-weight:bold;
- padding:0 10px 8px;
+.nav{
+ padding:15px 10px;
 }
 
-.nav-btn{
+.nav button{
  width:100%;
  border:0;
  background:transparent;
- color:#cbd5e1;
+ color:#d1d5db;
  text-align:left;
- padding:12px;
- border-radius:9px;
- margin:2px 0;
- font-size:13px;
+ padding:13px 15px;
+ margin-bottom:5px;
+ border-radius:8px;
+ font-size:14px;
 }
 
-.nav-btn:hover{
- background:#1e293b;
+.nav button:hover,
+.nav button.active{
+ background:#2563eb;
  color:#fff;
 }
-
-.nav-btn.active{
- background:var(--blue);
- color:#fff;
-}
-
-.nav-icon{
- width:27px;
- display:inline-block;
-}
-
-/* MAIN */
 
 .main{
- margin-left:245px;
+ margin-left:250px;
  min-height:100vh;
- width:calc(100% - 245px);
 }
 
-/* TOPBAR */
-
 .topbar{
- min-height:70px;
+ height:70px;
  background:#fff;
- border-bottom:1px solid var(--border);
+ border-bottom:1px solid #e5e7eb;
  display:flex;
  align-items:center;
- gap:10px;
- padding:10px 25px;
+ justify-content:space-between;
+ padding:0 25px;
  position:sticky;
  top:0;
- z-index:50;
+ z-index:500;
 }
 
 .top-title{
- flex:1;
- min-width:0;
+ font-size:21px;
+ font-weight:800;
+ color:#111827;
 }
 
-.top-title h1{
- margin:0;
- font-size:19px;
-}
-
-.top-title p{
- margin:4px 0 0;
- color:var(--muted);
- font-size:10px;
-}
-
-.btn{
- border:1px solid var(--border);
- background:#fff;
- color:var(--text);
- padding:9px 13px;
- border-radius:8px;
+.top-sub{
+ color:#6b7280;
  font-size:12px;
- font-weight:bold;
- white-space:nowrap;
+ margin-top:3px;
 }
 
-.btn-primary{
- background:var(--blue);
- color:#fff;
- border-color:var(--blue);
+.top-actions{
+ display:flex;
+ align-items:center;
+ gap:8px;
 }
-
-.btn-download{
- background:var(--green);
- color:#fff;
- border-color:var(--green);
-}
-
-/* CONTENT */
 
 .content{
- max-width:1450px;
+ padding:20px;
+ max-width:1500px;
  margin:auto;
- padding:24px;
- width:100%;
 }
 
-/* FILTER */
-
-.filter{
+.filters{
  background:#fff;
- border:1px solid var(--border);
- border-radius:12px;
- padding:12px;
+ border:1px solid #e5e7eb;
+ border-radius:10px;
+ padding:15px;
  display:flex;
- gap:10px;
- align-items:center;
+ flex-wrap:wrap;
+ align-items:end;
+ gap:12px;
  margin-bottom:18px;
 }
 
-.filter label{
- color:var(--muted);
- font-size:10px;
- font-weight:bold;
+.filter-group{
+ display:flex;
+ flex-direction:column;
+ gap:6px;
 }
 
-.filter select,
-.filter input{
- border:1px solid var(--border);
- border-radius:8px;
- padding:9px;
- outline:none;
- font-size:12px;
+.filter-group label{
+ font-size:11px;
+ color:#6b7280;
+ font-weight:700;
+ text-transform:uppercase;
 }
 
-.search{
- min-width:240px;
+.filter-group select,
+.filter-group input{
+ min-width:150px;
+ height:40px;
+ border:1px solid #d1d5db;
+ border-radius:7px;
+ padding:0 10px;
+ background:#fff;
+ color:#111827;
 }
 
-.status{
- margin-left:auto;
- color:var(--muted);
- font-size:10px;
+.btn{
+ border:0;
+ border-radius:7px;
+ height:40px;
+ padding:0 15px;
+ font-size:13px;
+ font-weight:700;
 }
 
-/* KPI */
+.btn-primary{
+ background:#2563eb;
+ color:#fff;
+}
 
-.kpis{
+.btn-success{
+ background:#16a34a;
+ color:#fff;
+}
+
+.btn-warning{
+ background:#f59e0b;
+ color:#fff;
+}
+
+.btn-danger{
+ background:#dc2626;
+ color:#fff;
+}
+
+.btn-dark{
+ background:#111827;
+ color:#fff;
+}
+
+.btn-light{
+ background:#f3f4f6;
+ color:#111827;
+ border:1px solid #d1d5db;
+}
+
+.cards{
  display:grid;
  grid-template-columns:repeat(4,1fr);
  gap:14px;
  margin-bottom:18px;
 }
 
-.kpi{
- background:#fff;
- border:1px solid var(--border);
- border-radius:12px;
- padding:16px;
-}
-
-.kpi small{
- color:var(--muted);
- font-weight:bold;
- font-size:10px;
-}
-
-.kpi strong{
- display:block;
- font-size:21px;
- margin-top:7px;
-}
-
-/* CARD */
-
 .card{
  background:#fff;
- border:1px solid var(--border);
- border-radius:14px;
+ border:1px solid #e5e7eb;
+ border-radius:10px;
+ padding:17px;
+}
+
+.card-title{
+ font-size:12px;
+ color:#6b7280;
+ font-weight:700;
+}
+
+.card-value{
+ font-size:23px;
+ font-weight:800;
+ margin-top:8px;
+ color:#111827;
+}
+
+.bill-wrap{
+ background:#fff;
+ border:1px solid #dfe3e8;
+ border-radius:10px;
  overflow:hidden;
- margin-bottom:18px;
- width:100%;
 }
 
-.card-head{
- display:flex;
- align-items:center;
- gap:10px;
- padding:15px 18px;
- border-bottom:1px solid var(--border);
+.bill-header{
+ padding:20px;
+ border-bottom:1px solid #e5e7eb;
 }
 
-.card-head h2{
- flex:1;
- margin:0;
- font-size:16px;
-}
-
-.badge{
- background:#eef2ff;
- color:#3730a3;
- padding:5px 9px;
- border-radius:20px;
- font-size:10px;
- font-weight:bold;
-}
-
-/* UPLOAD */
-
-.upload-bill-btn{
- border:1px solid #dbeafe;
- background:#eff6ff;
- color:#1d4ed8;
- padding:7px 10px;
- border-radius:8px;
- font-size:10px;
- font-weight:bold;
- white-space:nowrap;
-}
-
-.upload-bill-btn:hover{
- background:#dbeafe;
-}
-
-#billPhotoInput{
- display:none;
-}
-
-/* BILL HEADER */
-
-.bill-head{
- padding:18px;
+.bill-company{
  text-align:center;
- border-bottom:1px solid var(--border);
 }
 
-.bill-head-top{
- display:flex;
- justify-content:space-between;
- font-size:10px;
- color:var(--muted);
- font-weight:bold;
+.bill-company h1{
+ font-size:22px;
+ margin-bottom:5px;
 }
 
-.bill-head h3{
- margin:7px 0 3px;
- font-size:20px;
+.bill-company .supplier{
+ font-size:15px;
+ font-weight:800;
+ color:#2563eb;
 }
 
-.bill-head p{
- margin:3px;
- font-size:10px;
- font-weight:bold;
- color:#475569;
+.bill-company .tagline{
+ font-size:11px;
+ color:#6b7280;
+ margin-top:4px;
+}
+
+.bill-company .address{
+ font-size:11px;
+ color:#6b7280;
+ margin-top:5px;
 }
 
 .bill-meta{
  display:grid;
- grid-template-columns:1fr 1fr;
- border-bottom:1px solid var(--border);
+ grid-template-columns:1fr 1fr 1fr;
+ gap:10px;
+ margin-top:18px;
 }
 
-.bill-meta div{
- padding:11px 14px;
- font-size:11px;
- font-weight:bold;
+.meta-box{
+ border:1px solid #e5e7eb;
+ border-radius:7px;
+ padding:9px;
 }
 
-.bill-meta div:last-child{
- text-align:right;
- border-left:1px solid var(--border);
+.meta-label{
+ font-size:9px;
+ color:#6b7280;
+ text-transform:uppercase;
+ font-weight:700;
 }
 
-.customer{
- padding:10px 14px;
- border-bottom:1px solid var(--border);
+.meta-value{
  font-size:12px;
- font-weight:bold;
+ font-weight:700;
+ margin-top:3px;
 }
 
-.customer input{
- border:0;
- border-bottom:1px solid #94a3b8;
- outline:0;
- padding:4px;
+.bill-table-wrap{
+ overflow-x:auto;
 }
 
-/* TABLE */
-
-.table-wrap{
+.bill-table{
  width:100%;
- overflow:auto;
-}
-
-table{
- width:100%;
- min-width:900px;
  border-collapse:collapse;
- table-layout:fixed;
+ min-width:650px;
 }
 
-th,td{
- border:1px solid #cbd5e1;
- padding:7px 8px;
- height:36px;
- font-size:12px;
-}
-
-th{
- background:#f8fafc;
- color:#475569;
- text-align:center;
+.bill-table th{
+ background:#111827;
+ color:#fff;
  font-size:11px;
+ padding:9px 7px;
+ border:1px solid #111827;
 }
 
-th:nth-child(1),td.no{
- width:7%;
- text-align:center!important;
+.bill-table td{
+ padding:7px;
+ border:1px solid #d1d5db;
+ font-size:11px;
+ height:31px;
 }
 
-th:nth-child(2),td.item{
- width:51%;
- text-align:left;
-}
-
-th:nth-child(3),td.qty{
- width:9%;
- text-align:center!important;
-}
-
-th:nth-child(4),td.rate{
- width:11%;
- text-align:center!important;
-}
-
-th:nth-child(5),td.amount{
- width:14%;
- text-align:center!important;
- white-space:nowrap;
-}
-
-th:nth-child(6),td.ps{
- width:8%;
- text-align:center!important;
- white-space:nowrap;
-}
-
-.cell{
- width:100%;
- border:0;
- background:transparent;
- outline:none;
- padding:4px;
- font-size:12px;
+.bill-table td:first-child,
+.bill-table th:first-child{
  text-align:center;
+ width:7%;
 }
 
-td.item .cell{
+.bill-table th:nth-child(2){
  text-align:left;
+ width:39%;
 }
 
-.editing .cell{
- background:#fff4b8;
- border:1px dashed #c4a600;
+.bill-table th:nth-child(3),
+.bill-table th:nth-child(4),
+.bill-table th:nth-child(5),
+.bill-table th:nth-child(6){
+ text-align:right;
+}
+
+.bill-table td.num{
+ text-align:right;
+}
+
+.bill-table td.ps{
+ text-align:right;
+ width:8%;
+}
+
+.bill-table input{
+ width:100%;
+ border:1px solid #93c5fd;
  border-radius:4px;
+ padding:4px;
+ font-size:11px;
+ background:#eff6ff;
 }
 
-.total-row td{
- background:#f8fafc;
- font-weight:900;
+.bill-table .total-row td{
+ background:#f3f4f6;
+ font-weight:800;
 }
 
-/* WORDS */
+.bill-footer{
+ padding:14px 20px;
+ display:flex;
+ justify-content:space-between;
+ gap:20px;
+ border-top:1px solid #e5e7eb;
+}
 
 .words{
- padding:14px;
  font-size:11px;
- color:#475569;
- min-height:50px;
+ color:#4b5563;
 }
 
-.words strong{
- margin-left:5px;
- color:#172033;
- font-weight:700;
- text-transform:capitalize;
+.total-box{
+ font-size:18px;
+ font-weight:900;
+ white-space:nowrap;
 }
 
-/* AI MODAL */
+.upload-row{
+ padding:15px 20px;
+ background:#f8fafc;
+ border-top:1px solid #e5e7eb;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+}
+
+.upload-help{
+ font-size:11px;
+ color:#6b7280;
+}
+
+.mobile-nav{
+ display:none;
+}
 
 .ocr-overlay{
  position:fixed;
  inset:0;
- background:rgba(15,23,42,.72);
- z-index:1000;
+ background:rgba(0,0,0,.65);
  display:none;
  align-items:center;
  justify-content:center;
+ z-index:3000;
  padding:15px;
 }
 
@@ -477,476 +408,303 @@ td.item .cell{
 }
 
 .ocr-modal{
- width:min(1000px,100%);
+ width:min(900px,100%);
  max-height:92vh;
- overflow:auto;
+ overflow:hidden;
  background:#fff;
- border-radius:16px;
- box-shadow:0 25px 70px rgba(0,0,0,.3);
+ border-radius:12px;
+ box-shadow:0 20px 60px rgba(0,0,0,.35);
+ display:flex;
+ flex-direction:column;
 }
 
 .ocr-header{
+ padding:16px 18px;
+ background:#111827;
+ color:#fff;
  display:flex;
+ justify-content:space-between;
  align-items:center;
- gap:10px;
- padding:16px;
- border-bottom:1px solid var(--border);
- position:sticky;
- top:0;
- background:#fff;
- z-index:2;
 }
 
 .ocr-header h3{
- flex:1;
- margin:0;
  font-size:16px;
 }
 
 .ocr-close{
- width:34px;
- height:34px;
  border:0;
- border-radius:50%;
- background:#f1f5f9;
- font-size:18px;
+ background:transparent;
+ color:#fff;
+ font-size:28px;
+ line-height:1;
 }
 
 .ocr-progress{
- padding:15px 16px;
- background:#f8fafc;
- border-bottom:1px solid var(--border);
+ padding:12px 18px;
+ border-bottom:1px solid #e5e7eb;
 }
 
 .ocr-progress-text{
- font-size:11px;
- color:var(--muted);
+ font-size:12px;
+ font-weight:700;
  margin-bottom:8px;
 }
 
 .ocr-progress-bar{
- height:7px;
- background:#e2e8f0;
- border-radius:10px;
+ height:8px;
+ background:#e5e7eb;
+ border-radius:20px;
  overflow:hidden;
 }
 
 .ocr-progress-fill{
+ width:0;
  height:100%;
- width:0%;
  background:#2563eb;
- transition:.2s;
+ transition:.3s;
 }
 
 .ocr-body{
- padding:16px;
+ padding:18px;
+ overflow:auto;
 }
 
 .ocr-info{
+ padding:12px;
+ border-radius:8px;
  background:#eff6ff;
- border:1px solid #bfdbfe;
  color:#1e40af;
- border-radius:10px;
- padding:10px;
- font-size:11px;
- margin-bottom:12px;
-}
-
-.ocr-table-wrap{
- overflow:auto;
- border:1px solid var(--border);
- border-radius:10px;
+ font-size:12px;
+ line-height:1.5;
+ margin-bottom:15px;
 }
 
 .ocr-table{
  width:100%;
- min-width:760px;
  border-collapse:collapse;
-}
-
-.ocr-table th,
-.ocr-table td{
- height:44px;
- padding:5px;
- border:1px solid var(--border);
- font-size:11px;
+ min-width:600px;
 }
 
 .ocr-table th{
- background:#f8fafc;
+ background:#1e3a8a;
+ color:#fff;
+ padding:8px;
+ font-size:11px;
+}
+
+.ocr-table td{
+ border:1px solid #d1d5db;
+ padding:5px;
 }
 
 .ocr-table input{
  width:100%;
- border:1px solid #e2e8f0;
- border-radius:5px;
  padding:6px;
- outline:none;
-}
-
-.ocr-confidence{
- font-size:8px;
- color:#94a3b8;
- margin-top:2px;
+ border:1px solid #cbd5e1;
+ border-radius:4px;
+ font-size:11px;
 }
 
 .ocr-footer{
+ padding:13px 18px;
+ border-top:1px solid #e5e7eb;
  display:flex;
  justify-content:flex-end;
  gap:8px;
- padding:14px 16px;
- border-top:1px solid var(--border);
- position:sticky;
- bottom:0;
- background:#fff;
+}
+
+.ocr-cancel,
+.ocr-apply{
+ border:0;
+ border-radius:7px;
+ height:40px;
+ padding:0 15px;
+ font-weight:700;
+}
+
+.ocr-cancel{
+ background:#e5e7eb;
+ color:#111827;
 }
 
 .ocr-apply{
  background:#16a34a;
  color:#fff;
- border:0;
- border-radius:8px;
- padding:10px 15px;
- font-weight:bold;
 }
 
-.ocr-cancel{
- background:#fff;
- color:#334155;
- border:1px solid var(--border);
- border-radius:8px;
- padding:10px 15px;
- font-weight:bold;
+.ocr-apply:disabled{
+ opacity:.5;
+ cursor:not-allowed;
 }
 
-/* DASHBOARD */
-
-.daily-grid{
+.dashboard-grid{
  display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:12px;
- padding:16px;
+ grid-template-columns:repeat(4,1fr);
+ gap:14px;
 }
 
-.daily-item{
- border:1px solid var(--border);
+.dashboard-card{
+ background:#fff;
+ border:1px solid #e5e7eb;
  border-radius:10px;
- padding:15px;
- display:flex;
- justify-content:space-between;
+ padding:18px;
 }
 
-.daily-item span{
- color:var(--muted);
- font-size:12px;
+.dashboard-card h3{
+ font-size:13px;
+ color:#374151;
 }
 
-.grand{
- margin:0 16px 16px;
- background:#0f172a;
- color:#fff;
- padding:17px;
- border-radius:10px;
- display:flex;
- justify-content:space-between;
- font-weight:bold;
+.dashboard-card .amount{
+ font-size:22px;
+ font-weight:900;
+ margin-top:8px;
 }
 
-.mobile-nav{
- display:none;
+.search-box{
+ position:relative;
 }
 
-/* TABLET */
+.search-box input{
+ padding-left:32px!important;
+}
+
+.search-icon{
+ position:absolute;
+ left:10px;
+ top:12px;
+ color:#9ca3af;
+}
+
+.hidden{
+ display:none!important;
+}
 
 @media(max-width:900px){
-
- .sidebar{
-  width:210px;
- }
-
- .main{
-  margin-left:210px;
-  width:calc(100% - 210px);
- }
-
- .kpis{
-  grid-template-columns:repeat(2,1fr);
- }
-
-}
-
-/* MOBILE */
-
-@media(max-width:700px){
-
- body{
-  padding-bottom:72px;
-  overflow-x:hidden;
- }
-
  .sidebar{
   display:none;
  }
 
  .main{
   margin-left:0;
-  width:100%;
-  min-width:0;
+  padding-bottom:65px;
  }
 
  .topbar{
-  min-height:70px;
-  padding:9px 8px;
-  gap:5px;
-  flex-wrap:wrap;
+  height:60px;
+  padding:0 12px;
  }
 
  .top-title{
-  width:100%;
-  flex:1 1 100%;
-  order:1;
+  font-size:17px;
  }
 
- .top-title h1{
-  font-size:16px;
-  line-height:20px;
- }
-
- .top-title p{
-  font-size:9px;
- }
-
- .topbar .btn{
-  padding:7px 8px;
-  font-size:9px;
- }
-
- #editBtn{order:2}
- #editBtn+.btn{order:3}
- #downloadBtn{order:4}
- #downloadBtn+.btn{order:5}
-
- .content{
-  width:100%;
-  max-width:none;
-  padding:8px;
-  overflow:hidden;
- }
-
- .filter{
-  position:sticky;
-  top:0;
-  z-index:40;
-  width:100%;
-  padding:9px;
-  gap:7px;
-  display:grid;
-  grid-template-columns:72px 1fr 1fr;
-  margin-bottom:10px;
- }
-
- .filter select{
-  width:100%;
-  min-width:0;
-  padding:9px 7px;
-  font-size:11px;
- }
-
- .search{
-  grid-column:1/-1;
-  width:100%;
-  min-width:0;
-  padding:9px!important;
-  font-size:11px!important;
- }
-
- .status{
-  display:none;
- }
-
- .kpis{
-  grid-template-columns:repeat(2,1fr);
-  gap:7px;
- }
-
- .kpi{
-  padding:10px;
- }
-
- .kpi small{
-  font-size:8px;
- }
-
- .kpi strong{
-  font-size:15px;
- }
-
- .card{
-  width:100%;
-  min-width:0;
-  margin-bottom:10px;
-  border-radius:10px;
- }
-
- .card-head{
-  padding:10px;
-  gap:5px;
- }
-
- .card-head h2{
-  font-size:14px;
- }
-
- .badge{
-  font-size:8px;
-  padding:4px 6px;
- }
-
- .upload-bill-btn{
-  font-size:8px;
-  padding:6px 7px;
- }
-
- .bill-head{
-  padding:10px 7px;
- }
-
- .bill-head-top{
-  font-size:8px;
- }
-
- .bill-head h3{
-  font-size:14px;
-  line-height:17px;
- }
-
- .bill-head p{
-  font-size:8px;
- }
-
- .bill-meta div{
-  padding:8px 7px;
-  font-size:9px;
- }
-
- .customer{
-  padding:8px 7px;
+ .top-sub{
   font-size:10px;
  }
 
- .table-wrap{
-  width:100%;
-  overflow:hidden;
- }
-
- table{
-  width:100%!important;
-  min-width:0!important;
-  max-width:100%!important;
-  table-layout:fixed!important;
- }
-
- th,td{
-  height:30px!important;
-  padding:3px 2px!important;
-  font-size:9px!important;
-  line-height:1!important;
-  overflow:hidden;
- }
-
- th:nth-child(1),td.no{
-  width:8%!important;
- }
-
- th:nth-child(2),td.item{
-  width:39%!important;
- }
-
- th:nth-child(3),td.qty{
-  width:13%!important;
- }
-
- th:nth-child(4),td.rate{
-  width:14%!important;
- }
-
- th:nth-child(5),td.amount{
-  width:18%!important;
- }
-
- th:nth-child(6),td.ps{
-  width:8%!important;
- }
-
- th{
-  font-size:8px!important;
- }
-
- .cell{
-  width:100%!important;
-  min-width:0!important;
-  padding:2px 1px!important;
-  font-size:9px!important;
- }
-
- .daily-grid{
-  grid-template-columns:1fr;
-  gap:7px;
-  padding:8px;
- }
-
- .daily-item{
+ .content{
   padding:10px;
  }
 
- .grand{
-  margin:0 8px 8px;
+ .cards{
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+ }
+
+ .dashboard-grid{
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+ }
+
+ .filters{
+  padding:10px;
+  gap:8px;
+ }
+
+ .filter-group{
+  flex:1 1 45%;
+ }
+
+ .filter-group select,
+ .filter-group input{
+  min-width:0;
+  width:100%;
+ }
+
+ .bill-header{
   padding:12px;
-  font-size:11px;
+ }
+
+ .bill-company h1{
+  font-size:17px;
+ }
+
+ .bill-company .supplier{
+  font-size:12px;
+ }
+
+ .bill-meta{
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+ }
+
+ .bill-footer{
+  flex-direction:column;
+  align-items:stretch;
+ }
+
+ .total-box{
+  text-align:right;
+ }
+
+ .upload-row{
+  flex-direction:column;
+  align-items:stretch;
+ }
+
+ .upload-row .btn{
+  width:100%;
  }
 
  .mobile-nav{
+  display:flex;
   position:fixed;
   left:0;
   right:0;
   bottom:0;
-  height:72px;
-  background:#fff;
-  border-top:1px solid var(--border);
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  z-index:200;
+  height:60px;
+  background:#111827;
+  z-index:1500;
+  justify-content:space-around;
+  align-items:center;
  }
 
  .mobile-nav button{
   border:0;
-  background:#fff;
-  color:#64748b;
-  font-size:9px;
-  font-weight:bold;
- }
-
- .mobile-nav button span{
-  display:block;
-  font-size:20px;
-  margin-bottom:3px;
+  background:transparent;
+  color:#d1d5db;
+  font-size:10px;
+  padding:5px;
  }
 
  .mobile-nav button.active{
-  color:var(--blue);
+  color:#fff;
  }
 
- .ocr-overlay{
-  padding:7px;
+ .mobile-nav span{
+  display:block;
+  font-size:18px;
+  margin-bottom:2px;
  }
 
  .ocr-modal{
-  max-height:94vh;
-  border-radius:12px;
+  max-height:95vh;
+  border-radius:10px;
  }
 
- .ocr-header{
-  padding:12px;
+ .ocr-header h3{
+  font-size:13px;
  }
 
  .ocr-body{
@@ -956,298 +714,327 @@ td.item .cell{
  .ocr-footer{
   padding:10px;
  }
-
 }
 
-/* PRINT */
+@media(max-width:500px){
+ .cards{
+  grid-template-columns:1fr 1fr;
+ }
 
-@page{
- size:A4 portrait;
- margin:8mm;
+ .card{
+  padding:12px;
+ }
+
+ .card-value{
+  font-size:18px;
+ }
+
+ .dashboard-grid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .filter-group{
+  flex:1 1 100%;
+ }
+
+ .bill-company .address{
+  line-height:1.4;
+ }
+
+ .bill-meta{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .ocr-footer{
+  flex-direction:column;
+ }
+
+ .ocr-cancel,
+ .ocr-apply{
+  width:100%;
+ }
 }
 
 @media print{
-
- html,body{
-  width:210mm;
-  min-height:297mm;
-  margin:0;
-  padding:0;
-  background:#fff;
+ body{
+  background:#fff!important;
  }
 
  .sidebar,
  .topbar,
- .filter,
- .kpis,
+ .filters,
+ .cards,
  .mobile-nav,
- .card-head,
- .upload-bill-btn{
+ .upload-row,
+ .no-print{
   display:none!important;
  }
 
  .main{
   margin:0!important;
-  width:100%!important;
  }
 
  .content{
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
   padding:0!important;
+  max-width:none!important;
  }
 
- .card{
-  width:100%!important;
-  margin:0!important;
+ .bill-wrap{
   border:0!important;
   border-radius:0!important;
-  overflow:visible!important;
  }
 
- table{
-  width:100%!important;
+ .bill-header{
+  padding:10px!important;
+ }
+
+ .bill-table{
   min-width:0!important;
  }
 
- th,td{
-  height:24px!important;
-  padding:3px 4px!important;
-  font-size:8px!important;
+ .bill-table th,
+ .bill-table td{
+  font-size:9px!important;
+  padding:4px!important;
  }
 
+ .bill-table input{
+  border:0!important;
+  background:transparent!important;
+  padding:0!important;
+ }
+
+ .bill-footer{
+  padding:8px!important;
+ }
+
+ @page{
+  size:A4 portrait;
+  margin:8mm;
+ }
 }
 
-/* PDF */
-
-.pdf-capture{
- position:fixed;
- left:0;
- top:0;
- width:794px;
- background:#fff;
- padding:30px;
- z-index:999999;
+@media(max-width:500px){
+ .bill-table th:nth-child(6),
+ .bill-table td.ps{
+  width:8%!important;
+ }
 }
-
-.pdf-capture .card{
- width:734px!important;
- margin:0!important;
- border:1px solid #e2e8f0!important;
- border-radius:0!important;
- overflow:visible!important;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
 <aside class="sidebar">
-
  <div class="logo">
-  <h2>TTC Billing</h2>
-  <p>Professional Purchase Management</p>
+  TTC BILLING
+  <small>Professional Billing System</small>
  </div>
 
- <div class="nav-title">
-  BILLING
- </div>
+ <nav class="nav">
+  <button id="navDaily" class="active" onclick="showPage('daily')">
+   📊 Daily Bills
+  </button>
 
- <button class="nav-btn active"
-  data-page="daily"
-  onclick="showPage('daily')">
-  <span class="nav-icon">▦</span>
-  Dashboard
- </button>
+  <button id="navVegetable" onclick="showPage('Vegetable')">
+   🥬 Vegetable Bills
+  </button>
 
- <button class="nav-btn"
-  data-page="Vegetable"
-  onclick="showPage('Vegetable')">
-  <span class="nav-icon">🥬</span>
-  Vegetable
- </button>
+  <button id="navGrocery" onclick="showPage('Grocery')">
+   🛒 Grocery Bills
+  </button>
 
- <button class="nav-btn"
-  data-page="Grocery"
-  onclick="showPage('Grocery')">
-  <span class="nav-icon">🛒</span>
-  Grocery
- </button>
+  <button id="navDairy" onclick="showPage('Dairy')">
+   🥛 Dairy Bills
+  </button>
 
- <button class="nav-btn"
-  data-page="Dairy"
-  onclick="showPage('Dairy')">
-  <span class="nav-icon">🥛</span>
-  Dairy
- </button>
-
- <button class="nav-btn"
-  data-page="Housekeeping"
-  onclick="showPage('Housekeeping')">
-  <span class="nav-icon">🧹</span>
-  Housekeeping
- </button>
-
+  <button id="navHousekeeping" onclick="showPage('Housekeeping')">
+   🧹 Housekeeping Bills
+  </button>
+ </nav>
 </aside>
 
 <main class="main">
 
 <header class="topbar">
-
- <div class="top-title">
-  <h1 id="pageTitle">Daily Dashboard</h1>
-  <p id="selectedDate">01.10.2026</p>
+ <div>
+  <div class="top-title" id="pageTitle">Daily Bills</div>
+  <div class="top-sub" id="pageSubtitle">
+   Professional billing management
+  </div>
  </div>
 
- <button class="btn"
-  id="editBtn"
-  onclick="toggleEdit()">
-  ✎ Edit
- </button>
+ <div class="top-actions">
+  <button class="btn btn-light" onclick="toggleEdit()" id="editBtn">
+   ✏️ Edit
+  </button>
 
- <button class="btn"
-  onclick="saveData()">
-  💾 Save
- </button>
+  <button class="btn btn-success" onclick="saveData()">
+   💾 Save
+  </button>
 
- <button class="btn btn-download"
-  id="downloadBtn"
-  onclick="downloadPDF()"
-  style="display:none">
-  📥 Download PDF
- </button>
+  <button class="btn btn-light" onclick="window.print()">
+   🖨️ Print
+  </button>
 
- <button class="btn btn-primary"
-  onclick="window.print()">
-  🖨 Print
- </button>
-
+  <button class="btn btn-primary" onclick="downloadPDF()">
+   📄 PDF
+  </button>
+ </div>
 </header>
 
 <section class="content">
 
-<div class="filter">
+ <div id="dashboardPage">
 
- <label>DATE</label>
+  <div class="filters">
 
- <select
-  id="dateSelect"
-  onchange="changeDate(this.value)">
- </select>
+   <div class="filter-group">
+    <label>Date</label>
+    <select id="dashboardDate" onchange="changeDate(this.value)">
+    </select>
+   </div>
 
- <select
-  id="billSelect"
-  onchange="changeBill(this.value)">
- </select>
+   <div class="filter-group search-box">
+    <label>Search</label>
+    <span class="search-icon">🔍</span>
+    <input
+     id="searchInput"
+     type="text"
+     placeholder="Search item..."
+     oninput="render()"
+    >
+   </div>
 
- <input
-  id="search"
-  class="search"
-  placeholder="Search item..."
-  oninput="render()">
+  </div>
 
- <span
-  id="status"
-  class="status">
-  Ready
- </span>
+  <div class="cards">
+   <div class="card">
+    <div class="card-title">Vegetable Total</div>
+    <div class="card-value" id="dashVegetable">₹0.00</div>
+   </div>
 
-</div>
+   <div class="card">
+    <div class="card-title">Grocery Total</div>
+    <div class="card-value" id="dashGrocery">₹0.00</div>
+   </div>
 
-<div id="content"></div>
+   <div class="card">
+    <div class="card-title">Dairy Total</div>
+    <div class="card-value" id="dashDairy">₹0.00</div>
+   </div>
 
-</section>
+   <div class="card">
+    <div class="card-title">Housekeeping Total</div>
+    <div class="card-value" id="dashHousekeeping">₹0.00</div>
+   </div>
+  </div>
 
-</main>
+  <div class="dashboard-grid">
 
-</div>
+   <div class="dashboard-card">
+    <h3>Grand Total</h3>
+    <div class="amount" id="dashGrand">₹0.00</div>
+   </div>
 
-<!-- MOBILE NAV -->
+   <div class="dashboard-card">
+    <h3>Total Bills</h3>
+    <div class="amount" id="dashBillCount">0</div>
+   </div>
 
-<nav class="mobile-nav">
+   <div class="dashboard-card">
+    <h3>Selected Date</h3>
+    <div class="amount" id="dashSelectedDate">-</div>
+   </div>
 
- <button
-  data-page="daily"
-  class="active"
-  onclick="showPage('daily')">
-  <span>▦</span>
-  Dashboard
- </button>
+   <div class="dashboard-card">
+    <h3>Status</h3>
+    <div class="amount" id="dashStatus">Ready</div>
+   </div>
 
- <button
-  data-page="Vegetable"
-  onclick="showPage('Vegetable')">
-  <span>🥬</span>
-  Veg
- </button>
+  </div>
 
- <button
-  data-page="Grocery"
-  onclick="showPage('Grocery')">
-  <span>🛒</span>
-  Grocery
- </button>
+ </div>
 
- <button
-  data-page="Dairy"
-  onclick="showPage('Dairy')">
-  <span>🥛</span>
-  Dairy
- </button>
+ <div id="billPage" class="hidden">
 
- <button
-  data-page="Housekeeping"
-  onclick="showPage('Housekeeping')">
-  <span>🧹</span>
-  House
- </button>
+  <div class="filters">
 
-</nav>
+   <div class="filter-group">
+    <label>Date</label>
+    <select id="dateSelect" onchange="changeDate(this.value)">
+    </select>
+   </div>
 
-<!-- AI VISION MODAL -->
+   <div class="filter-group">
+    <label>Bill No</label>
+    <select id="billSelect" onchange="changeBill(this.value)">
+    </select>
+   </div>
 
-<div
- id="ocrOverlay"
- class="ocr-overlay">
-
- <div class="ocr-modal">
-
-  <div class="ocr-header">
-
-   <h3>
-    📷 AI Vision Handwriting Bill Reading
-   </h3>
-
-   <button
-    class="ocr-close"
-    onclick="closeOCR()">
-    ×
+   <button class="btn btn-light" onclick="render()">
+    🔄 Refresh
    </button>
 
   </div>
 
-  <div
-   class="ocr-progress"
-   id="ocrProgress"
-   style="display:none">
+  <div id="billContainer"></div>
 
-   <div
-    class="ocr-progress-text"
-    id="ocrProgressText">
+ </div>
+
+</section>
+</main>
+
+<div class="mobile-nav">
+
+ <button id="mobileDaily" class="active" onclick="showPage('daily')">
+  <span>📊</span>
+  Daily
+ </button>
+
+ <button id="mobileVegetable" onclick="showPage('Vegetable')">
+  <span>🥬</span>
+  Vegetable
+ </button>
+
+ <button id="mobileGrocery" onclick="showPage('Grocery')">
+  <span>🛒</span>
+  Grocery
+ </button>
+
+ <button id="mobileDairy" onclick="showPage('Dairy')">
+  <span>🥛</span>
+  Dairy
+ </button>
+
+ <button id="mobileHousekeeping" onclick="showPage('Housekeeping')">
+  <span>🧹</span>
+  Housekeeping
+ </button>
+
+</div> 
+ <!-- AI VISION MODAL -->
+
+<div id="ocrOverlay" class="ocr-overlay">
+
+ <div class="ocr-modal">
+
+  <div class="ocr-header">
+   <h3>📷 AI Vision Handwriting Bill Reading</h3>
+
+   <button class="ocr-close" onclick="closeOCR()">
+    ×
+   </button>
+  </div>
+
+  <div class="ocr-progress" id="ocrProgress" style="display:none">
+
+   <div class="ocr-progress-text" id="ocrProgressText">
     Reading bill...
    </div>
 
    <div class="ocr-progress-bar">
-
-    <div
-     class="ocr-progress-fill"
-     id="ocrProgressFill">
-    </div>
-
+    <div class="ocr-progress-fill" id="ocrProgressFill"></div>
    </div>
 
   </div>
@@ -1255,38 +1042,28 @@ td.item .cell{
   <div class="ocr-body">
 
    <div class="ocr-info">
-
-    <b>
-     🤖 AI Vision Bill Reader
-    </b>
+    <b>🤖 AI Vision Bill Reader</b>
 
     <br><br>
 
     Handwritten bill-ல் இருந்து
-
     <b>Item</b>,
     <b>Qty</b>,
     <b>Rate</b>,
     <b>Amount</b>
-
     தனித்தனியாக படிக்கப்படும்.
 
     <br><br>
 
     குறிப்பாக handwritten
-
     <b>Rate</b>
-
     மற்றும்
-
     <b>Amount</b>
-
     column-ஐ AI Vision மூலம் படிக்கும்.
 
     <br><br>
 
     <b>Apply செய்வதற்கு முன் values edit/check செய்யலாம்.</b>
-
    </div>
 
    <div id="ocrResult"></div>
@@ -1295,9 +1072,7 @@ td.item .cell{
 
   <div class="ocr-footer">
 
-   <button
-    class="ocr-cancel"
-    onclick="closeOCR()">
+   <button class="ocr-cancel" onclick="closeOCR()">
     Cancel
    </button>
 
@@ -1305,7 +1080,8 @@ td.item .cell{
     class="ocr-apply"
     id="ocrApplyBtn"
     onclick="applyOCRData()"
-    disabled>
+    disabled
+   >
     ✓ Apply to Bill
    </button>
 
@@ -1315,23 +1091,21 @@ td.item .cell{
 
 </div>
 
-<!-- CAMERA INPUT -->
-
 <input
  type="file"
  id="billPhotoInput"
  accept="image/*"
  capture="environment"
- onchange="handleBillPhoto(this.files[0])">
+ onchange="handleBillPhoto(this.files[0])"
+>
 
 <script>
 
-/* =====================================================
+/* =========================================================
    BASIC DATA
-===================================================== */
+========================================================= */
 
-const DATES=[
-
+const DATES = [
  "01.10.2026",
  "02.10.2026",
  "03.10.2026",
@@ -1362,230 +1136,199 @@ const DATES=[
  "28.10.2026",
  "29.10.2026",
  "30.10.2026"
-
 ];
 
-const BILL_COUNT=15;
+const BILL_COUNT = 15;
 
-const ITEMS={
-
+const ITEMS = {
  Vegetable:20,
  Grocery:15,
  Dairy:15,
  Housekeeping:15
-
 };
 
-const BUSINESS={
-
+const BUSINESS = {
  proprietor:"ANANDH KUMAR V",
-
  phone:"74183 52068",
-
- supplier:
- "DRAOWPATHAMMA VEGETABLE SUPPLIER",
-
- tagline:
- "FRESH & QUALITY PRODUCE DAILY",
-
- address:
- "Choodagondapalli village, Achettipalli post, Hosur Tk"
-
+ supplier:"DRAOWPATHAMMA VEGETABLE SUPPLIER",
+ tagline:"FRESH & QUALITY PRODUCE DAILY",
+ address:"Choodagondapalli village, Achettipalli post, Hosur Tk"
 };
 
 
-/* =====================================================
+/* =========================================================
    STATE
-===================================================== */
+========================================================= */
 
-let currentPage="daily";
+let currentPage = "daily";
+let currentDate = 0;
+let currentBill = 0;
+let editMode = false;
 
-let currentDate=0;
+let data = loadData();
 
-let currentBill=0;
-
-let editMode=false;
-
-let data=loadData();
-
-let ocrRows=[];
+let ocrRows = [];
 
 
-/* =====================================================
+/* =========================================================
    CREATE DATA
-===================================================== */
+========================================================= */
 
 function createEmptyData(){
 
- const result={};
+ const result = {};
 
- Object.keys(ITEMS).forEach(category=>{
+ for(const category of Object.keys(ITEMS)){
 
-  result[category]=[];
+  result[category] = [];
 
-  for(
-   let bill=0;
-   bill<BILL_COUNT;
-   bill++
-  ){
+  for(let bill=0; bill<BILL_COUNT; bill++){
 
-   const days=[];
+   const billData = {
+    billNo:String(bill+1).padStart(2,"0"),
+    items:[]
+   };
 
-   for(
-    let day=0;
-    day<DATES.length;
-    day++
-   ){
+   for(let day=0; day<DATES.length; day++){
 
-    const rows=[];
+    const dayItems=[];
 
-    for(
-     let i=0;
-     i<ITEMS[category];
-     i++
-    ){
+    for(let i=0;i<ITEMS[category];i++){
 
-     rows.push({
-
+     dayItems.push({
       name:"",
-      quality:"",
       qty:"",
+      unit:"",
       rate:"",
-      amount:0
-
+      amount:"",
+      quality:""
      });
 
     }
 
-    days.push({
-
-     date:DATES[day],
-
-     billNo:
-      String(bill+1).padStart(2,"0"),
-
-     customer:"",
-
-     words:"",
-
-     items:rows
-
-    });
+    billData.items.push(dayItems);
 
    }
 
-   result[category].push({
-
-    billNo:
-     String(bill+1).padStart(2,"0"),
-
-    days
-
-   });
+   result[category].push(billData);
 
   }
 
- });
+ }
 
  return result;
-
 }
 
 
-/* =====================================================
+/* =========================================================
    LOAD DATA
-===================================================== */
+========================================================= */
 
 function loadData(){
 
  try{
 
-  const saved=
-   localStorage.getItem(
-    "TTC_BILLING_30_DAY"
-   );
+  const saved =
+   localStorage.getItem("TTC_BILLING_30_DAY");
 
   if(saved){
 
-   const parsed=
-    JSON.parse(saved);
+   const parsed=JSON.parse(saved);
 
-   Object.keys(ITEMS).forEach(category=>{
-
-    if(!parsed[category]){
-
-     parsed[category]=
-      createEmptyData()[category];
-
-    }
-
-   });
-
-   return parsed;
+   if(parsed && typeof parsed==="object"){
+    return parsed;
+   }
 
   }
 
- }
- catch(e){
+ }catch(error){
 
-  console.log(e);
+  console.error("Load error:",error);
 
  }
 
  return createEmptyData();
-
 }
 
 
-/* =====================================================
+/* =========================================================
    SAVE
-===================================================== */
+========================================================= */
 
 function saveData(){
 
- localStorage.setItem(
-  "TTC_BILLING_30_DAY",
-  JSON.stringify(data)
- );
+ try{
 
- document.getElementById(
-  "status"
- ).textContent="Saved ✓";
+  localStorage.setItem(
+   "TTC_BILLING_30_DAY",
+   JSON.stringify(data)
+  );
+
+  const status =
+   document.getElementById("dashStatus");
+
+  if(status){
+   status.textContent="Saved ✓";
+  }
+
+  alert("Data saved successfully ✓");
+
+ }catch(error){
+
+  console.error(error);
+
+  alert("Data save failed.");
+
+ }
 
 }
+
 
 function saveSilent(){
 
- localStorage.setItem(
-  "TTC_BILLING_30_DAY",
-  JSON.stringify(data)
- );
+ try{
+
+  localStorage.setItem(
+   "TTC_BILLING_30_DAY",
+   JSON.stringify(data)
+  );
+
+ }catch(error){
+
+  console.error(error);
+
+ }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    NUMBER
-===================================================== */
+========================================================= */
 
 function num(value){
 
- const n=parseFloat(value);
+ if(value===null || value===undefined){
+  return 0;
+ }
 
- return Number.isFinite(n)
-  ?n
-  :0;
+ const n=parseFloat(
+  String(value)
+   .replace(/,/g,"")
+   .replace(/[^\d.-]/g,"")
+ );
 
+ return Number.isFinite(n)?n:0;
 }
 
 
-/* =====================================================
+/* =========================================================
    MONEY
-===================================================== */
+========================================================= */
 
 function money(value){
 
- return num(value).toLocaleString(
+ return "₹"+num(value).toLocaleString(
   "en-IN",
   {
    minimumFractionDigits:2,
@@ -1596,35 +1339,35 @@ function money(value){
 }
 
 
-/* =====================================================
+/* =========================================================
    ESCAPE
-===================================================== */
+========================================================= */
 
 function esc(value){
 
- return String(value??"")
-  .replaceAll("&","&amp;")
-  .replaceAll("<","&lt;")
-  .replaceAll(">","&gt;")
-  .replaceAll('"',"&quot;");
+ return String(value ?? "")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 
 }
 
 
-/* =====================================================
+/* =========================================================
    NUMBER TO WORDS
-===================================================== */
+========================================================= */
 
 function numberToWordsIndian(amount){
 
- amount=Math.round(num(amount));
+ const n=Math.floor(num(amount));
 
- if(amount===0){
+ if(n===0){
   return "Zero Rupees Only";
  }
 
  const ones=[
-
   "",
   "One",
   "Two",
@@ -1645,11 +1388,9 @@ function numberToWordsIndian(amount){
   "Seventeen",
   "Eighteen",
   "Nineteen"
-
  ];
 
  const tens=[
-
   "",
   "",
   "Twenty",
@@ -1660,7 +1401,6 @@ function numberToWordsIndian(amount){
   "Seventy",
   "Eighty",
   "Ninety"
-
  ];
 
  function two(n){
@@ -1670,64 +1410,43 @@ function numberToWordsIndian(amount){
   }
 
   return tens[Math.floor(n/10)] +
-   (n%10?" "+ones[n%10]:"");
+   (n%10 ? " "+ones[n%10] : "");
 
  }
 
  function three(n){
 
-  let s="";
-
-  if(n>=100){
-
-   s=
-    ones[Math.floor(n/100)]+" Hundred";
-
-   n%=100;
-
-   if(n)s+=" ";
-
+  if(n<100){
+   return two(n);
   }
 
-  if(n){
-   s+=two(n);
-  }
-
-  return s;
+  return ones[Math.floor(n/100)] +
+   " Hundred" +
+   (n%100 ? " "+two(n%100) : "");
 
  }
 
- let crore=
-  Math.floor(amount/10000000);
-
- amount%=10000000;
-
- let lakh=
-  Math.floor(amount/100000);
-
- amount%=100000;
-
- let thousand=
-  Math.floor(amount/1000);
-
- amount%=1000;
-
  let result="";
+
+ const crore=Math.floor(n/10000000);
+ const lakh=Math.floor((n%10000000)/100000);
+ const thousand=Math.floor((n%100000)/1000);
+ const hundred=n%1000;
 
  if(crore){
   result+=three(crore)+" Crore ";
  }
 
  if(lakh){
-  result+=three(lakh)+" Lakh ";
+  result+=two(lakh)+" Lakh ";
  }
 
  if(thousand){
-  result+=three(thousand)+" Thousand ";
+  result+=two(thousand)+" Thousand ";
  }
 
- if(amount){
-  result+=three(amount);
+ if(hundred){
+  result+=three(hundred);
  }
 
  return result.trim()+" Rupees Only";
@@ -1735,85 +1454,150 @@ function numberToWordsIndian(amount){
 }
 
 
-/* =====================================================
+/* =========================================================
    NAVIGATION
-===================================================== */
+========================================================= */
 
 function showPage(page){
 
  currentPage=page;
 
  document
-  .querySelectorAll("[data-page]")
-  .forEach(btn=>{
+  .querySelectorAll(".nav button")
+  .forEach(btn=>btn.classList.remove("active"));
 
-   btn.classList.toggle(
-    "active",
-    btn.dataset.page===page
-   );
+ document
+  .querySelectorAll(".mobile-nav button")
+  .forEach(btn=>btn.classList.remove("active"));
 
-  });
 
- document.getElementById(
-  "pageTitle"
- ).textContent=
+ if(page==="daily"){
 
-  page==="daily"
-   ?"Daily Dashboard"
-   :page+" Purchase Bills";
+  document
+   .getElementById("navDaily")
+   ?.classList.add("active");
+
+  document
+   .getElementById("mobileDaily")
+   ?.classList.add("active");
+
+  document.getElementById("pageTitle").textContent=
+   "Daily Bills";
+
+  document.getElementById("pageSubtitle").textContent=
+   "Professional billing management";
+
+  document
+   .getElementById("dashboardPage")
+   .classList.remove("hidden");
+
+  document
+   .getElementById("billPage")
+   .classList.add("hidden");
+
+ }else{
+
+  document
+   .getElementById("nav"+page)
+   ?.classList.add("active");
+
+  document
+   .getElementById("mobile"+page)
+   ?.classList.add("active");
+
+  document.getElementById("pageTitle").textContent=
+   page+" Bills";
+
+  document.getElementById("pageSubtitle").textContent=
+   "Bill management";
+
+  document
+   .getElementById("dashboardPage")
+   .classList.add("hidden");
+
+  document
+   .getElementById("billPage")
+   .classList.remove("hidden");
+
+ }
 
  render();
 
 }
 
+
+/* =========================================================
+   DATE
+========================================================= */
 
 function changeDate(value){
 
- currentDate=Number(value);
+ currentDate=parseInt(value,10)||0;
+
+ const dateSelect=
+  document.getElementById("dateSelect");
+
+ const dashboardDate=
+  document.getElementById("dashboardDate");
+
+ if(dateSelect){
+  dateSelect.value=currentDate;
+ }
+
+ if(dashboardDate){
+  dashboardDate.value=currentDate;
+ }
 
  render();
 
 }
 
+
+/* =========================================================
+   BILL
+========================================================= */
 
 function changeBill(value){
 
- currentBill=Number(value);
+ currentBill=parseInt(value,10)||0;
+
+ const billSelect=
+  document.getElementById("billSelect");
+
+ if(billSelect){
+  billSelect.value=currentBill;
+ }
 
  render();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    EDIT
-===================================================== */
+========================================================= */
 
 function toggleEdit(){
 
  editMode=!editMode;
 
- document.body.classList.toggle(
-  "editing",
-  editMode
- );
+ const btn=document.getElementById("editBtn");
 
- document.getElementById(
-  "editBtn"
- ).textContent=
+ if(btn){
 
-  editMode
-   ?"✓ Done"
-   :"✎ Edit";
+  btn.textContent=
+   editMode ? "🔒 Done Edit" : "✏️ Edit";
+
+ }
 
  render();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    UPDATE ITEM
-===================================================== */
+========================================================= */
 
 function updateItem(
  category,
@@ -1824,24 +1608,17 @@ function updateItem(
  value
 ){
 
- const item=
-  data[category]
-   [bill]
-   .days[day]
-   .items[index];
-
- item[field]=value;
-
  if(
-  field==="qty" ||
-  field==="rate"
+  !data[category] ||
+  !data[category][bill] ||
+  !data[category][bill].items[day] ||
+  !data[category][bill].items[day][index]
  ){
-
-  item.amount=
-   num(item.qty)*
-   num(item.rate);
-
+  return;
  }
+
+ data[category][bill]
+  .items[day][index][field]=value;
 
  saveSilent();
 
@@ -1850,9 +1627,9 @@ function updateItem(
 }
 
 
-/* =====================================================
+/* =========================================================
    UPDATE BILL
-===================================================== */
+========================================================= */
 
 function updateBill(
  category,
@@ -1862,18 +1639,25 @@ function updateBill(
  value
 ){
 
- data[category]
-  [bill]
-  .days[day][field]=value;
+ if(
+  !data[category] ||
+  !data[category][bill]
+ ){
+  return;
+ }
+
+ data[category][bill][field]=value;
 
  saveSilent();
+
+ render();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    TOTAL
-===================================================== */
+========================================================= */
 
 function billTotal(
  category,
@@ -1881,62 +1665,43 @@ function billTotal(
  day
 ){
 
- let total=0;
+ if(
+  !data[category] ||
+  !data[category][bill] ||
+  !data[category][bill].items[day]
+ ){
+  return 0;
+ }
 
- data[category]
-  [bill]
-  .days[day]
-  .items
-  .forEach(item=>{
-
-   if(
-    String(item.amount??"").trim()!==""
-   ){
-
-    total+=num(item.amount);
-
-   }
-   else if(
-    String(item.qty??"").trim() &&
-    String(item.rate??"").trim()
-   ){
-
-    total+=
-     num(item.qty)*
-     num(item.rate);
-
-   }
-
-  });
-
- return total;
+ return data[category][bill]
+  .items[day]
+  .reduce(
+   (sum,item)=>sum+num(item.amount),
+   0
+  );
 
 }
 
 
-/* =====================================================
+/* =========================================================
    CATEGORY TOTAL
-===================================================== */
+========================================================= */
 
-function dailyCategoryTotal(
- category,
- day
-){
+function dailyCategoryTotal(category,day){
 
  let total=0;
 
- for(
-  let bill=0;
-  bill<BILL_COUNT;
-  bill++
- ){
+ if(!data[category]){
+  return total;
+ }
 
-  total+=
-   billTotal(
-    category,
-    bill,
-    day
-   );
+ for(let bill=0;bill<BILL_COUNT;bill++){
+
+  total+=billTotal(
+   category,
+   bill,
+   day
+  );
 
  }
 
@@ -1945,33 +1710,25 @@ function dailyCategoryTotal(
 }
 
 
-/* =====================================================
+/* =========================================================
    GRAND TOTAL
-===================================================== */
+========================================================= */
 
 function dailyGrand(day){
 
- let total=0;
-
- Object.keys(ITEMS)
-  .forEach(category=>{
-
-   total+=
-    dailyCategoryTotal(
-     category,
-     day
-    );
-
-  });
-
- return total;
+ return Object.keys(ITEMS)
+  .reduce(
+   (sum,category)=>
+    sum+dailyCategoryTotal(category,day),
+   0
+  );
 
 }
 
 
-/* =====================================================
+/* =========================================================
    INPUT FIELD
-===================================================== */
+========================================================= */
 
 function inputField(
  category,
@@ -1989,20 +1746,8 @@ function inputField(
  }
 
  return `
-
   <input
-
-   class="cell"
-
    value="${esc(value)}"
-
-   inputmode="${
-    field==="qty" ||
-    field==="rate"
-    ?"decimal"
-    :"text"
-   }"
-
    onchange="updateItem(
     '${category}',
     ${bill},
@@ -2011,275 +1756,200 @@ function inputField(
     '${field}',
     this.value
    )"
-
   >
-
  `;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    BILL
-===================================================== */
+========================================================= */
 
 function renderBill(){
 
  const category=currentPage;
 
- const bill=
-  data[category]
-   [currentBill]
-   .days[currentDate];
+ if(!ITEMS[category]){
+  return;
+ }
+
+ const billData=
+  data[category][currentBill];
+
+ if(!billData){
+  return;
+ }
+
+ const items=
+  billData.items[currentDate] || [];
 
  const search=
   (
-   document.getElementById(
-    "search"
-   ).value||""
+   document.getElementById("searchInput")?.value
+   ||""
   ).toLowerCase();
 
  let rows="";
 
- bill.items.forEach(
-  (item,index)=>{
+ items.forEach((item,index)=>{
 
-   if(
-    search &&
-    !item.name
-     .toLowerCase()
-     .includes(search)
-   ){
+  if(
+   search &&
+   !String(item.name||"")
+    .toLowerCase()
+    .includes(search)
+  ){
+   return;
+  }
 
-    return;
+  rows+=`
+   <tr>
 
-   }
+    <td>${index+1}</td>
 
-   const amount=
-    String(item.amount??"").trim()!==""
-     ?num(item.amount)
-     :
-     (
-      String(item.qty??"").trim() &&
-      String(item.rate??"").trim()
-       ?
-       num(item.qty)*num(item.rate)
-       :""
-     );
-
-   rows+=`
-
-    <tr>
-
-     <td class="no">
-      ${index+1}
-     </td>
-
-     <td class="item">
-
-      ${inputField(
+    <td>
+     ${
+      inputField(
        category,
        currentBill,
        currentDate,
        index,
        "name",
        item.name
-      )}
+      )
+     }
+    </td>
 
-     </td>
-
-     <td class="qty">
-
-      ${inputField(
+    <td class="num">
+     ${
+      inputField(
        category,
        currentBill,
        currentDate,
        index,
        "qty",
        item.qty
-      )}
+      )
+     }
+    </td>
 
-     </td>
-
-     <td class="rate">
-
-      ${inputField(
+    <td class="num">
+     ${
+      inputField(
        category,
        currentBill,
        currentDate,
        index,
        "rate",
        item.rate
-      )}
+      )
+     }
+    </td>
 
-     </td>
+    <td class="num">
+     ${
+      inputField(
+       category,
+       currentBill,
+       currentDate,
+       index,
+       "amount",
+       item.amount
+      )
+     }
+    </td>
 
-     <td class="amount">
+    <td class="ps">
+     ${
+      inputField(
+       category,
+       currentBill,
+       currentDate,
+       index,
+       "unit",
+       item.unit
+      )
+     }
+    </td>
 
-      ${
-       amount===""
-        ?""
-        :money(amount)
-      }
+   </tr>
+  `;
 
-     </td>
+ });
 
-     <td class="ps">
-      00
-     </td>
-
-    </tr>
-
-   `;
-
-  }
+ const total=billTotal(
+  category,
+  currentBill,
+  currentDate
  );
 
+ document.getElementById("billContainer").innerHTML=`
 
- const total=
-  billTotal(
-   category,
-   currentBill,
-   currentDate
-  );
+  <div class="bill-wrap">
 
+   <div class="bill-header">
 
- return `
+    <div class="bill-company">
 
-  <div class="card">
+     <h1>${esc(BUSINESS.proprietor)}</h1>
 
-   <div class="card-head">
+     <div class="supplier">
+      ${esc(BUSINESS.supplier)}
+     </div>
 
-    <h2>
-     ${category} Bill
-    </h2>
+     <div class="tagline">
+      ${esc(BUSINESS.tagline)}
+     </div>
 
-    <button
-     class="upload-bill-btn"
-     onclick="openBillPhoto()">
-     📷 Upload Bill
-    </button>
-
-    <span class="badge">
-
-     Bill ${bill.billNo}
-     •
-     ${bill.date}
-
-    </span>
-
-   </div>
-
-   <div class="bill-head">
-
-    <div class="bill-head-top">
-
-     <span>
-      Proprietor:
-      ${BUSINESS.proprietor}
-     </span>
-
-     <span>
-      Cell:
-      ${BUSINESS.phone}
-     </span>
+     <div class="address">
+      ${esc(BUSINESS.address)}
+      &nbsp; | &nbsp;
+      ${esc(BUSINESS.phone)}
+     </div>
 
     </div>
 
-    ${
-     category==="Vegetable"
+    <div class="bill-meta">
 
-     ?
+     <div class="meta-box">
+      <div class="meta-label">Category</div>
+      <div class="meta-value">
+       ${esc(category)}
+      </div>
+     </div>
 
-     `
+     <div class="meta-box">
+      <div class="meta-label">Bill No</div>
+      <div class="meta-value">
+       ${esc(billData.billNo)}
+      </div>
+     </div>
 
-      <h3>
-       ${BUSINESS.supplier}
-      </h3>
+     <div class="meta-box">
+      <div class="meta-label">Date</div>
+      <div class="meta-value">
+       ${esc(DATES[currentDate])}
+      </div>
+     </div>
 
-      <p>
-       ${BUSINESS.tagline}
-      </p>
-
-      <p>
-       ${BUSINESS.address}
-      </p>
-
-     `
-
-     :""
-    }
-
-   </div>
-
-   <div class="bill-meta">
-
-    <div>
-     Bill No. ${bill.billNo}
-    </div>
-
-    <div>
-     Date: ${bill.date}
     </div>
 
    </div>
 
-   <div class="customer">
+   <div class="bill-table-wrap">
 
-    M/s.
-
-    ${
-     editMode
-
-     ?
-
-     `
-
-      <input
-       value="${esc(bill.customer)}"
-       onchange="updateBill(
-        '${category}',
-        ${currentBill},
-        ${currentDate},
-        'customer',
-        this.value
-       )"
-      >
-
-     `
-
-     :
-
-     esc(bill.customer)
-
-    }
-
-   </div>
-
-   <div class="table-wrap">
-
-    <table>
+    <table class="bill-table">
 
      <thead>
-
       <tr>
-
        <th>Sl.No</th>
-
-       <th>
-        Vegetable / Item Name
-       </th>
-
+       <th>Vegetable / Item Name</th>
        <th>Qty</th>
-
        <th>Rate</th>
-
        <th>Amount</th>
-
        <th>Ps.</th>
-
       </tr>
-
      </thead>
 
      <tbody>
@@ -2288,23 +1958,15 @@ function renderBill(){
 
       <tr class="total-row">
 
-       <td
-        colspan="4"
-        style="text-align:right">
-
+       <td colspan="4">
         TOTAL
-
        </td>
 
-       <td class="amount">
-
-        ₹ ${money(total)}
-
+       <td class="num">
+        ${money(total)}
        </td>
 
-       <td>
-        00
-       </td>
+       <td></td>
 
       </tr>
 
@@ -2314,272 +1976,288 @@ function renderBill(){
 
    </div>
 
-   <div class="words">
+   <div class="bill-footer">
 
-    <strong>
-     ${numberToWordsIndian(total)}
-    </strong>
+    <div class="words">
+     <b>Amount in Words:</b>
+     ${esc(numberToWordsIndian(total))}
+    </div>
+
+    <div class="total-box">
+     Total: ${money(total)}
+    </div>
+
+   </div>
+
+   <div class="upload-row no-print">
+
+    <div class="upload-help">
+     📷 Upload handwritten bill photo —
+     AI Vision will read Item, Qty, Rate & Amount.
+    </div>
+
+    <button
+     class="btn btn-primary"
+     onclick="openBillPhoto()"
+    >
+     📷 Upload Bill
+    </button>
 
    </div>
 
   </div>
-
  `;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    DASHBOARD
-===================================================== */
+========================================================= */
 
 function renderDashboard(){
 
- return `
+ const day=currentDate;
 
-  <div class="kpis">
+ const vegetable=
+  dailyCategoryTotal("Vegetable",day);
 
-   <div class="kpi">
+ const grocery=
+  dailyCategoryTotal("Grocery",day);
 
-    <small>
-     VEGETABLE
-    </small>
+ const dairy=
+  dailyCategoryTotal("Dairy",day);
 
-    <strong>
-     ₹ ${money(
-      dailyCategoryTotal(
-       "Vegetable",
-       currentDate
-      )
-     )}
-    </strong>
+ const housekeeping=
+  dailyCategoryTotal("Housekeeping",day);
 
-   </div>
+ const grand=
+  vegetable+
+  grocery+
+  dairy+
+  housekeeping;
 
-   <div class="kpi">
+ document.getElementById("dashVegetable")
+  .textContent=money(vegetable);
 
-    <small>
-     GROCERY
-    </small>
+ document.getElementById("dashGrocery")
+  .textContent=money(grocery);
 
-    <strong>
-     ₹ ${money(
-      dailyCategoryTotal(
-       "Grocery",
-       currentDate
-      )
-     )}
-    </strong>
+ document.getElementById("dashDairy")
+  .textContent=money(dairy);
 
-   </div>
+ document.getElementById("dashHousekeeping")
+  .textContent=money(housekeeping);
 
-   <div class="kpi">
+ document.getElementById("dashGrand")
+  .textContent=money(grand);
 
-    <small>
-     DAIRY
-    </small>
+ document.getElementById("dashBillCount")
+  .textContent=BILL_COUNT;
 
-    <strong>
-     ₹ ${money(
-      dailyCategoryTotal(
-       "Dairy",
-       currentDate
-      )
-     )}
-    </strong>
+ document.getElementById("dashSelectedDate")
+  .textContent=DATES[day];
 
-   </div>
+} 
 
-   <div class="kpi">
-
-    <small>
-     HOUSEKEEPING
-    </small>
-
-    <strong>
-     ₹ ${money(
-      dailyCategoryTotal(
-       "Housekeeping",
-       currentDate
-      )
-     )}
-    </strong>
-
-   </div>
-
-  </div>
-
-  <div class="card">
-
-   <div class="card-head">
-
-    <h2>
-     Daily Bill Summary
-    </h2>
-
-    <span class="badge">
-     ${DATES[currentDate]}
-    </span>
-
-   </div>
-
-   <div class="daily-grid">
-
-    ${
-     Object.keys(ITEMS)
-      .map(category=>`
-
-       <div class="daily-item">
-
-        <span>
-         ${category}
-        </span>
-
-        <strong>
-         ₹ ${money(
-          dailyCategoryTotal(
-           category,
-           currentDate
-          )
-         )}
-        </strong>
-
-       </div>
-
-      `)
-      .join("")
-    }
-
-   </div>
-
-   <div class="grand">
-
-    <span>
-     GRAND TOTAL
-    </span>
-
-    <span>
-     ₹ ${money(
-      dailyGrand(currentDate)
-     )}
-    </span>
-
-   </div>
-
-  </div>
-
- `;
-
-}
-
-
-/* =====================================================
+ /* =========================================================
    AI VISION BILL READER
-===================================================== */
+========================================================= */
 
-/*
- IMPORTANT:
-
- Tesseract.js is completely removed.
-
- Mobile photo
-      ↓
- Base64
-      ↓
- Vercel /api/read-bill
-      ↓
- OpenAI Vision
-      ↓
- Item / Qty / Rate / Amount
-      ↓
- Editable Review
-      ↓
- Apply to Bill
-*/
-
-
-const AI_BILL_API=
+const AI_BILL_API =
  "https://ttc-billing.vercel.app/api/read-bill";
 
 
-/* =====================================================
+/* =========================================================
    OPEN BILL PHOTO
-===================================================== */
+========================================================= */
 
 function openBillPhoto(){
 
- if(currentPage==="daily"){
-  return;
- }
-
  const input=
-  document.getElementById(
-   "billPhotoInput"
-  );
+  document.getElementById("billPhotoInput");
 
- input.value="";
-
- input.click();
+ if(input){
+  input.value="";
+  input.click();
+ }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    CLOSE AI MODAL
-===================================================== */
+========================================================= */
 
 function closeOCR(){
 
- document
-  .getElementById(
-   "ocrOverlay"
-  )
-  .classList.remove(
-   "show"
-  );
+ const overlay=
+  document.getElementById("ocrOverlay");
+
+ if(overlay){
+  overlay.classList.remove("show");
+ }
+
+ const result=
+  document.getElementById("ocrResult");
+
+ if(result){
+  result.innerHTML="";
+ }
+
+ const progress=
+  document.getElementById("ocrProgress");
+
+ if(progress){
+  progress.style.display="none";
+ }
+
+ const progressFill=
+  document.getElementById("ocrProgressFill");
+
+ if(progressFill){
+  progressFill.style.width="0%";
+ }
+
+ const progressText=
+  document.getElementById("ocrProgressText");
+
+ if(progressText){
+  progressText.textContent="Reading bill...";
+ }
+
+ const applyBtn=
+  document.getElementById("ocrApplyBtn");
+
+ if(applyBtn){
+  applyBtn.disabled=true;
+ }
 
  ocrRows=[];
 
 }
 
 
-/* =====================================================
-   FILE -> BASE64
-===================================================== */
+/* =========================================================
+   COMPRESS BILL IMAGE
+========================================================= */
 
-function fileToBase64(file){
+function compressBillImage(file){
 
- return new Promise(
-  (resolve,reject)=>{
+ return new Promise((resolve,reject)=>{
 
-   const reader=
-    new FileReader();
+  if(!file){
 
-   reader.onload=()=>{
-    resolve(reader.result);
+   reject(
+    new Error("Bill image select செய்யவில்லை.")
+   );
+
+   return;
+
+  }
+
+  const reader=new FileReader();
+
+  reader.onload=()=>{
+
+   const img=new Image();
+
+   img.onload=()=>{
+
+    const MAX_SIZE=1600;
+
+    let width=img.naturalWidth;
+    let height=img.naturalHeight;
+
+    if(
+     width>MAX_SIZE ||
+     height>MAX_SIZE
+    ){
+
+     const ratio=
+      Math.min(
+       MAX_SIZE/width,
+       MAX_SIZE/height
+      );
+
+     width=Math.round(width*ratio);
+     height=Math.round(height*ratio);
+
+    }
+
+    const canvas=
+     document.createElement("canvas");
+
+    canvas.width=width;
+    canvas.height=height;
+
+    const ctx=
+     canvas.getContext("2d");
+
+    ctx.fillStyle="#ffffff";
+
+    ctx.fillRect(
+     0,
+     0,
+     width,
+     height
+    );
+
+    ctx.imageSmoothingEnabled=true;
+    ctx.imageSmoothingQuality="high";
+
+    ctx.drawImage(
+     img,
+     0,
+     0,
+     width,
+     height
+    );
+
+    const compressed=
+     canvas.toDataURL(
+      "image/jpeg",
+      0.82
+     );
+
+    resolve(compressed);
+
    };
 
-   reader.onerror=()=>{
+   img.onerror=()=>{
 
     reject(
      new Error(
-      "Bill image read செய்ய முடியவில்லை."
+      "Bill image load செய்ய முடியவில்லை."
      )
     );
 
    };
 
-   reader.readAsDataURL(file);
+   img.src=reader.result;
 
-  }
- );
+  };
+
+  reader.onerror=()=>{
+
+   reject(
+    new Error(
+     "Bill image read செய்ய முடியவில்லை."
+    )
+   );
+
+  };
+
+  reader.readAsDataURL(file);
+
+ });
 
 }
 
 
-/* =====================================================
+/* =========================================================
    AI VISION OCR
-===================================================== */
+========================================================= */
 
 async function smartBillOCR(file){
 
@@ -2591,16 +2269,10 @@ async function smartBillOCR(file){
 
  }
 
-
- const imageBase64=
-  await fileToBase64(file);
-
-
  const progress=
   document.getElementById(
    "ocrProgressFill"
   );
-
 
  const progressText=
   document.getElementById(
@@ -2609,9 +2281,8 @@ async function smartBillOCR(file){
 
 
  if(progress){
-  progress.style.width="15%";
+  progress.style.width="10%";
  }
-
 
  if(progressText){
   progressText.textContent=
@@ -2619,9 +2290,19 @@ async function smartBillOCR(file){
  }
 
 
- /*
-  Send photo to secure Vercel backend.
- */
+ const imageBase64=
+  await compressBillImage(file);
+
+
+ if(progress){
+  progress.style.width="30%";
+ }
+
+ if(progressText){
+  progressText.textContent=
+   "Bill photo AI Vision-க்கு அனுப்பப்படுகிறது...";
+ }
+
 
  const response=
   await fetch(
@@ -2630,36 +2311,27 @@ async function smartBillOCR(file){
     method:"POST",
 
     headers:{
-     "Content-Type":
-      "application/json"
+     "Content-Type":"application/json"
     },
 
     body:JSON.stringify({
-
      image:imageBase64,
 
      category:currentPage,
 
      date:DATES[currentDate],
 
-     billNo:
-      String(
-       currentBill+1
-      ).padStart(
-       2,
-       "0"
-      )
-
+     billNo:String(
+      currentBill+1
+     ).padStart(2,"0")
     })
-
    }
   );
 
 
  if(progress){
-  progress.style.width="50%";
+  progress.style.width="55%";
  }
-
 
  if(progressText){
   progressText.textContent=
@@ -2667,18 +2339,25 @@ async function smartBillOCR(file){
  }
 
 
+ const responseText=
+  await response.text();
+
+
  let result;
+
 
  try{
 
   result=
-   await response.json();
+   JSON.parse(responseText);
 
- }
- catch(error){
+ }catch(error){
 
   throw new Error(
-   "AI server valid response கொடுக்கவில்லை."
+   "AI server valid JSON response கொடுக்கவில்லை. HTTP "+
+   response.status+
+   "\n\n"+
+   responseText.slice(0,500)
   );
 
  }
@@ -2688,7 +2367,8 @@ async function smartBillOCR(file){
 
   throw new Error(
    result?.error ||
-   "AI Vision API error"
+   "AI Vision API error. HTTP "+
+   response.status
   );
 
  }
@@ -2700,6 +2380,7 @@ async function smartBillOCR(file){
  ){
 
   throw new Error(
+   result?.error ||
    "AI bill data கிடைக்கவில்லை."
   );
 
@@ -2710,68 +2391,56 @@ async function smartBillOCR(file){
   Array.isArray(
    result.data.rows
   )
-   ?result.data.rows
-   :[];
+   ? result.data.rows
+   : [];
 
-
- /*
-  Convert AI response.
- */
 
  ocrRows=
-  rows.map(
-   (row,index)=>({
+  rows
+   .map(
+    (row,index)=>({
 
-    row:index+1,
+     row:index+1,
 
-    name:
-     String(
-      row.item||""
-     ).trim(),
+     name:
+      String(
+       row.item||""
+      ).trim(),
 
-    qty:
-     String(
-      row.qty||""
-     ).trim(),
+     qty:
+      String(
+       row.qty||""
+      ).trim(),
 
-    unit:
-     String(
-      row.unit||""
-     ).trim(),
+     unit:
+      String(
+       row.unit||""
+      ).trim(),
 
-    rate:
-     String(
-      row.rate||""
-     ).trim(),
+     rate:
+      String(
+       row.rate||""
+      ).trim(),
 
-    amount:
-     String(
-      row.amount||""
-     ).trim()
+     amount:
+      String(
+       row.amount||""
+      ).trim()
 
-   })
-  );
-
-
- /*
-  Remove completely empty rows.
- */
-
- ocrRows=
-  ocrRows.filter(row=>
-
-   row.name||
-   row.qty||
-   row.rate||
-   row.amount
-
-  );
+    })
+   )
+   .filter(
+    row=>
+     row.name ||
+     row.qty ||
+     row.rate ||
+     row.amount
+   );
 
 
  if(progress){
   progress.style.width="100%";
  }
-
 
  if(progressText){
   progressText.textContent=
@@ -2779,23 +2448,21 @@ async function smartBillOCR(file){
  }
 
 
- return{
-
+ return {
   rows:ocrRows,
 
   total:
    String(
     result.data.total||""
    ).trim()
-
  };
 
 }
 
 
-/* =====================================================
+/* =========================================================
    HANDLE BILL PHOTO
-===================================================== */
+========================================================= */
 
 async function handleBillPhoto(file){
 
@@ -2803,343 +2470,233 @@ async function handleBillPhoto(file){
   return;
  }
 
-
- document
-  .getElementById(
+ const overlay=
+  document.getElementById(
    "ocrOverlay"
-  )
-  .classList.add(
-   "show"
+  );
+
+ const progress=
+  document.getElementById(
+   "ocrProgress"
+  );
+
+ const resultBox=
+  document.getElementById(
+   "ocrResult"
+  );
+
+ const applyBtn=
+  document.getElementById(
+   "ocrApplyBtn"
   );
 
 
- document.getElementById(
-  "ocrProgress"
- ).style.display="block";
+ if(overlay){
+  overlay.classList.add("show");
+ }
 
+ if(progress){
+  progress.style.display="block";
+ }
 
- document.getElementById(
-  "ocrProgressFill"
- ).style.width="0%";
-
-
- document.getElementById(
-  "ocrProgressText"
- ).textContent=
-  "Preparing bill photo...";
-
-
- document.getElementById(
-  "ocrApplyBtn"
- ).disabled=true;
-
-
- document.getElementById(
-  "ocrResult"
- ).innerHTML=`
-
-  <div style="
-   text-align:center;
-   padding:35px 15px;
-   color:#64748b;
-  ">
-
-   <div style="
-    font-size:40px;
-    margin-bottom:12px;
-   ">
-    🤖
+ if(resultBox){
+  resultBox.innerHTML=`
+   <div class="ocr-info">
+    ⏳ AI Vision bill reading ஆரம்பிக்கிறது...
    </div>
+  `;
+ }
 
-   <b>
-    AI Vision Bill Reading
-   </b>
-
-   <br><br>
-
-   Handwritten
-
-   <b>Item / Qty / Rate / Amount</b>
-
-   read செய்யப்படுகிறது...
-
-   <br><br>
-
-   தயவு செய்து wait செய்யவும்.
-
-  </div>
-
- `;
+ if(applyBtn){
+  applyBtn.disabled=true;
+ }
 
 
  try{
 
-  await smartBillOCR(
-   file
-  );
+  const result=
+   await smartBillOCR(file);
 
-
-  console.log(
-   "AI VISION BILL RESULT:",
-   ocrRows
-  );
-
+  ocrRows=
+   result.rows || [];
 
   renderOCRResult();
 
- }
- catch(error){
+  if(applyBtn){
+   applyBtn.disabled=
+    ocrRows.length===0;
+  }
+
+ }catch(error){
 
   console.error(
-   "AI BILL ERROR:",
+   "AI Vision Bill Reading Error:",
    error
   );
 
+  if(resultBox){
 
-  document.getElementById(
-   "ocrProgress"
-  ).style.display="none";
+   resultBox.innerHTML=`
+    <div
+     style="
+      padding:14px;
+      background:#fef2f2;
+      color:#991b1b;
+      border:1px solid #fecaca;
+      border-radius:8px;
+      font-size:12px;
+      line-height:1.6;
+     "
+    >
+     <b>❌ AI Vision Bill Reading Failed</b>
 
+     <br><br>
 
-  document.getElementById(
-   "ocrResult"
-  ).innerHTML=`
+     ${esc(error?.message || "Unknown error")}
 
-   <div style="
-    color:#b91c1c;
-    background:#fef2f2;
-    border:1px solid #fecaca;
-    padding:15px;
-    border-radius:10px;
-    font-size:11px;
-   ">
+     <br><br>
 
-    <b>
-     ❌ AI Vision Bill Reading Failed
-    </b>
+     <b>Check:</b>
 
-    <br><br>
+     <br>
+     1. Internet connection
+     <br>
+     2. Vercel deployment
+     <br>
+     3. OPENAI_API_KEY
+     <br>
+     4. /api/read-bill endpoint
+    </div>
+   `;
 
-    ${esc(
-     error?.message||
-     "Unknown error"
-    )}
+  }
 
-    <br><br>
-
-    <b>Check:</b>
-
-    <br>
-
-    1. Internet connection
-
-    <br>
-
-    2. Vercel deployment
-
-    <br>
-
-    3. OPENAI_API_KEY
-
-    <br>
-
-    4. /api/read-bill endpoint
-
-   </div>
-
-  `;
+  if(applyBtn){
+   applyBtn.disabled=true;
+  }
 
  }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    AI RESULT TABLE
-===================================================== */
+========================================================= */
 
 function renderOCRResult(){
 
- const result=
+ const resultBox=
   document.getElementById(
    "ocrResult"
   );
 
+ if(!resultBox){
+  return;
+ }
 
- if(
-  !ocrRows||
-  !ocrRows.length
- ){
+ if(!ocrRows.length){
 
-  result.innerHTML=`
-
-   <div style="
-    padding:20px;
-    text-align:center;
-    color:#b45309;
-    background:#fffbeb;
-    border-radius:10px;
-   ">
-
-    ⚠️ AI Vision
-    bill rows கண்டுபிடிக்கவில்லை.
-
+  resultBox.innerHTML=`
+   <div class="ocr-info">
+    ⚠️ Bill-ல் readable rows கிடைக்கவில்லை.
+    மீண்டும் clear photo upload செய்யவும்.
    </div>
-
   `;
-
-
-  document.getElementById(
-   "ocrApplyBtn"
-  ).disabled=true;
-
 
   return;
 
  }
 
 
- let html=`
-
-  <div style="
-   margin-bottom:10px;
-   color:#166534;
-   font-weight:bold;
-   font-size:12px;
-  ">
-
-   ✓ AI Vision
-   ${ocrRows.length}
-   row(s) read செய்துள்ளது.
-
-   <br>
-
-   <span style="
-    color:#64748b;
-    font-size:10px;
-    font-weight:normal;
-   ">
-
-    Apply செய்வதற்கு முன்
-    values-ஐ check/edit செய்யவும்.
-
-    <br>
-
-    குறிப்பாக
-    <b>Rate</b>
-    மற்றும்
-    <b>Amount</b>
-    சரிபார்க்கவும்.
-
-   </span>
-
-  </div>
-
-  <div class="ocr-table-wrap">
-
-   <table class="ocr-table">
-
-    <thead>
-
-     <tr>
-
-      <th>#</th>
-
-      <th>Item Name</th>
-
-      <th>Qty</th>
-
-      <th>Rate</th>
-
-      <th>Amount</th>
-
-     </tr>
-
-    </thead>
-
-    <tbody>
-
- `;
+ let rows="";
 
 
  ocrRows.forEach(
   (row,index)=>{
 
-   html+=`
-
+   rows+=`
     <tr>
 
-     <td style="
-      text-align:center;
-      font-weight:bold;
-     ">
-
+     <td style="text-align:center">
       ${index+1}
-
      </td>
 
      <td>
-
       <input
-       id="ocr-name-${index}"
+       id="ocrName${index}"
        value="${esc(row.name)}"
-       placeholder="Item name">
-
-      <div class="ocr-confidence">
-       AI Vision
-      </div>
-
+      >
      </td>
 
      <td>
-
       <input
-       id="ocr-qty-${index}"
+       id="ocrQty${index}"
        value="${esc(row.qty)}"
-       inputmode="decimal">
-
-      <div class="ocr-confidence">
-       ${esc(row.unit||"")}
-      </div>
-
+      >
      </td>
 
      <td>
-
       <input
-       id="ocr-rate-${index}"
+       id="ocrUnit${index}"
+       value="${esc(row.unit)}"
+      >
+     </td>
+
+     <td>
+      <input
+       id="ocrRate${index}"
        value="${esc(row.rate)}"
-       inputmode="decimal">
-
-      <div class="ocr-confidence">
-       Handwritten Rate
-      </div>
-
+      >
      </td>
 
      <td>
-
       <input
-       id="ocr-amount-${index}"
+       id="ocrAmount${index}"
        value="${esc(row.amount)}"
-       inputmode="decimal">
-
-      <div class="ocr-confidence">
-       Handwritten Amount
-      </div>
-
+      >
      </td>
 
     </tr>
-
    `;
 
   }
  );
 
 
- html+=`
+ resultBox.innerHTML=`
 
+  <div
+   style="
+    margin-bottom:10px;
+    font-size:12px;
+    font-weight:700;
+    color:#166534;
+   "
+  >
+   ✓ ${ocrRows.length} bill rows read.
+   Apply செய்வதற்கு முன் values check/edit செய்யலாம்.
+  </div>
+
+  <div style="overflow-x:auto">
+
+   <table class="ocr-table">
+
+    <thead>
+
+     <tr>
+      <th>Sl.No</th>
+      <th>Item</th>
+      <th>Qty</th>
+      <th>Unit</th>
+      <th>Rate</th>
+      <th>Amount</th>
+     </tr>
+
+    </thead>
+
+    <tbody>
+     ${rows}
     </tbody>
 
    </table>
@@ -3148,556 +2705,393 @@ function renderOCRResult(){
 
  `;
 
-
- result.innerHTML=
-  html;
-
-
- document.getElementById(
-  "ocrApplyBtn"
- ).disabled=false;
-
-
- document.getElementById(
-  "ocrProgress"
- ).style.display="none";
-
 }
 
 
-/* =====================================================
+/* =========================================================
    APPLY AI DATA TO BILL
-===================================================== */
+========================================================= */
 
 function applyOCRData(){
 
- if(
-  !ocrRows||
-  !ocrRows.length
- ){
+ if(!ocrRows.length){
+
+  alert(
+   "AI Vision data கிடைக்கவில்லை."
+  );
+
   return;
+
  }
 
 
- const category=
-  currentPage;
+ const category=currentPage;
 
+ if(!ITEMS[category]){
 
- if(category==="daily"){
+  alert(
+   "முதலில் Vegetable / Grocery / Dairy / Housekeeping bill select செய்யவும்."
+  );
+
   return;
+
  }
 
 
- const bill=
-  data[category]
-   [currentBill]
-   .days[currentDate];
+ const billData=
+  data[category][currentBill];
+
+ if(!billData){
+
+  alert(
+   "Bill data கிடைக்கவில்லை."
+  );
+
+  return;
+
+ }
 
 
- /*
-  Existing data check.
- */
+ const existingRows=
+  billData.items[currentDate] || [];
+
 
  const hasExisting=
-  bill.items.some(
+  existingRows.some(
    item=>
-
-    String(
-     item.name??""
-    ).trim()||
-
-    String(
-     item.qty??""
-    ).trim()||
-
-    String(
-     item.rate??""
-    ).trim()
-
+    item.name ||
+    item.qty ||
+    item.rate ||
+    item.amount
   );
 
 
  if(hasExisting){
 
-  const ok=
+  const confirmApply=
    confirm(
-    "இந்த bill-ல் ஏற்கனவே data உள்ளது.\n\nAI Vision photo data-வை வைத்து existing rows-ஐ update செய்யவா?"
+    "இந்த bill-ல் ஏற்கனவே data உள்ளது.\n\nAI Vision data அதை replace செய்யட்டுமா?"
    );
 
-
-  if(!ok){
+  if(!confirmApply){
    return;
   }
 
  }
 
 
- const finalRows=[];
+ const newRows=[];
 
-
- /*
-  Read edited values.
- */
 
  ocrRows.forEach(
   (row,index)=>{
 
    const name=
     document.getElementById(
-     "ocr-name-"+index
-    )?.value.trim()||"";
-
+     "ocrName"+index
+    )?.value || "";
 
    const qty=
     document.getElementById(
-     "ocr-qty-"+index
-    )?.value.trim()||"";
+     "ocrQty"+index
+    )?.value || "";
 
+   const unit=
+    document.getElementById(
+     "ocrUnit"+index
+    )?.value || "";
 
    const rate=
     document.getElementById(
-     "ocr-rate-"+index
-    )?.value.trim()||"";
-
+     "ocrRate"+index
+    )?.value || "";
 
    const amount=
     document.getElementById(
-     "ocr-amount-"+index
-    )?.value.trim()||"";
+     "ocrAmount"+index
+    )?.value || "";
 
 
-   if(
-    name||
-    qty||
-    rate||
-    amount
-   ){
+   newRows.push({
 
-    finalRows.push({
+    name:name.trim(),
 
-     name:name,
-     qty:qty,
-     rate:rate,
-     amount:amount
+    qty:qty.trim(),
 
-    });
+    unit:unit.trim(),
 
-   }
+    rate:rate.trim(),
+
+    amount:amount.trim(),
+
+    quality:""
+
+   });
 
   }
  );
 
 
- /*
-  Clear existing bill.
- */
-
- bill.items.forEach(
-  item=>{
-
-   item.name="";
-   item.quality="";
-   item.qty="";
-   item.rate="";
-   item.amount=0;
-
-  }
- );
+ const maxRows=
+  ITEMS[category];
 
 
- /*
-  Apply AI rows.
- */
+ while(newRows.length<maxRows){
 
- finalRows.forEach(
-  (row,index)=>{
+  newRows.push({
 
-   if(
-    index<
-    bill.items.length
-   ){
+   name:"",
+   qty:"",
+   unit:"",
+   rate:"",
+   amount:"",
+   quality:""
 
-    bill.items[index].name=
-     row.name;
+  });
 
-    bill.items[index].qty=
-     row.qty;
+ }
 
-    bill.items[index].rate=
-     row.rate;
 
-    /*
-     IMPORTANT:
-
-     AI handwritten Amount
-     directly saved.
-
-     NOT Qty × Rate.
-    */
-
-    bill.items[index].amount=
-     num(row.amount);
-
-   }
-
-  }
- );
+ billData.items[currentDate]=
+  newRows.slice(0,maxRows);
 
 
  saveSilent();
 
+
  closeOCR();
+
 
  render();
 
 
- document.getElementById(
-  "status"
- ).textContent=
-  "AI Vision Bill Updated ✓";
+ const status=
+  document.getElementById(
+   "dashStatus"
+  );
+
+ if(status){
+  status.textContent=
+   "AI Vision Bill Updated ✓";
+ }
 
 
  alert(
-  finalRows.length+
-  " item(s) AI Vision மூலம் bill-ல் update செய்யப்பட்டது."
+  "AI Vision bill data successfully updated ✓"
  );
 
 }
 
 
-/* =====================================================
+/* =========================================================
    PDF
-===================================================== */
+========================================================= */
 
 async function downloadPDF(){
 
- if(
-  currentPage==="daily"
- ){
-  return;
- }
+ if(currentPage==="daily"){
 
-
- const originalEditMode=
-  editMode;
-
-
- editMode=false;
-
- render();
-
-
- await new Promise(
-  resolve=>
-   setTimeout(
-    resolve,
-    400
-   )
- );
-
-
- const visibleBill=
-  document.querySelector(
-   "#content .card"
+  alert(
+   "முதலில் ஒரு bill page select செய்யவும்."
   );
-
-
- if(!visibleBill){
-
-  editMode=
-   originalEditMode;
-
-  render();
 
   return;
 
  }
 
-
- const capture=
-  document.createElement(
-   "div"
+ const bill=
+  document.getElementById(
+   "billContainer"
   );
 
-
- capture.className=
-  "pdf-capture";
-
-
- capture.appendChild(
-  visibleBill.cloneNode(
-   true
-  )
- );
-
-
- document.body.appendChild(
-  capture
- );
-
-
- await new Promise(
-  resolve=>
-   requestAnimationFrame(
-    ()=>
-     requestAnimationFrame(
-      resolve
-     )
-   )
- );
-
+ if(!bill){
+  return;
+ }
 
  try{
 
   const canvas=
    await html2canvas(
-    capture,
+    bill,
     {
-     backgroundColor:"#fff",
      scale:2,
-     useCORS:true,
-     logging:false,
-     width:794,
-     windowWidth:794
+     backgroundColor:"#ffffff",
+     useCORS:true
     }
    );
 
 
+  const imgData=
+   canvas.toDataURL(
+    "image/jpeg",
+    0.95
+   );
+
+
+  const {
+   jsPDF
+  }=window.jspdf;
+
+
   const pdf=
-   new window.jspdf.jsPDF(
+   new jsPDF(
     "p",
     "mm",
     "a4"
    );
 
 
-  const pageW=210;
+  const pageWidth=
+   pdf.internal.pageSize.getWidth();
 
-  const pageH=297;
-
-  const margin=8;
-
-  const maxW=
-   pageW-margin*2;
-
-  const maxH=
-   pageH-margin*2;
-
-  let w=maxW;
-
-  let h=
-   canvas.height/
-   canvas.width*
-   w;
+  const pageHeight=
+   pdf.internal.pageSize.getHeight();
 
 
-  if(
-   h>maxH
-  ){
+  const margin=5;
 
-   h=maxH;
+  const usableWidth=
+   pageWidth-(margin*2);
 
-   w=
-    canvas.width/
-    canvas.height*
-    h;
+  const imgHeight=
+   canvas.height*
+   usableWidth/
+   canvas.width;
+
+
+  let height=imgHeight;
+
+
+  if(height>pageHeight-(margin*2)){
+
+   height=
+    pageHeight-(margin*2);
 
   }
 
 
-  const x=
-   (pageW-w)/2;
-
-
-  const image=
-   canvas.toDataURL(
-    "image/jpeg",
-    .98
-   );
-
-
   pdf.addImage(
-   image,
+   imgData,
    "JPEG",
-   x,
    margin,
-   w,
-   h
+   margin,
+   usableWidth,
+   height
   );
-
-
-  const fileName=
-   "TTC_"+
-   currentPage+
-   "_Bill_"+
-   String(
-    currentBill+1
-   ).padStart(
-    2,
-    "0"
-   )+
-   "_"+
-   DATES[currentDate]
-    .replaceAll(
-     ".",
-     "-"
-    )+
-   ".pdf";
 
 
   pdf.save(
-   fileName
+   `${currentPage}_Bill_${String(currentBill+1).padStart(2,"0")}_${DATES[currentDate].replaceAll(".","-")}.pdf`
   );
 
 
- }
- catch(error){
+ }catch(error){
 
   console.error(
+   "PDF error:",
    error
   );
 
   alert(
-   "PDF உருவாக்க முடியவில்லை."
+   "PDF create செய்ய முடியவில்லை."
   );
 
  }
 
-
- capture.remove();
-
-
- editMode=
-  originalEditMode;
-
-
- document.body.classList.toggle(
-  "editing",
-  editMode
- );
-
-
- render();
-
 }
 
 
-/* =====================================================
+/* =========================================================
    RENDER
-===================================================== */
+========================================================= */
 
 function render(){
 
- document.getElementById(
-  "dateSelect"
- ).innerHTML=
-
-  DATES.map(
-   (date,index)=>`
-
-    <option
-     value="${index}"
-     ${
-      index===currentDate
-       ?"selected"
-       :""
-     }>
-
-     ${date}
-
-    </option>
-
-   `
-  ).join("");
-
-
- document.getElementById(
-  "billSelect"
- ).innerHTML=
-
-  Array.from(
-   {
-    length:BILL_COUNT
-   },
-   (_,i)=>`
-
-    <option
-     value="${i}"
-     ${
-      i===currentBill
-       ?"selected"
-       :""
-     }>
-
-     Bill
-     ${String(
-      i+1
-     ).padStart(
-      2,
-      "0"
-     )}
-
-    </option>
-
-   `
-  ).join("");
-
-
- document.getElementById(
-  "selectedDate"
- ).textContent=
-
-  "Date: "+
-  DATES[currentDate]+
-  " • Bill "+
-  String(
-   currentBill+1
-  ).padStart(
-   2,
-   "0"
-  );
-
-
- document.getElementById(
-  "downloadBtn"
- ).style.display=
-
-  currentPage==="daily"
-   ?"none"
-   :"inline-block";
-
-
- const content=
+ const dateSelect=
   document.getElementById(
-   "content"
+   "dateSelect"
+  );
+
+ const dashboardDate=
+  document.getElementById(
+   "dashboardDate"
+  );
+
+ const billSelect=
+  document.getElementById(
+   "billSelect"
   );
 
 
- if(
-  currentPage==="daily"
- ){
+ if(dateSelect){
 
-  content.innerHTML=
-   renderDashboard();
+  dateSelect.innerHTML=
+   DATES
+    .map(
+     (date,index)=>
+      `<option value="${index}">
+       ${date}
+      </option>`
+    )
+    .join("");
+
+  dateSelect.value=currentDate;
 
  }
- else{
 
-  content.innerHTML=
-   renderBill();
+
+ if(dashboardDate){
+
+  dashboardDate.innerHTML=
+   DATES
+    .map(
+     (date,index)=>
+      `<option value="${index}">
+       ${date}
+      </option>`
+    )
+    .join("");
+
+  dashboardDate.value=currentDate;
+
+ }
+
+
+ if(billSelect){
+
+  billSelect.innerHTML=
+   Array.from(
+    {length:BILL_COUNT},
+    (_,index)=>
+     `<option value="${index}">
+      Bill ${String(index+1).padStart(2,"0")}
+     </option>`
+   ).join("");
+
+  billSelect.value=currentBill;
+
+ }
+
+
+ if(currentPage==="daily"){
+
+  renderDashboard();
+
+ }else{
+
+  renderBill();
 
  }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    START
-===================================================== */
+========================================================= */
 
 render();
 
 </script>
-
 </body>
 </html>
