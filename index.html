@@ -1,4967 +1,3703 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  <meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width,initial-scale=1">  
-<meta name="theme-color" content="#0f172a">  <title>TTC Professional Billing App</title>  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>  <style>  
-  
-*{  
- box-sizing:border-box;  
-}  
-  
-:root{  
- --nav:#0f172a;  
- --blue:#2563eb;  
- --blue2:#1d4ed8;  
- --green:#16a34a;  
- --bg:#f4f7fb;  
- --border:#e2e8f0;  
- --text:#172033;  
- --muted:#64748b;  
-}  
-  
-html,body{  
- margin:0;  
- padding:0;  
- width:100%;  
- min-height:100%;  
-}  
-  
-body{  
- background:var(--bg);  
- color:var(--text);  
- font-family:Arial,Helvetica,sans-serif;  
- overflow-x:hidden;  
-}  
-  
-button,  
-input,  
-select{  
- font-family:inherit;  
-}  
-  
-button{  
- cursor:pointer;  
-}  
-  
-.app{  
- min-height:100vh;  
-}  
-  
-  
-/* ================= SIDEBAR ================= */  
-  
-.sidebar{  
- position:fixed;  
- left:0;  
- top:0;  
- bottom:0;  
- width:245px;  
- background:linear-gradient(  
-  180deg,  
-  #0f172a,  
-  #111827  
- );  
- color:#fff;  
- padding:20px 14px;  
- z-index:100;  
-}  
-  
-.logo{  
- padding:5px 10px 20px;  
- border-bottom:1px solid #263247;  
- margin-bottom:20px;  
-}  
-  
-.logo h2{  
- margin:0;  
- font-size:21px;  
-}  
-  
-.logo p{  
- margin:5px 0 0;  
- color:#94a3b8;  
- font-size:11px;  
-}  
-  
-.nav-title{  
- color:#64748b;  
- font-size:10px;  
- font-weight:bold;  
- padding:0 10px 8px;  
-}  
-  
-.nav-btn{  
- width:100%;  
- border:0;  
- background:transparent;  
- color:#cbd5e1;  
- text-align:left;  
- padding:12px;  
- border-radius:9px;  
- margin:2px 0;  
- font-size:13px;  
-}  
-  
-.nav-btn:hover{  
- background:#1e293b;  
- color:#fff;  
-}  
-  
-.nav-btn.active{  
- background:var(--blue);  
- color:#fff;  
-}  
-  
-.nav-icon{  
- width:27px;  
- display:inline-block;  
-}  
-  
-  
-/* ================= MAIN ================= */  
-  
-.main{  
- margin-left:245px;  
- min-height:100vh;  
- width:calc(100% - 245px);  
-}  
-  
-  
-/* ================= TOPBAR ================= */  
-  
-.topbar{  
- min-height:70px;  
- background:#fff;  
- border-bottom:1px solid var(--border);  
- display:flex;  
- align-items:center;  
- gap:10px;  
- padding:10px 25px;  
- position:sticky;  
- top:0;  
- z-index:50;  
-}  
-  
-.top-title{  
- flex:1;  
- min-width:0;  
-}  
-  
-.top-title h1{  
- margin:0;  
- font-size:19px;  
-}  
-  
-.top-title p{  
- margin:4px 0 0;  
- color:var(--muted);  
- font-size:10px;  
-}  
-  
-.btn{  
- border:1px solid var(--border);  
- background:#fff;  
- color:var(--text);  
- padding:9px 13px;  
- border-radius:8px;  
- font-size:12px;  
- font-weight:bold;  
- white-space:nowrap;  
-}  
-  
-.btn-primary{  
- background:var(--blue);  
- color:#fff;  
- border-color:var(--blue);  
-}  
-  
-.btn-download{  
- background:var(--green);  
- color:#fff;  
- border-color:var(--green);  
-}  
-  
-  
-/* ================= CONTENT ================= */  
-  
-.content{  
- max-width:1450px;  
- margin:auto;  
- padding:24px;  
- width:100%;  
-}  
-  
-  
-/* ================= FILTER ================= */  
-  
-.filter{  
- background:#fff;  
- border:1px solid var(--border);  
- border-radius:12px;  
- padding:12px;  
- display:flex;  
- gap:10px;  
- align-items:center;  
- margin-bottom:18px;  
-}  
-  
-.filter label{  
- color:var(--muted);  
- font-size:10px;  
- font-weight:bold;  
-}  
-  
-.filter select,  
-.filter input{  
- border:1px solid var(--border);  
- border-radius:8px;  
- padding:9px;  
- outline:none;  
- font-size:12px;  
-}  
-  
-.search{  
- min-width:240px;  
-}  
-  
-.status{  
- margin-left:auto;  
- color:var(--muted);  
- font-size:10px;  
-}  
-  
-  
-/* ================= KPI ================= */  
-  
-.kpis{  
- display:grid;  
- grid-template-columns:repeat(4,1fr);  
- gap:14px;  
- margin-bottom:18px;  
-}  
-  
-.kpi{  
- background:#fff;  
- border:1px solid var(--border);  
- border-radius:12px;  
- padding:16px;  
-}  
-  
-.kpi small{  
- color:var(--muted);  
- font-weight:bold;  
- font-size:10px;  
-}  
-  
-.kpi strong{  
- display:block;  
- font-size:21px;  
- margin-top:7px;  
-}  
-  
-  
-/* ================= CARD ================= */  
-  
-.card{  
- background:#fff;  
- border:1px solid var(--border);  
- border-radius:14px;  
- overflow:hidden;  
- margin-bottom:18px;  
- width:100%;  
-}  
-  
-.card-head{  
- display:flex;  
- align-items:center;  
- gap:10px;  
- padding:15px 18px;  
- border-bottom:1px solid var(--border);  
-}  
-  
-.card-head h2{  
- flex:1;  
- margin:0;  
- font-size:16px;  
-}  
-  
-.badge{  
- background:#eef2ff;  
- color:#3730a3;  
- padding:5px 9px;  
- border-radius:20px;  
- font-size:10px;  
- font-weight:bold;  
-}  
-  
-  
-/* ================= UPLOAD ================= */  
-  
-.upload-bill-btn{  
- border:1px solid #dbeafe;  
- background:#eff6ff;  
- color:#1d4ed8;  
- padding:7px 10px;  
- border-radius:8px;  
- font-size:10px;  
- font-weight:bold;  
- white-space:nowrap;  
-}  
-  
-.upload-bill-btn:hover{  
- background:#dbeafe;  
-}  
-  
-#billPhotoInput{  
- display:none;  
-}  
-  
-  
-/* ================= BILL HEADER ================= */  
-  
-.bill-head{  
- padding:18px;  
- text-align:center;  
- border-bottom:1px solid var(--border);  
-}  
-  
-.bill-head-top{  
- display:flex;  
- justify-content:space-between;  
- font-size:10px;  
- color:var(--muted);  
- font-weight:bold;  
-}  
-  
-.bill-head h3{  
- margin:7px 0 3px;  
- font-size:20px;  
-}  
-  
-.bill-head p{  
- margin:3px;  
- font-size:10px;  
- font-weight:bold;  
- color:#475569;  
-}  
-  
-.bill-meta{  
- display:grid;  
- grid-template-columns:1fr 1fr;  
- border-bottom:1px solid var(--border);  
-}  
-  
-.bill-meta div{  
- padding:11px 14px;  
- font-size:11px;  
- font-weight:bold;  
-}  
-  
-.bill-meta div:last-child{  
- text-align:right;  
- border-left:1px solid var(--border);  
-}  
-  
-.customer{  
- padding:10px 14px;  
- border-bottom:1px solid var(--border);  
- font-size:12px;  
- font-weight:bold;  
-}  
-  
-.customer input{  
- border:0;  
- border-bottom:1px solid #94a3b8;  
- outline:0;  
- padding:4px;  
-}  
-  
-  
-/* ================= TABLE ================= */  
-  
-.table-wrap{  
- width:100%;  
- overflow:auto;  
-}  
-  
-table{  
- width:100%;  
- min-width:900px;  
- border-collapse:collapse;  
- table-layout:fixed;  
-}  
-  
-th,  
-td{  
- border:1px solid #cbd5e1;  
- padding:7px 8px;  
- height:36px;  
- font-size:12px;  
-}  
-  
-th{  
- background:#f8fafc;  
- color:#475569;  
- text-align:center;  
- font-size:11px;  
-}  
-  
-th:nth-child(1),  
-td.no{  
- width:7%;  
- text-align:center!important;  
-}  
-  
-th:nth-child(2),  
-td.item{  
- width:51%;  
- text-align:left;  
-}  
-  
-th:nth-child(3),  
-td.qty{  
- width:9%;  
- text-align:center!important;  
-}  
-  
-th:nth-child(4),  
-td.rate{  
- width:11%;  
- text-align:center!important;  
-}  
-  
-th:nth-child(5),  
-td.amount{  
- width:14%;  
- text-align:center!important;  
- white-space:nowrap;  
- overflow:visible;  
-}  
-  
-th:nth-child(6),  
-td.ps{  
- width:8%;  
- text-align:center!important;  
- white-space:nowrap;  
-}  
-  
-.cell{  
- width:100%;  
- border:0;  
- background:transparent;  
- outline:none;  
- padding:4px;  
- font-size:12px;  
- text-align:center;  
-}  
-  
-td.item .cell{  
- text-align:left;  
-}  
-  
-.editing .cell{  
- background:#fff4b8;  
- border:1px dashed #c4a600;  
- border-radius:4px;  
-}  
-  
-.total-row td{  
- background:#f8fafc;  
- font-weight:900;  
-}  
-  
-  
-/* ================= WORDS ================= */  
-  
-.words{  
- padding:14px;  
- font-size:11px;  
- color:#475569;  
- min-height:50px;  
-}  
-  
-.words strong{  
- margin-left:5px;  
- color:#172033;  
- font-weight:700;  
- text-transform:capitalize;  
-}  
-  
-  
-/* ================= OCR MODAL ================= */  
-  
-.ocr-overlay{  
- position:fixed;  
- inset:0;  
- background:rgba(15,23,42,.72);  
- z-index:1000;  
- display:none;  
- align-items:center;  
- justify-content:center;  
- padding:15px;  
-}  
-  
-.ocr-overlay.show{  
- display:flex;  
-}  
-  
-.ocr-modal{  
- width:min(1000px,100%);  
- max-height:92vh;  
- overflow:auto;  
- background:#fff;  
- border-radius:16px;  
- box-shadow:0 25px 70px rgba(0,0,0,.3);  
-}  
-  
-.ocr-header{  
- display:flex;  
- align-items:center;  
- gap:10px;  
- padding:16px;  
- border-bottom:1px solid var(--border);  
- position:sticky;  
- top:0;  
- background:#fff;  
- z-index:2;  
-}  
-  
-.ocr-header h3{  
- flex:1;  
- margin:0;  
- font-size:16px;  
-}  
-  
-.ocr-close{  
- width:34px;  
- height:34px;  
- border:0;  
- border-radius:50%;  
- background:#f1f5f9;  
- font-size:18px;  
-}  
-  
-.ocr-progress{  
- padding:15px 16px;  
- background:#f8fafc;  
- border-bottom:1px solid var(--border);  
-}  
-  
-.ocr-progress-text{  
- font-size:11px;  
- color:var(--muted);  
- margin-bottom:8px;  
-}  
-  
-.ocr-progress-bar{  
- height:7px;  
- background:#e2e8f0;  
- border-radius:10px;  
- overflow:hidden;  
-}  
-  
-.ocr-progress-fill{  
- height:100%;  
- width:0%;  
- background:#2563eb;  
- transition:.2s;  
-}  
-  
-.ocr-body{  
- padding:16px;  
-}  
-  
-.ocr-info{  
- background:#eff6ff;  
- border:1px solid #bfdbfe;  
- color:#1e40af;  
- border-radius:10px;  
- padding:10px;  
- font-size:11px;  
- margin-bottom:12px;  
-}  
-  
-.ocr-table-wrap{  
- overflow:auto;  
- border:1px solid var(--border);  
- border-radius:10px;  
-}  
-  
-.ocr-table{  
- width:100%;  
- min-width:760px;  
- border-collapse:collapse;  
-}  
-  
-.ocr-table th,  
-.ocr-table td{  
- height:44px;  
- padding:5px;  
- border:1px solid var(--border);  
- font-size:11px;  
-}  
-  
-.ocr-table th{  
- background:#f8fafc;  
-}  
-  
-.ocr-table input{  
- width:100%;  
- border:1px solid #e2e8f0;  
- border-radius:5px;  
- padding:6px;  
- outline:none;  
-}  
-  
-.ocr-confidence{  
- font-size:8px;  
- color:#94a3b8;  
- margin-top:2px;  
- white-space:nowrap;  
- overflow:hidden;  
- text-overflow:ellipsis;  
-}  
-  
-.ocr-footer{  
- display:flex;  
- justify-content:flex-end;  
- gap:8px;  
- padding:14px 16px;  
- border-top:1px solid var(--border);  
- position:sticky;  
- bottom:0;  
- background:#fff;  
-}  
-  
-.ocr-apply{  
- background:#16a34a;  
- color:#fff;  
- border:0;  
- border-radius:8px;  
- padding:10px 15px;  
- font-weight:bold;  
-}  
-  
-.ocr-cancel{  
- background:#fff;  
- color:#334155;  
- border:1px solid var(--border);  
- border-radius:8px;  
- padding:10px 15px;  
- font-weight:bold;  
-}  
-  
-  
-/* ================= DASHBOARD ================= */  
-  
-.daily-grid{  
- display:grid;  
- grid-template-columns:repeat(2,1fr);  
- gap:12px;  
- padding:16px;  
-}  
-  
-.daily-item{  
- border:1px solid var(--border);  
- border-radius:10px;  
- padding:15px;  
- display:flex;  
- justify-content:space-between;  
-}  
-  
-.daily-item span{  
- color:var(--muted);  
- font-size:12px;  
-}  
-  
-.grand{  
- margin:0 16px 16px;  
- background:#0f172a;  
- color:#fff;  
- padding:17px;  
- border-radius:10px;  
- display:flex;  
- justify-content:space-between;  
- font-weight:bold;  
-}  
-  
-  
-/* ================= MOBILE NAV ================= */  
-  
-.mobile-nav{  
- display:none;  
-}  
-  
-  
-/* ================= TABLET ================= */  
-  
-@media(max-width:900px){  
-  
- .sidebar{  
-  width:210px;  
- }  
-  
- .main{  
-  margin-left:210px;  
-  width:calc(100% - 210px);  
- }  
-  
- .kpis{  
-  grid-template-columns:repeat(2,1fr);  
- }  
-  
-}  
-  
-  
-/* ================= MOBILE ================= */  
-  
-@media(max-width:700px){  
-  
- body{  
-  padding-bottom:72px;  
-  overflow-x:hidden;  
- }  
-  
- .sidebar{  
-  display:none;  
- }  
-  
- .main{  
-  margin-left:0;  
-  width:100%;  
-  min-width:0;  
- }  
-  
- .topbar{  
-  height:auto;  
-  min-height:70px;  
-  padding:9px 8px;  
-  gap:5px;  
-  flex-wrap:wrap;  
- }  
-  
- .top-title{  
-  width:100%;  
-  flex:1 1 100%;  
-  order:1;  
- }  
-  
- .top-title h1{  
-  font-size:16px;  
-  line-height:20px;  
- }  
-  
- .top-title p{  
-  display:block;  
-  font-size:9px;  
- }  
-  
- .topbar .btn{  
-  padding:7px 8px;  
-  font-size:9px;  
- }  
-  
- #editBtn{  
-  order:2;  
- }  
-  
- #editBtn + .btn{  
-  order:3;  
- }  
-  
- #downloadBtn{  
-  order:4;  
- }  
-  
- #downloadBtn + .btn{  
-  order:5;  
- }  
-  
- .content{  
-  width:100%;  
-  max-width:none;  
-  padding:8px;  
-  overflow:hidden;  
- }  
-  
- .filter{  
-  position:sticky;  
-  top:0;  
-  z-index:40;  
-  width:100%;  
-  padding:9px;  
-  gap:7px;  
-  display:grid;  
-  grid-template-columns:72px 1fr 1fr;  
-  align-items:center;  
-  margin-bottom:10px;  
- }  
-  
- .filter label{  
-  font-size:10px;  
- }  
-  
- .filter select{  
-  width:100%;  
-  min-width:0;  
-  padding:9px 7px;  
-  font-size:11px;  
- }  
-  
- .search{  
-  grid-column:1 / -1;  
-  width:100%;  
-  min-width:0;  
-  padding:9px!important;  
-  font-size:11px!important;  
- }  
-  
- .status{  
-  display:none;  
- }  
-  
- .kpis{  
-  grid-template-columns:repeat(2,1fr);  
-  gap:7px;  
- }  
-  
- .kpi{  
-  padding:10px;  
- }  
-  
- .kpi small{  
-  font-size:8px;  
- }  
-  
- .kpi strong{  
-  font-size:15px;  
- }  
-  
- .card{  
-  width:100%;  
-  min-width:0;  
-  margin-bottom:10px;  
-  border-radius:10px;  
- }  
-  
- .card-head{  
-  padding:10px;  
-  gap:5px;  
- }  
-  
- .card-head h2{  
-  font-size:14px;  
- }  
-  
- .badge{  
-  font-size:8px;  
-  padding:4px 6px;  
- }  
-  
- .upload-bill-btn{  
-  font-size:8px;  
-  padding:6px 7px;  
- }  
-  
- .bill-head{  
-  padding:10px 7px;  
- }  
-  
- .bill-head-top{  
-  font-size:8px;  
- }  
-  
- .bill-head h3{  
-  font-size:14px;  
-  line-height:17px;  
-  margin:5px 0 2px;  
- }  
-  
- .bill-head p{  
-  font-size:8px;  
-  margin:2px;  
- }  
-  
- .bill-meta div{  
-  padding:8px 7px;  
-  font-size:9px;  
- }  
-  
- .customer{  
-  padding:8px 7px;  
-  font-size:10px;  
- }  
-  
- .table-wrap{  
-  width:100%;  
-  overflow:hidden;  
- }  
-  
- table{  
-  width:100%!important;  
-  min-width:0!important;  
-  max-width:100%!important;  
-  table-layout:fixed!important;  
-  border-collapse:collapse!important;  
- }  
-  
- th,  
- td{  
-  height:30px!important;  
-  padding:3px 2px!important;  
-  font-size:9px!important;  
-  line-height:1!important;  
-  overflow:hidden;  
- }  
-  
- th:nth-child(1),  
- td.no{  
-  width:8%!important;  
-  text-align:center!important;  
- }  
-  
- th:nth-child(2),  
- td.item{  
-  width:39%!important;  
-  text-align:left!important;  
- }  
-  
- th:nth-child(3),  
- td.qty{  
-  width:13%!important;  
-  text-align:center!important;  
- }  
-  
- th:nth-child(4),  
- td.rate{  
-  width:14%!important;  
-  text-align:center!important;  
- }  
-  
- th:nth-child(5),  
- td.amount{  
-  width:18%!important;  
-  text-align:center!important;  
-  white-space:nowrap!important;  
-  overflow:hidden!important;  
- }  
-  
- th:nth-child(6),  
- td.ps{  
-  width:8%!important;  
-  text-align:center!important;  
- }  
-  
- th{  
-  font-size:8px!important;  
- }  
-  
- .cell{  
-  width:100%!important;  
-  min-width:0!important;  
-  padding:2px 1px!important;  
-  font-size:9px!important;  
-  text-align:center!important;  
-  border:0!important;  
- }  
-  
- td.item .cell{  
-  text-align:left!important;  
- }  
-  
- .total-row td{  
-  height:30px!important;  
-  font-size:8px!important;  
- }  
-  
- .words{  
-  padding:8px!important;  
-  min-height:35px!important;  
-  font-size:8px!important;  
- }  
-  
- .words strong{  
-  margin-left:0;  
-  font-size:8px!important;  
-  line-height:12px;  
- }  
-  
- .daily-grid{  
-  grid-template-columns:1fr;  
-  gap:7px;  
-  padding:8px;  
- }  
-  
- .daily-item{  
-  padding:10px;  
- }  
-  
- .grand{  
-  margin:0 8px 8px;  
-  padding:12px;  
-  font-size:11px;  
- }  
-  
- .mobile-nav{  
-  position:fixed;  
-  left:0;  
-  right:0;  
-  bottom:0;  
-  height:72px;  
-  background:#fff;  
-  border-top:1px solid var(--border);  
-  display:grid;  
-  grid-template-columns:repeat(5,1fr);  
-  z-index:200;  
- }  
-  
- .mobile-nav button{  
-  border:0;  
-  background:#fff;  
-  color:#64748b;  
-  font-size:9px;  
-  font-weight:bold;  
- }  
-  
- .mobile-nav button span{  
-  display:block;  
-  font-size:20px;  
-  margin-bottom:3px;  
- }  
-  
- .mobile-nav button.active{  
-  color:var(--blue);  
- }  
-  
- .ocr-overlay{  
-  padding:7px;  
- }  
-  
- .ocr-modal{  
-  max-height:94vh;  
-  border-radius:12px;  
- }  
-  
- .ocr-header{  
-  padding:12px;  
- }  
-  
- .ocr-body{  
-  padding:10px;  
- }  
-  
- .ocr-footer{  
-  padding:10px;  
- }  
-  
-}  
-  
-  
-/* ================= A4 PRINT ================= */  
-  
-@page{  
- size:A4 portrait;  
- margin:8mm;  
-}  
-  
-@media print{  
-  
- html,  
- body{  
-  width:210mm;  
-  min-height:297mm;  
-  margin:0;  
-  padding:0;  
-  background:#fff;  
- }  
-  
- .sidebar,  
- .topbar,  
- .filter,  
- .kpis,  
- .mobile-nav,  
- .card-head,  
- .upload-bill-btn{  
-  display:none!important;  
- }  
-  
- .main{  
-  margin:0!important;  
-  width:100%!important;  
- }  
-  
- .content{  
-  width:100%!important;  
-  max-width:none!important;  
-  margin:0!important;  
-  padding:0!important;  
- }  
-  
- .card{  
-  width:100%!important;  
-  margin:0!important;  
-  border:0!important;  
-  border-radius:0!important;  
-  overflow:visible!important;  
- }  
-  
- .bill-head{  
-  padding:6px 4px!important;  
- }  
-  
- .bill-head-top{  
-  font-size:8px!important;  
- }  
-  
- .bill-head h3{  
-  font-size:16px!important;  
-  margin:4px 0 2px!important;  
- }  
-  
- .bill-head p{  
-  font-size:8px!important;  
-  margin:2px!important;  
- }  
-  
- .bill-meta div{  
-  padding:6px 8px!important;  
-  font-size:9px!important;  
- }  
-  
- .customer{  
-  padding:5px 8px!important;  
-  font-size:9px!important;  
- }  
-  
- .table-wrap{  
-  width:100%!important;  
-  overflow:visible!important;  
- }  
-  
- table{  
-  width:100%!important;  
-  min-width:0!important;  
-  max-width:100%!important;  
-  table-layout:fixed!important;  
- }  
-  
- th,  
- td{  
-  height:24px!important;  
-  padding:3px 4px!important;  
-  font-size:8px!important;  
- }  
-  
- th:nth-child(1),  
- td.no{  
-  width:7%!important;  
-  text-align:center!important;  
- }  
-  
- th:nth-child(2),  
- td.item{  
-  width:51%!important;  
- }  
-  
- th:nth-child(3),  
- td.qty{  
-  width:9%!important;  
-  text-align:center!important;  
- }  
-  
- th:nth-child(4),  
- td.rate{  
-  width:11%!important;  
-  text-align:center!important;  
- }  
-  
- th:nth-child(5),  
- td.amount{  
-  width:14%!important;  
-  text-align:center!important;  
-  white-space:nowrap!important;  
- }  
-  
- th:nth-child(6),  
- td.ps{  
-  width:8%!important;  
-  text-align:center!important;  
- }  
-  
- .cell{  
-  font-size:8px!important;  
-  padding:2px!important;  
-  text-align:center!important;  
- }  
-  
- .words{  
-  padding:5px 8px!important;  
-  min-height:20px!important;  
-  font-size:8px!important;  
- }  
-  
-}  
-  
-  
-/* ================= PDF CAPTURE ================= */  
-  
-.pdf-capture{  
- position:fixed;  
- left:0;  
- top:0;  
- width:794px;  
- background:#fff;  
- padding:30px;  
- z-index:999999;  
-}  
-  
-.pdf-capture .card{  
- width:734px!important;  
- margin:0!important;  
- border:1px solid #e2e8f0!important;  
- border-radius:0!important;  
- overflow:visible!important;  
-}  
-  
-.pdf-capture table{  
- width:100%!important;  
- min-width:0!important;  
- table-layout:fixed!important;  
-}  
-  
-.pdf-capture th,  
-.pdf-capture td{  
- font-size:11px!important;  
- padding:5px 6px!important;  
- height:30px!important;  
-}  
-  
-.pdf-capture th:nth-child(1),  
-.pdf-capture td.no{  
- width:7%!important;  
- text-align:center!important;  
-}  
-  
-.pdf-capture th:nth-child(2),  
-.pdf-capture td.item{  
- width:51%!important;  
- text-align:left!important;  
-}  
-  
-.pdf-capture th:nth-child(3),  
-.pdf-capture td.qty{  
- width:9%!important;  
- text-align:center!important;  
-}  
-  
-.pdf-capture th:nth-child(4),  
-.pdf-capture td.rate{  
- width:11%!important;  
- text-align:center!important;  
-}  
-  
-.pdf-capture th:nth-child(5),  
-.pdf-capture td.amount{  
- width:14%!important;  
- text-align:center!important;  
-}  
-  
-.pdf-capture th:nth-child(6),  
-.pdf-capture td.ps{  
- width:8%!important;  
- text-align:center!important;  
-}  
-  
-</style>  </head>  <body>  <div class="app">  <!-- ================= SIDEBAR ================= -->  <aside class="sidebar">   <div class="logo">    <h2>TTC Billing</h2>    <p>  
-   Professional Purchase Management  
-  </p>   </div>   <div class="nav-title">  
-  BILLING  
- </div>  <button
-class="nav-btn active"
-data-page="daily"
-onclick="showPage('daily')"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f172a">
+<title>TTC Professional Billing App</title>
 
-> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<span class="nav-icon">▦</span>
-Dashboard
-</button>
+<style>
+*{box-sizing:border-box}
 
-<button
-class="nav-btn"
-data-page="Vegetable"
-onclick="showPage('Vegetable')"
+:root{
+ --nav:#0f172a;
+ --blue:#2563eb;
+ --blue2:#1d4ed8;
+ --green:#16a34a;
+ --bg:#f4f7fb;
+ --border:#e2e8f0;
+ --text:#172033;
+ --muted:#64748b;
+}
 
-> 
+html,body{
+ margin:0;
+ padding:0;
+ width:100%;
+ min-height:100%;
+}
 
-<span class="nav-icon">🥬</span>
-Vegetable
-</button>
+body{
+ background:var(--bg);
+ color:var(--text);
+ font-family:Arial,Helvetica,sans-serif;
+ overflow-x:hidden;
+}
 
-<button
-class="nav-btn"
-data-page="Grocery"
-onclick="showPage('Grocery')"
+button,input,select{font-family:inherit}
+button{cursor:pointer}
 
-> 
+.app{min-height:100vh}
 
-<span class="nav-icon">🛒</span>
-Grocery
-</button>
+/* SIDEBAR */
 
-<button
-class="nav-btn"
-data-page="Dairy"
-onclick="showPage('Dairy')"
+.sidebar{
+ position:fixed;
+ left:0;
+ top:0;
+ bottom:0;
+ width:245px;
+ background:linear-gradient(180deg,#0f172a,#111827);
+ color:#fff;
+ padding:20px 14px;
+ z-index:100;
+}
 
-> 
+.logo{
+ padding:5px 10px 20px;
+ border-bottom:1px solid #263247;
+ margin-bottom:20px;
+}
 
-<span class="nav-icon">🥛</span>
-Dairy
-</button>
+.logo h2{
+ margin:0;
+ font-size:21px;
+}
 
-<button
-class="nav-btn"
-data-page="Housekeeping"
-onclick="showPage('Housekeeping')"
+.logo p{
+ margin:5px 0 0;
+ color:#94a3b8;
+ font-size:11px;
+}
 
-> 
+.nav-title{
+ color:#64748b;
+ font-size:10px;
+ font-weight:bold;
+ padding:0 10px 8px;
+}
 
-<span class="nav-icon">🧹</span>
-Housekeeping
-</button>
+.nav-btn{
+ width:100%;
+ border:0;
+ background:transparent;
+ color:#cbd5e1;
+ text-align:left;
+ padding:12px;
+ border-radius:9px;
+ margin:2px 0;
+ font-size:13px;
+}
 
-</aside>  <!-- ================= MAIN ================= -->  <main class="main">  <header class="topbar">   <div class="top-title">    <h1 id="pageTitle">  
-   Daily Dashboard  
-  </h1>    <p id="selectedDate">  
-   01.10.2026  
-  </p>   </div>  <button
-class="btn"
-id="editBtn"
-onclick="toggleEdit()"
+.nav-btn:hover{
+ background:#1e293b;
+ color:#fff;
+}
 
-> 
+.nav-btn.active{
+ background:var(--blue);
+ color:#fff;
+}
 
-✎ Edit
-</button>
+.nav-icon{
+ width:27px;
+ display:inline-block;
+}
 
-<button
-class="btn"
-onclick="saveData()"
+/* MAIN */
 
-> 
+.main{
+ margin-left:245px;
+ min-height:100vh;
+ width:calc(100% - 245px);
+}
 
-💾 Save
-</button>
+/* TOPBAR */
 
-<button
-class="btn btn-download"
-id="downloadBtn"
-onclick="downloadPDF()"
-style="display:none"
+.topbar{
+ min-height:70px;
+ background:#fff;
+ border-bottom:1px solid var(--border);
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:10px 25px;
+ position:sticky;
+ top:0;
+ z-index:50;
+}
 
-> 
+.top-title{
+ flex:1;
+ min-width:0;
+}
 
-📥 Download PDF
-</button>
+.top-title h1{
+ margin:0;
+ font-size:19px;
+}
 
-<button
-class="btn btn-primary"
-onclick="window.print()"
+.top-title p{
+ margin:4px 0 0;
+ color:var(--muted);
+ font-size:10px;
+}
 
-> 
+.btn{
+ border:1px solid var(--border);
+ background:#fff;
+ color:var(--text);
+ padding:9px 13px;
+ border-radius:8px;
+ font-size:12px;
+ font-weight:bold;
+ white-space:nowrap;
+}
 
-🖨 Print
-</button>
+.btn-primary{
+ background:var(--blue);
+ color:#fff;
+ border-color:var(--blue);
+}
 
-</header>  <section class="content">  <div class="filter">  <label>DATE</label>
+.btn-download{
+ background:var(--green);
+ color:#fff;
+ border-color:var(--green);
+}
 
-<select
-id="dateSelect"
-onchange="changeDate(this.value)"
+/* CONTENT */
 
-> </select>  
+.content{
+ max-width:1450px;
+ margin:auto;
+ padding:24px;
+ width:100%;
+}
 
-<select
-id="billSelect"
-onchange="changeBill(this.value)"
+/* FILTER */
 
-> </select>  
+.filter{
+ background:#fff;
+ border:1px solid var(--border);
+ border-radius:12px;
+ padding:12px;
+ display:flex;
+ gap:10px;
+ align-items:center;
+ margin-bottom:18px;
+}
+
+.filter label{
+ color:var(--muted);
+ font-size:10px;
+ font-weight:bold;
+}
+
+.filter select,
+.filter input{
+ border:1px solid var(--border);
+ border-radius:8px;
+ padding:9px;
+ outline:none;
+ font-size:12px;
+}
+
+.search{
+ min-width:240px;
+}
+
+.status{
+ margin-left:auto;
+ color:var(--muted);
+ font-size:10px;
+}
+
+/* KPI */
+
+.kpis{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:14px;
+ margin-bottom:18px;
+}
+
+.kpi{
+ background:#fff;
+ border:1px solid var(--border);
+ border-radius:12px;
+ padding:16px;
+}
+
+.kpi small{
+ color:var(--muted);
+ font-weight:bold;
+ font-size:10px;
+}
+
+.kpi strong{
+ display:block;
+ font-size:21px;
+ margin-top:7px;
+}
+
+/* CARD */
+
+.card{
+ background:#fff;
+ border:1px solid var(--border);
+ border-radius:14px;
+ overflow:hidden;
+ margin-bottom:18px;
+ width:100%;
+}
+
+.card-head{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:15px 18px;
+ border-bottom:1px solid var(--border);
+}
+
+.card-head h2{
+ flex:1;
+ margin:0;
+ font-size:16px;
+}
+
+.badge{
+ background:#eef2ff;
+ color:#3730a3;
+ padding:5px 9px;
+ border-radius:20px;
+ font-size:10px;
+ font-weight:bold;
+}
+
+/* UPLOAD */
+
+.upload-bill-btn{
+ border:1px solid #dbeafe;
+ background:#eff6ff;
+ color:#1d4ed8;
+ padding:7px 10px;
+ border-radius:8px;
+ font-size:10px;
+ font-weight:bold;
+ white-space:nowrap;
+}
+
+.upload-bill-btn:hover{
+ background:#dbeafe;
+}
+
+#billPhotoInput{
+ display:none;
+}
+
+/* BILL HEADER */
+
+.bill-head{
+ padding:18px;
+ text-align:center;
+ border-bottom:1px solid var(--border);
+}
+
+.bill-head-top{
+ display:flex;
+ justify-content:space-between;
+ font-size:10px;
+ color:var(--muted);
+ font-weight:bold;
+}
+
+.bill-head h3{
+ margin:7px 0 3px;
+ font-size:20px;
+}
+
+.bill-head p{
+ margin:3px;
+ font-size:10px;
+ font-weight:bold;
+ color:#475569;
+}
+
+.bill-meta{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ border-bottom:1px solid var(--border);
+}
+
+.bill-meta div{
+ padding:11px 14px;
+ font-size:11px;
+ font-weight:bold;
+}
+
+.bill-meta div:last-child{
+ text-align:right;
+ border-left:1px solid var(--border);
+}
+
+.customer{
+ padding:10px 14px;
+ border-bottom:1px solid var(--border);
+ font-size:12px;
+ font-weight:bold;
+}
+
+.customer input{
+ border:0;
+ border-bottom:1px solid #94a3b8;
+ outline:0;
+ padding:4px;
+}
+
+/* TABLE */
+
+.table-wrap{
+ width:100%;
+ overflow:auto;
+}
+
+table{
+ width:100%;
+ min-width:900px;
+ border-collapse:collapse;
+ table-layout:fixed;
+}
+
+th,td{
+ border:1px solid #cbd5e1;
+ padding:7px 8px;
+ height:36px;
+ font-size:12px;
+}
+
+th{
+ background:#f8fafc;
+ color:#475569;
+ text-align:center;
+ font-size:11px;
+}
+
+th:nth-child(1),td.no{
+ width:7%;
+ text-align:center!important;
+}
+
+th:nth-child(2),td.item{
+ width:51%;
+ text-align:left;
+}
+
+th:nth-child(3),td.qty{
+ width:9%;
+ text-align:center!important;
+}
+
+th:nth-child(4),td.rate{
+ width:11%;
+ text-align:center!important;
+}
+
+th:nth-child(5),td.amount{
+ width:14%;
+ text-align:center!important;
+ white-space:nowrap;
+}
+
+th:nth-child(6),td.ps{
+ width:8%;
+ text-align:center!important;
+ white-space:nowrap;
+}
+
+.cell{
+ width:100%;
+ border:0;
+ background:transparent;
+ outline:none;
+ padding:4px;
+ font-size:12px;
+ text-align:center;
+}
+
+td.item .cell{
+ text-align:left;
+}
+
+.editing .cell{
+ background:#fff4b8;
+ border:1px dashed #c4a600;
+ border-radius:4px;
+}
+
+.total-row td{
+ background:#f8fafc;
+ font-weight:900;
+}
+
+/* WORDS */
+
+.words{
+ padding:14px;
+ font-size:11px;
+ color:#475569;
+ min-height:50px;
+}
+
+.words strong{
+ margin-left:5px;
+ color:#172033;
+ font-weight:700;
+ text-transform:capitalize;
+}
+
+/* AI MODAL */
+
+.ocr-overlay{
+ position:fixed;
+ inset:0;
+ background:rgba(15,23,42,.72);
+ z-index:1000;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+}
+
+.ocr-overlay.show{
+ display:flex;
+}
+
+.ocr-modal{
+ width:min(1000px,100%);
+ max-height:92vh;
+ overflow:auto;
+ background:#fff;
+ border-radius:16px;
+ box-shadow:0 25px 70px rgba(0,0,0,.3);
+}
+
+.ocr-header{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:16px;
+ border-bottom:1px solid var(--border);
+ position:sticky;
+ top:0;
+ background:#fff;
+ z-index:2;
+}
+
+.ocr-header h3{
+ flex:1;
+ margin:0;
+ font-size:16px;
+}
+
+.ocr-close{
+ width:34px;
+ height:34px;
+ border:0;
+ border-radius:50%;
+ background:#f1f5f9;
+ font-size:18px;
+}
+
+.ocr-progress{
+ padding:15px 16px;
+ background:#f8fafc;
+ border-bottom:1px solid var(--border);
+}
+
+.ocr-progress-text{
+ font-size:11px;
+ color:var(--muted);
+ margin-bottom:8px;
+}
+
+.ocr-progress-bar{
+ height:7px;
+ background:#e2e8f0;
+ border-radius:10px;
+ overflow:hidden;
+}
+
+.ocr-progress-fill{
+ height:100%;
+ width:0%;
+ background:#2563eb;
+ transition:.2s;
+}
+
+.ocr-body{
+ padding:16px;
+}
+
+.ocr-info{
+ background:#eff6ff;
+ border:1px solid #bfdbfe;
+ color:#1e40af;
+ border-radius:10px;
+ padding:10px;
+ font-size:11px;
+ margin-bottom:12px;
+}
+
+.ocr-table-wrap{
+ overflow:auto;
+ border:1px solid var(--border);
+ border-radius:10px;
+}
+
+.ocr-table{
+ width:100%;
+ min-width:760px;
+ border-collapse:collapse;
+}
+
+.ocr-table th,
+.ocr-table td{
+ height:44px;
+ padding:5px;
+ border:1px solid var(--border);
+ font-size:11px;
+}
+
+.ocr-table th{
+ background:#f8fafc;
+}
+
+.ocr-table input{
+ width:100%;
+ border:1px solid #e2e8f0;
+ border-radius:5px;
+ padding:6px;
+ outline:none;
+}
+
+.ocr-confidence{
+ font-size:8px;
+ color:#94a3b8;
+ margin-top:2px;
+}
+
+.ocr-footer{
+ display:flex;
+ justify-content:flex-end;
+ gap:8px;
+ padding:14px 16px;
+ border-top:1px solid var(--border);
+ position:sticky;
+ bottom:0;
+ background:#fff;
+}
+
+.ocr-apply{
+ background:#16a34a;
+ color:#fff;
+ border:0;
+ border-radius:8px;
+ padding:10px 15px;
+ font-weight:bold;
+}
+
+.ocr-cancel{
+ background:#fff;
+ color:#334155;
+ border:1px solid var(--border);
+ border-radius:8px;
+ padding:10px 15px;
+ font-weight:bold;
+}
+
+/* DASHBOARD */
+
+.daily-grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+ padding:16px;
+}
+
+.daily-item{
+ border:1px solid var(--border);
+ border-radius:10px;
+ padding:15px;
+ display:flex;
+ justify-content:space-between;
+}
+
+.daily-item span{
+ color:var(--muted);
+ font-size:12px;
+}
+
+.grand{
+ margin:0 16px 16px;
+ background:#0f172a;
+ color:#fff;
+ padding:17px;
+ border-radius:10px;
+ display:flex;
+ justify-content:space-between;
+ font-weight:bold;
+}
+
+.mobile-nav{
+ display:none;
+}
+
+/* TABLET */
+
+@media(max-width:900px){
+
+ .sidebar{
+  width:210px;
+ }
+
+ .main{
+  margin-left:210px;
+  width:calc(100% - 210px);
+ }
+
+ .kpis{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+ body{
+  padding-bottom:72px;
+  overflow-x:hidden;
+ }
+
+ .sidebar{
+  display:none;
+ }
+
+ .main{
+  margin-left:0;
+  width:100%;
+  min-width:0;
+ }
+
+ .topbar{
+  min-height:70px;
+  padding:9px 8px;
+  gap:5px;
+  flex-wrap:wrap;
+ }
+
+ .top-title{
+  width:100%;
+  flex:1 1 100%;
+  order:1;
+ }
+
+ .top-title h1{
+  font-size:16px;
+  line-height:20px;
+ }
+
+ .top-title p{
+  font-size:9px;
+ }
+
+ .topbar .btn{
+  padding:7px 8px;
+  font-size:9px;
+ }
+
+ #editBtn{order:2}
+ #editBtn+.btn{order:3}
+ #downloadBtn{order:4}
+ #downloadBtn+.btn{order:5}
+
+ .content{
+  width:100%;
+  max-width:none;
+  padding:8px;
+  overflow:hidden;
+ }
+
+ .filter{
+  position:sticky;
+  top:0;
+  z-index:40;
+  width:100%;
+  padding:9px;
+  gap:7px;
+  display:grid;
+  grid-template-columns:72px 1fr 1fr;
+  margin-bottom:10px;
+ }
+
+ .filter select{
+  width:100%;
+  min-width:0;
+  padding:9px 7px;
+  font-size:11px;
+ }
+
+ .search{
+  grid-column:1/-1;
+  width:100%;
+  min-width:0;
+  padding:9px!important;
+  font-size:11px!important;
+ }
+
+ .status{
+  display:none;
+ }
+
+ .kpis{
+  grid-template-columns:repeat(2,1fr);
+  gap:7px;
+ }
+
+ .kpi{
+  padding:10px;
+ }
+
+ .kpi small{
+  font-size:8px;
+ }
+
+ .kpi strong{
+  font-size:15px;
+ }
+
+ .card{
+  width:100%;
+  min-width:0;
+  margin-bottom:10px;
+  border-radius:10px;
+ }
+
+ .card-head{
+  padding:10px;
+  gap:5px;
+ }
+
+ .card-head h2{
+  font-size:14px;
+ }
+
+ .badge{
+  font-size:8px;
+  padding:4px 6px;
+ }
+
+ .upload-bill-btn{
+  font-size:8px;
+  padding:6px 7px;
+ }
+
+ .bill-head{
+  padding:10px 7px;
+ }
+
+ .bill-head-top{
+  font-size:8px;
+ }
+
+ .bill-head h3{
+  font-size:14px;
+  line-height:17px;
+ }
+
+ .bill-head p{
+  font-size:8px;
+ }
+
+ .bill-meta div{
+  padding:8px 7px;
+  font-size:9px;
+ }
+
+ .customer{
+  padding:8px 7px;
+  font-size:10px;
+ }
+
+ .table-wrap{
+  width:100%;
+  overflow:hidden;
+ }
+
+ table{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  table-layout:fixed!important;
+ }
+
+ th,td{
+  height:30px!important;
+  padding:3px 2px!important;
+  font-size:9px!important;
+  line-height:1!important;
+  overflow:hidden;
+ }
+
+ th:nth-child(1),td.no{
+  width:8%!important;
+ }
+
+ th:nth-child(2),td.item{
+  width:39%!important;
+ }
+
+ th:nth-child(3),td.qty{
+  width:13%!important;
+ }
+
+ th:nth-child(4),td.rate{
+  width:14%!important;
+ }
+
+ th:nth-child(5),td.amount{
+  width:18%!important;
+ }
+
+ th:nth-child(6),td.ps{
+  width:8%!important;
+ }
+
+ th{
+  font-size:8px!important;
+ }
+
+ .cell{
+  width:100%!important;
+  min-width:0!important;
+  padding:2px 1px!important;
+  font-size:9px!important;
+ }
+
+ .daily-grid{
+  grid-template-columns:1fr;
+  gap:7px;
+  padding:8px;
+ }
+
+ .daily-item{
+  padding:10px;
+ }
+
+ .grand{
+  margin:0 8px 8px;
+  padding:12px;
+  font-size:11px;
+ }
+
+ .mobile-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:72px;
+  background:#fff;
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  z-index:200;
+ }
+
+ .mobile-nav button{
+  border:0;
+  background:#fff;
+  color:#64748b;
+  font-size:9px;
+  font-weight:bold;
+ }
+
+ .mobile-nav button span{
+  display:block;
+  font-size:20px;
+  margin-bottom:3px;
+ }
+
+ .mobile-nav button.active{
+  color:var(--blue);
+ }
+
+ .ocr-overlay{
+  padding:7px;
+ }
+
+ .ocr-modal{
+  max-height:94vh;
+  border-radius:12px;
+ }
+
+ .ocr-header{
+  padding:12px;
+ }
+
+ .ocr-body{
+  padding:10px;
+ }
+
+ .ocr-footer{
+  padding:10px;
+ }
+
+}
+
+/* PRINT */
+
+@page{
+ size:A4 portrait;
+ margin:8mm;
+}
+
+@media print{
+
+ html,body{
+  width:210mm;
+  min-height:297mm;
+  margin:0;
+  padding:0;
+  background:#fff;
+ }
+
+ .sidebar,
+ .topbar,
+ .filter,
+ .kpis,
+ .mobile-nav,
+ .card-head,
+ .upload-bill-btn{
+  display:none!important;
+ }
+
+ .main{
+  margin:0!important;
+  width:100%!important;
+ }
+
+ .content{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+ }
+
+ .card{
+  width:100%!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:visible!important;
+ }
+
+ table{
+  width:100%!important;
+  min-width:0!important;
+ }
+
+ th,td{
+  height:24px!important;
+  padding:3px 4px!important;
+  font-size:8px!important;
+ }
+
+}
+
+/* PDF */
+
+.pdf-capture{
+ position:fixed;
+ left:0;
+ top:0;
+ width:794px;
+ background:#fff;
+ padding:30px;
+ z-index:999999;
+}
+
+.pdf-capture .card{
+ width:734px!important;
+ margin:0!important;
+ border:1px solid #e2e8f0!important;
+ border-radius:0!important;
+ overflow:visible!important;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+ <div class="logo">
+  <h2>TTC Billing</h2>
+  <p>Professional Purchase Management</p>
+ </div>
+
+ <div class="nav-title">
+  BILLING
+ </div>
+
+ <button class="nav-btn active"
+  data-page="daily"
+  onclick="showPage('daily')">
+  <span class="nav-icon">▦</span>
+  Dashboard
+ </button>
+
+ <button class="nav-btn"
+  data-page="Vegetable"
+  onclick="showPage('Vegetable')">
+  <span class="nav-icon">🥬</span>
+  Vegetable
+ </button>
+
+ <button class="nav-btn"
+  data-page="Grocery"
+  onclick="showPage('Grocery')">
+  <span class="nav-icon">🛒</span>
+  Grocery
+ </button>
+
+ <button class="nav-btn"
+  data-page="Dairy"
+  onclick="showPage('Dairy')">
+  <span class="nav-icon">🥛</span>
+  Dairy
+ </button>
+
+ <button class="nav-btn"
+  data-page="Housekeeping"
+  onclick="showPage('Housekeeping')">
+  <span class="nav-icon">🧹</span>
+  Housekeeping
+ </button>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+ <div class="top-title">
+  <h1 id="pageTitle">Daily Dashboard</h1>
+  <p id="selectedDate">01.10.2026</p>
+ </div>
+
+ <button class="btn"
+  id="editBtn"
+  onclick="toggleEdit()">
+  ✎ Edit
+ </button>
+
+ <button class="btn"
+  onclick="saveData()">
+  💾 Save
+ </button>
+
+ <button class="btn btn-download"
+  id="downloadBtn"
+  onclick="downloadPDF()"
+  style="display:none">
+  📥 Download PDF
+ </button>
+
+ <button class="btn btn-primary"
+  onclick="window.print()">
+  🖨 Print
+ </button>
+
+</header>
+
+<section class="content">
+
+<div class="filter">
+
+ <label>DATE</label>
+
+ <select
+  id="dateSelect"
+  onchange="changeDate(this.value)">
+ </select>
+
+ <select
+  id="billSelect"
+  onchange="changeBill(this.value)">
+ </select>
+
+ <input
+  id="search"
+  class="search"
+  placeholder="Search item..."
+  oninput="render()">
+
+ <span
+  id="status"
+  class="status">
+  Ready
+ </span>
+
+</div>
+
+<div id="content"></div>
+
+</section>
+
+</main>
+
+</div>
+
+<!-- MOBILE NAV -->
+
+<nav class="mobile-nav">
+
+ <button
+  data-page="daily"
+  class="active"
+  onclick="showPage('daily')">
+  <span>▦</span>
+  Dashboard
+ </button>
+
+ <button
+  data-page="Vegetable"
+  onclick="showPage('Vegetable')">
+  <span>🥬</span>
+  Veg
+ </button>
+
+ <button
+  data-page="Grocery"
+  onclick="showPage('Grocery')">
+  <span>🛒</span>
+  Grocery
+ </button>
+
+ <button
+  data-page="Dairy"
+  onclick="showPage('Dairy')">
+  <span>🥛</span>
+  Dairy
+ </button>
+
+ <button
+  data-page="Housekeeping"
+  onclick="showPage('Housekeeping')">
+  <span>🧹</span>
+  House
+ </button>
+
+</nav>
+
+<!-- AI VISION MODAL -->
+
+<div
+ id="ocrOverlay"
+ class="ocr-overlay">
+
+ <div class="ocr-modal">
+
+  <div class="ocr-header">
+
+   <h3>
+    📷 AI Vision Handwriting Bill Reading
+   </h3>
+
+   <button
+    class="ocr-close"
+    onclick="closeOCR()">
+    ×
+   </button>
+
+  </div>
+
+  <div
+   class="ocr-progress"
+   id="ocrProgress"
+   style="display:none">
+
+   <div
+    class="ocr-progress-text"
+    id="ocrProgressText">
+    Reading bill...
+   </div>
+
+   <div class="ocr-progress-bar">
+
+    <div
+     class="ocr-progress-fill"
+     id="ocrProgressFill">
+    </div>
+
+   </div>
+
+  </div>
+
+  <div class="ocr-body">
+
+   <div class="ocr-info">
+
+    <b>
+     🤖 AI Vision Bill Reader
+    </b>
+
+    <br><br>
+
+    Handwritten bill-ல் இருந்து
+
+    <b>Item</b>,
+    <b>Qty</b>,
+    <b>Rate</b>,
+    <b>Amount</b>
+
+    தனித்தனியாக படிக்கப்படும்.
+
+    <br><br>
+
+    குறிப்பாக handwritten
+
+    <b>Rate</b>
+
+    மற்றும்
+
+    <b>Amount</b>
+
+    column-ஐ AI Vision மூலம் படிக்கும்.
+
+    <br><br>
+
+    <b>Apply செய்வதற்கு முன் values edit/check செய்யலாம்.</b>
+
+   </div>
+
+   <div id="ocrResult"></div>
+
+  </div>
+
+  <div class="ocr-footer">
+
+   <button
+    class="ocr-cancel"
+    onclick="closeOCR()">
+    Cancel
+   </button>
+
+   <button
+    class="ocr-apply"
+    id="ocrApplyBtn"
+    onclick="applyOCRData()"
+    disabled>
+    ✓ Apply to Bill
+   </button>
+
+  </div>
+
+ </div>
+
+</div>
+
+<!-- CAMERA INPUT -->
 
 <input
-id="search"
-class="search"
-placeholder="Search item..."
-oninput="render()"
+ type="file"
+ id="billPhotoInput"
+ accept="image/*"
+ capture="environment"
+ onchange="handleBillPhoto(this.files[0])">
 
-> 
+<script>
 
-<span
-id="status"
-class="status"
+/* =====================================================
+   BASIC DATA
+===================================================== */
 
-> 
+const DATES=[
 
-Ready
-</span>
+ "01.10.2026",
+ "02.10.2026",
+ "03.10.2026",
+ "04.10.2026",
+ "05.10.2026",
+ "06.10.2026",
+ "07.10.2026",
+ "08.10.2026",
+ "09.10.2026",
+ "10.10.2026",
+ "11.10.2026",
+ "12.10.2026",
+ "13.10.2026",
+ "14.10.2026",
+ "15.10.2026",
+ "16.10.2026",
+ "17.10.2026",
+ "18.10.2026",
+ "19.10.2026",
+ "20.10.2026",
+ "21.10.2026",
+ "22.10.2026",
+ "23.10.2026",
+ "24.10.2026",
+ "25.10.2026",
+ "26.10.2026",
+ "27.10.2026",
+ "28.10.2026",
+ "29.10.2026",
+ "30.10.2026"
 
-</div>  <div id="content"></div>  </section>  </main>  </div>  <!-- ================= MOBILE NAV ================= -->  <nav class="mobile-nav">  <button
-data-page="daily"
-class="active"
-onclick="showPage('daily')"
+];
 
-> 
+const BILL_COUNT=15;
 
-<span>▦</span>
-Dashboard
-</button>
+const ITEMS={
 
-<button
-data-page="Vegetable"
-onclick="showPage('Vegetable')"
+ Vegetable:20,
+ Grocery:15,
+ Dairy:15,
+ Housekeeping:15
 
-> 
+};
 
-<span>🥬</span>
-Veg
-</button>
+const BUSINESS={
 
-<button
-data-page="Grocery"
-onclick="showPage('Grocery')"
+ proprietor:"ANANDH KUMAR V",
 
-> 
+ phone:"74183 52068",
 
-<span>🛒</span>
-Grocery
-</button>
+ supplier:
+ "DRAOWPATHAMMA VEGETABLE SUPPLIER",
 
-<button
-data-page="Dairy"
-onclick="showPage('Dairy')"
+ tagline:
+ "FRESH & QUALITY PRODUCE DAILY",
 
-> 
+ address:
+ "Choodagondapalli village, Achettipalli post, Hosur Tk"
 
-<span>🥛</span>
-Dairy
-</button>
+};
 
-<button
-data-page="Housekeeping"
-onclick="showPage('Housekeeping')"
 
-> 
+/* =====================================================
+   STATE
+===================================================== */
 
-<span>🧹</span>
-House
-</button>
+let currentPage="daily";
 
-</nav>  <!-- ================= OCR MODAL ================= -->  <div  
- id="ocrOverlay"  
- class="ocr-overlay"  
->   <div class="ocr-modal">    <div class="ocr-header">     <h3>  
-    📷 Smart Handwriting Bill Reading  
-   </h3>  <button
-class="ocr-close"
-onclick="closeOCR()"
+let currentDate=0;
 
-> 
+let currentBill=0;
 
-×
+let editMode=false;
 
-   </button>    </div>    <div  
-   class="ocr-progress"  
-   id="ocrProgress"  
-   style="display:none"  
-  >     <div  
-    class="ocr-progress-text"  
-    id="ocrProgressText"  
-   >  
-    Reading bill...  
-   </div>     <div class="ocr-progress-bar">  <div  
- class="ocr-progress-fill"  
- id="ocrProgressFill"  
-></div>
+let data=loadData();
 
-   </div>    </div>    <div class="ocr-body">     <div class="ocr-info">  <b>  
- Smart Handwriting OCR  
-</b>  
+let ocrRows=[];
 
-<br>  
 
-இந்த bill format-ல்  
-Item, Qty, Rate, Amount  
-தனித்தனி column-ஆக read செய்யப்படும்.  
+/* =====================================================
+   CREATE DATA
+===================================================== */
 
-<br>  
+function createEmptyData(){
 
-Photo-வில் எழுதப்பட்ட  
-<b>Amount</b>  
-value-ஐயே வைத்துக்கொள்ளும்.  
+ const result={};
 
-<br>  
+ Object.keys(ITEMS).forEach(category=>{
 
-Apply செய்வதற்கு முன்  
-எல்லா values-ஐ edit/check செய்யலாம்.
+  result[category]=[];
 
-   </div>     <div  
-    id="ocrResult"  
-   ></div>    </div>    <div class="ocr-footer">  <button
-class="ocr-cancel"
-onclick="closeOCR()"
+  for(
+   let bill=0;
+   bill<BILL_COUNT;
+   bill++
+  ){
 
-> 
+   const days=[];
 
-Cancel
+   for(
+    let day=0;
+    day<DATES.length;
+    day++
+   ){
 
-   </button>  <button
-class="ocr-apply"
-id="ocrApplyBtn"
-onclick="applyOCRData()"
-disabled
+    const rows=[];
 
-> 
+    for(
+     let i=0;
+     i<ITEMS[category];
+     i++
+    ){
 
-✓ Apply to Bill
+     rows.push({
 
-   </button>    </div>   </div>  </div>  <!-- Hidden photo input -->  <input
-type="file"
-id="billPhotoInput"
-accept="image/*"
-capture="environment"
-onchange="handleBillPhoto(this.files[0])"
+      name:"",
+      quality:"",
+      qty:"",
+      rate:"",
+      amount:0
 
-> 
+     });
 
-<script>  
-  
-  
-/* =====================================================  
-   BASIC DATA  
-===================================================== */  
-  
-const DATES=[  
-  
- "01.10.2026",  
- "02.10.2026",  
- "03.10.2026",  
- "04.10.2026",  
- "05.10.2026",  
- "06.10.2026",  
- "07.10.2026",  
- "08.10.2026",  
- "09.10.2026",  
- "10.10.2026",  
- "11.10.2026",  
- "12.10.2026",  
- "13.10.2026",  
- "14.10.2026",  
- "15.10.2026",  
- "16.10.2026",  
- "17.10.2026",  
- "18.10.2026",  
- "19.10.2026",  
- "20.10.2026",  
- "21.10.2026",  
- "22.10.2026",  
- "23.10.2026",  
- "24.10.2026",  
- "25.10.2026",  
- "26.10.2026",  
- "27.10.2026",  
- "28.10.2026",  
- "29.10.2026",  
- "30.10.2026"  
-  
-];  
-  
-  
-const BILL_COUNT=15;  
-  
-  
-const ITEMS={  
-  
- Vegetable:20,  
- Grocery:15,  
- Dairy:15,  
- Housekeeping:15  
-  
-};  
-  
-  
-const BUSINESS={  
-  
- proprietor:"ANANDH KUMAR V",  
-  
- phone:"74183 52068",  
-  
- supplier:  
- "DRAOWPATHAMMA VEGETABLE SUPPLIER",  
-  
- tagline:  
- "FRESH & QUALITY PRODUCE DAILY",  
-  
- address:  
- "Choodagondapalli village, Achettipalli post, Hosur Tk"  
-  
-};  
-  
-  
-/* =====================================================  
-   STATE  
-===================================================== */  
-  
-let currentPage="daily";  
-  
-let currentDate=0;  
-  
-let currentBill=0;  
-  
-let editMode=false;  
-  
-let data=loadData();  
-  
-let ocrRows=[];  
-  
-  
-/* =====================================================  
-   CREATE DATA  
-===================================================== */  
-  
-function createEmptyData(){  
-  
- const result={};  
-  
-  
- Object.keys(ITEMS).forEach(category=>{  
-  
-  result[category]=[];  
-  
-  
-  for(  
-   let bill=0;  
-   bill<BILL_COUNT;  
-   bill++  
-  ){  
-  
-   const days=[];  
-  
-  
-   for(  
-    let day=0;  
-    day<DATES.length;  
-    day++  
-   ){  
-  
-    const rows=[];  
-  
-  
-    for(  
-     let i=0;  
-     i<ITEMS[category];  
-     i++  
-    ){  
-  
-     rows.push({  
-  
-      name:"",  
-      quality:"",  
-      qty:"",  
-      rate:"",  
-      amount:0  
-  
-     });  
-  
-    }  
-  
-  
-    days.push({  
-  
-     date:DATES[day],  
-  
-     billNo:  
-      String(bill+1).padStart(2,"0"),  
-  
-     customer:"",  
-  
-     words:"",  
-  
-     items:rows  
-  
-    });  
-  
-   }  
-  
-  
-   result[category].push({  
-  
-    billNo:  
-     String(bill+1).padStart(2,"0"),  
-  
-    days  
-  
-   });  
-  
-  }  
-  
- });  
-  
-  
- return result;  
-  
-}  
-  
-  
-/* =====================================================  
-   LOAD  
-===================================================== */  
-  
-function loadData(){  
-  
- try{  
-  
-  const saved=  
-   localStorage.getItem(  
-    "TTC_BILLING_30_DAY"  
-   );  
-  
-  
-  if(saved){  
-  
-   const parsed=JSON.parse(saved);  
-  
-   Object.keys(ITEMS).forEach(  
-    category=>{  
-  
-     if(!parsed[category]){  
-  
-      parsed[category]=  
-       createEmptyData()[category];  
-  
-     }  
-  
-    }  
-   );  
-  
-   return parsed;  
-  
-  }  
-  
- }  
- catch(e){  
-  
-  console.log(e);  
-  
- }  
-  
-  
- return createEmptyData();  
-  
-}  
-  
-  
-/* =====================================================  
-   SAVE  
-===================================================== */  
-  
-function saveData(){  
-  
- localStorage.setItem(  
-  "TTC_BILLING_30_DAY",  
-  JSON.stringify(data)  
- );  
-  
-  
- document.getElementById(  
-  "status"  
- ).textContent=  
-  "Saved ✓";  
-  
-}  
-  
-  
-/* =====================================================  
-   SAVE SILENT  
-===================================================== */  
-  
-function saveSilent(){  
-  
- localStorage.setItem(  
-  "TTC_BILLING_30_DAY",  
-  JSON.stringify(data)  
- );  
-  
-}  
-  
-  
-/* =====================================================  
-   NUMBER  
-===================================================== */  
-  
-function num(value){  
-  
- const n=parseFloat(value);  
-  
- return Number.isFinite(n)  
-  ?n  
-  :0;  
-  
-}  
-  
-  
-/* =====================================================  
-   MONEY  
-===================================================== */  
-  
-function money(value){  
-  
- return num(value).toLocaleString(  
-  "en-IN",  
-  {  
-   minimumFractionDigits:2,  
-   maximumFractionDigits:2  
-  }  
- );  
-  
-}  
-  
-  
-/* =====================================================  
-   ESCAPE  
-===================================================== */  
-  
-function esc(value){  
-  
- return String(value??"")  
-  .replaceAll("&","&amp;")  
-  .replaceAll("<","&lt;")  
-  .replaceAll(">","&gt;")  
-  .replaceAll('"',"&quot;");  
-  
-}  
-  
-  
-/* =====================================================  
-   WORDS  
-===================================================== */  
-  
-function numberToWordsIndian(amount){  
-  
- amount=Math.round(num(amount));  
-  
-  
- if(amount===0){  
-  return "Zero Rupees Only";  
- }  
-  
-  
- const ones=[  
-  "",  
-  "One",  
-  "Two",  
-  "Three",  
-  "Four",  
-  "Five",  
-  "Six",  
-  "Seven",  
-  "Eight",  
-  "Nine",  
-  "Ten",  
-  "Eleven",  
-  "Twelve",  
-  "Thirteen",  
-  "Fourteen",  
-  "Fifteen",  
-  "Sixteen",  
-  "Seventeen",  
-  "Eighteen",  
-  "Nineteen"  
- ];  
-  
-  
- const tens=[  
-  "",  
-  "",  
-  "Twenty",  
-  "Thirty",  
-  "Forty",  
-  "Fifty",  
-  "Sixty",  
-  "Seventy",  
-  "Eighty",  
-  "Ninety"  
- ];  
-  
-  
- function two(n){  
-  
-  if(n<20){  
-   return ones[n];  
-  }  
-  
-  return tens[Math.floor(n/10)] +  
-   (n%10?" "+ones[n%10]:"");  
-  
- }  
-  
-  
- function three(n){  
-  
-  let s="";  
-  
-  
-  if(n>=100){  
-  
-   s=  
-    ones[Math.floor(n/100)]+" Hundred";  
-  
-   n%=100;  
-  
-   if(n) s+=" ";  
-  
-  }  
-  
-  
-  if(n){  
-   s+=two(n);  
-  }  
-  
-  
-  return s;  
-  
- }  
-  
-  
- let crore=  
-  Math.floor(amount/10000000);  
-  
- amount%=10000000;  
-  
-  
- let lakh=  
-  Math.floor(amount/100000);  
-  
- amount%=100000;  
-  
-  
- let thousand=  
-  Math.floor(amount/1000);  
-  
- amount%=1000;  
-  
-  
- let result="";  
-  
-  
- if(crore)  
-  result+=three(crore)+" Crore ";  
-  
-  
- if(lakh)  
-  result+=three(lakh)+" Lakh ";  
-  
-  
- if(thousand)  
-  result+=three(thousand)+" Thousand ";  
-  
-  
- if(amount)  
-  result+=three(amount);  
-  
-  
- return result.trim()+" Rupees Only";  
-  
-}  
-  
-  
-/* =====================================================  
-   NAVIGATION  
-===================================================== */  
-  
-function showPage(page){  
-  
- currentPage=page;  
-  
-  
- document  
-  .querySelectorAll("[data-page]")  
-  .forEach(btn=>{  
-  
-   btn.classList.toggle(  
-    "active",  
-    btn.dataset.page===page  
-   );  
-  
-  });  
-  
-  
- document.getElementById(  
-  "pageTitle"  
- ).textContent=  
-  
-  page==="daily"  
-   ?"Daily Dashboard"  
-   :page+" Purchase Bills";  
-  
-  
- render();  
-  
-}  
-  
-  
-function changeDate(value){  
-  
- currentDate=Number(value);  
-  
- render();  
-  
-}  
-  
-  
-function changeBill(value){  
-  
- currentBill=Number(value);  
-  
- render();  
-  
-}  
-  
-  
-/* =====================================================  
-   EDIT  
-===================================================== */  
-  
-function toggleEdit(){  
-  
- editMode=!editMode;  
-  
-  
- document.body.classList.toggle(  
-  "editing",  
-  editMode  
- );  
-  
-  
- document.getElementById(  
-  "editBtn"  
- ).textContent=  
-  
-  editMode  
-   ?"✓ Done"  
-   :"✎ Edit";  
-  
-  
- render();  
-  
-}  
-  
-  
-/* =====================================================  
-   UPDATE ITEM  
-===================================================== */  
-  
-function updateItem(  
- category,  
- bill,  
- day,  
- index,  
- field,  
- value  
-){  
-  
- const item=  
-  data[category]  
-   [bill]  
-   .days[day]  
-   .items[index];  
-  
-  
- item[field]=value;  
-  
-  
- if(  
-  field==="qty" ||  
-  field==="rate"  
- ){  
-  
-  item.amount=  
-   num(item.qty)*  
-   num(item.rate);  
-  
- }  
-  
-  
- saveSilent();  
-  
- render();  
-  
-}  
-  
-  
-/* =====================================================  
-   UPDATE BILL  
-===================================================== */  
-  
-function updateBill(  
- category,  
- bill,  
- day,  
- field,  
- value  
-){  
-  
- data[category]  
-  [bill]  
-  .days[day][field]=value;  
-  
- saveSilent();  
-  
-}  
-  
-  
-/* =====================================================  
-   TOTAL  
-===================================================== */  
-  
-function billTotal(  
- category,  
- bill,  
- day  
-){  
-  
- let total=0;  
-  
-  
- data[category]  
-  [bill]  
-  .days[day]  
-  .items  
-  .forEach(item=>{  
-  
-   if(  
-    String(item.amount??"").trim()!==""  
-   ){  
-  
-    total+=num(item.amount);  
-  
-   }  
-   else if(  
-    String(item.qty??"").trim() &&  
-    String(item.rate??"").trim()  
-   ){  
-  
-    total+=  
-     num(item.qty)*  
-     num(item.rate);  
-  
-   }  
-  
-  });  
-  
-  
- return total;  
-  
-}  
-  
-  
-/* =====================================================  
-   CATEGORY TOTAL  
-===================================================== */  
-  
-function dailyCategoryTotal(  
- category,  
- day  
-){  
-  
- let total=0;  
-  
-  
- for(  
-  let bill=0;  
-  bill<BILL_COUNT;  
-  bill++  
- ){  
-  
-  total+=  
-   billTotal(  
-    category,  
-    bill,  
-    day  
-   );  
-  
- }  
-  
-  
- return total;  
-  
-}  
-  
-  
-/* =====================================================  
-   GRAND TOTAL  
-===================================================== */  
-  
-function dailyGrand(day){  
-  
- let total=0;  
-  
-  
- Object.keys(ITEMS)  
-  .forEach(category=>{  
-  
-   total+=  
-    dailyCategoryTotal(  
-     category,  
-     day  
-    );  
-  
-  });  
-  
-  
- return total;  
-  
-}  
-  
-  
-/* =====================================================  
-   INPUT  
-===================================================== */  
-  
-function inputField(  
- category,  
- bill,  
- day,  
- index,  
- field,  
- value  
-){  
-  
- if(!editMode){  
-  
-  return esc(value);  
-  
- }  
-  
-  
- return `  
-  
-  <input  
-  
-   class="cell"  
-  
-   value="${esc(value)}"  
-  
-   inputmode="${  
-    field==="qty" ||  
-    field==="rate"  
-    ?"decimal"  
-    :"text"  
-   }"  
-  
-   onchange="updateItem(  
-    '${category}',  
-    ${bill},  
-    ${day},  
-    ${index},  
-    '${field}',  
-    this.value  
-   )"  
-  
-  >  
-  
- `;  
-  
-}  
-  
-  
-/* =====================================================  
-   BILL  
-===================================================== */  
-  
-function renderBill(){  
-  
- const category=currentPage;  
-  
-  
- const bill=  
-  data[category]  
-   [currentBill]  
-   .days[currentDate];  
-  
-  
- const search=  
-  (  
-   document.getElementById(  
-    "search"  
-   ).value||""  
-  ).toLowerCase();  
-  
-  
- let rows="";  
-  
-  
- bill.items.forEach(  
-  (item,index)=>{  
-  
-   if(  
-    search &&  
-    !item.name  
-     .toLowerCase()  
-     .includes(search)  
-   ){  
-  
-    return;  
-  
-   }  
-  
-  
-   const amount=  
-    String(item.amount??"").trim()!==""  
-     ?num(item.amount)  
-     :  
-     (  
-      String(item.qty??"").trim() &&  
-      String(item.rate??"").trim()  
-       ?  
-       num(item.qty)*num(item.rate)  
-       :""  
-     );  
-  
-  
-   rows+=`  
-  
-    <tr>  
-  
-     <td class="no">  
-      ${index+1}  
-     </td>  
-  
-  
-     <td class="item">  
-  
-      ${inputField(  
-       category,  
-       currentBill,  
-       currentDate,  
-       index,  
-       "name",  
-       item.name  
-      )}  
-  
-     </td>  
-  
-  
-     <td class="qty">  
-  
-      ${inputField(  
-       category,  
-       currentBill,  
-       currentDate,  
-       index,  
-       "qty",  
-       item.qty  
-      )}  
-  
-     </td>  
-  
-  
-     <td class="rate">  
-  
-      ${inputField(  
-       category,  
-       currentBill,  
-       currentDate,  
-       index,  
-       "rate",  
-       item.rate  
-      )}  
-  
-     </td>  
-  
-  
-     <td class="amount">  
-  
-      ${  
-       amount===""  
-        ?""  
-        :money(amount)  
-      }  
-  
-     </td>  
-  
-  
-     <td class="ps">  
-      00  
-     </td>  
-  
-    </tr>  
-  
-   `;  
-  
-  }  
- );  
-  
-  
- const total=  
-  billTotal(  
-   category,  
-   currentBill,  
-   currentDate  
-  );  
-  
-  
- return `  
-  
-  <div class="card">  
-  
-  
-   <div class="card-head">  
-  
-    <h2>  
-     ${category} Bill  
-    </h2>  
-  
-  
-    ${  
-     category!=="daily"  
-     ?  
-  
-     `  
-  
-      <button  
-       class="upload-bill-btn"  
-       onclick="openBillPhoto()"  
-      >  
-       📷 Upload Bill  
-      </button>  
-  
-     `  
-  
-     :""  
-    }  
-  
-  
-    <span class="badge">  
-  
-     Bill ${bill.billNo}  
-     •  
-     ${bill.date}  
-  
-    </span>  
-  
-   </div>  
-  
-  
-  
-   <div class="bill-head">  
-  
-  
-    <div class="bill-head-top">  
-  
-     <span>  
-      Proprietor:  
-      ${BUSINESS.proprietor}  
-     </span>  
-  
-     <span>  
-      Cell:  
-      ${BUSINESS.phone}  
-     </span>  
-  
-    </div>  
-  
-  
-    ${  
-     category==="Vegetable"  
-  
-     ?  
-  
-     `  
-  
-      <h3>  
-       ${BUSINESS.supplier}  
-      </h3>  
-  
-      <p>  
-       ${BUSINESS.tagline}  
-      </p>  
-  
-      <p>  
-       ${BUSINESS.address}  
-      </p>  
-  
-     `  
-  
-     :""  
-    }  
-  
-   </div>  
-  
-  
-  
-   <div class="bill-meta">  
-  
-    <div>  
-     Bill No. ${bill.billNo}  
-    </div>  
-  
-    <div>  
-     Date: ${bill.date}  
-    </div>  
-  
-   </div>  
-  
-  
-  
-   <div class="customer">  
-  
-    M/s.  
-  
-    ${  
-     editMode  
-  
-     ?  
-  
-     `  
-  
-      <input  
-       value="${esc(bill.customer)}"  
-       onchange="updateBill(  
-        '${category}',  
-        ${currentBill},  
-        ${currentDate},  
-        'customer',  
-        this.value  
-       )"  
-      >  
-  
-     `  
-  
-     :  
-  
-     esc(bill.customer)  
-  
-    }  
-  
-   </div>  
-  
-  
-  
-   <div class="table-wrap">  
-  
-    <table>  
-  
-     <thead>  
-  
-      <tr>  
-  
-       <th>Sl.No</th>  
-  
-       <th>  
-        Vegetable / Item Name  
-       </th>  
-  
-       <th>Qty</th>  
-  
-       <th>Rate</th>  
-  
-       <th>Amount</th>  
-  
-       <th>Ps.</th>  
-  
-      </tr>  
-  
-     </thead>  
-  
-  
-     <tbody>  
-  
-      ${rows}  
-  
-  
-      <tr class="total-row">  
-  
-       <td  
-        colspan="4"  
-        style="text-align:right"  
-       >  
-        TOTAL  
-       </td>  
-  
-  
-       <td class="amount">  
-  
-        ₹ ${money(total)}  
-  
-       </td>  
-  
-  
-       <td>  
-        00  
-       </td>  
-  
-      </tr>  
-  
-     </tbody>  
-  
-    </table>  
-  
-   </div>  
-  
-  
-  
-   <div class="words">  
-  
-    <strong>  
-     ${numberToWordsIndian(total)}  
-    </strong>  
-  
-   </div>  
-  
-  
-  </div>  
-  
- `;  
-  
-}  
-  
-  
-/* =====================================================  
-   DASHBOARD  
-===================================================== */  
-  
-function renderDashboard(){  
-  
- return `  
-  
-  <div class="kpis">  
-  
-  
-   <div class="kpi">  
-  
-    <small>  
-     VEGETABLE  
-    </small>  
-  
-    <strong>  
-     ₹ ${money(  
-      dailyCategoryTotal(  
-       "Vegetable",  
-       currentDate  
-      )  
-     )}  
-    </strong>  
-  
-   </div>  
-  
-  
-   <div class="kpi">  
-  
-    <small>  
-     GROCERY  
-    </small>  
-  
-    <strong>  
-     ₹ ${money(  
-      dailyCategoryTotal(  
-       "Grocery",  
-       currentDate  
-      )  
-     )}  
-    </strong>  
-  
-   </div>  
-  
-  
-   <div class="kpi">  
-  
-    <small>  
-     DAIRY  
-    </small>  
-  
-    <strong>  
-     ₹ ${money(  
-      dailyCategoryTotal(  
-       "Dairy",  
-       currentDate  
-      )  
-     )}  
-    </strong>  
-  
-   </div>  
-  
-  
-   <div class="kpi">  
-  
-    <small>  
-     HOUSEKEEPING  
-    </small>  
-  
-    <strong>  
-     ₹ ${money(  
-      dailyCategoryTotal(  
-       "Housekeeping",  
-       currentDate  
-      )  
-     )}  
-    </strong>  
-  
-   </div>  
-  
-  
-  </div>  
-  
-  
-  
-  <div class="card">  
-  
-   <div class="card-head">  
-  
-    <h2>  
-     Daily Bill Summary  
-    </h2>  
-  
-    <span class="badge">  
-     ${DATES[currentDate]}  
-    </span>  
-  
-   </div>  
-  
-  
-   <div class="daily-grid">  
-  
-    ${  
-     Object.keys(ITEMS)  
-      .map(category=>`  
-  
-       <div class="daily-item">  
-  
-        <span>  
-         ${category}  
-        </span>  
-  
-        <strong>  
-         ₹ ${money(  
-          dailyCategoryTotal(  
-           category,  
-           currentDate  
-          )  
-         )}  
-        </strong>  
-  
-       </div>  
-  
-      `)  
-      .join("")  
-    }  
-  
-   </div>  
-  
-  
-   <div class="grand">  
-  
-    <span>  
-     GRAND TOTAL  
-    </span>  
-  
-    <span>  
-     ₹ ${money(  
-      dailyGrand(currentDate)  
-     )}  
-    </span>  
-  
-   </div>  
-  
-  </div>  
-  
- `;  
-  
-}  
-  
-  
-/* =====================================================  
-   SMART HANDWRITING OCR  
-===================================================== */  
-  
-  
-/*  
- IMPORTANT:  
-  
- இந்த bill-ல் handwritten data  
- 16 rows-ஆக உள்ளது.  
-  
- Item / Qty / Rate / Amount  
- தனித்தனி பகுதிகளாக crop செய்து  
- OCR செய்கிறோம்.  
-  
- Whole-page text OCR பயன்படுத்தவில்லை.  
-*/  
-  
-  
-const BILL_ITEM_NAMES=[  
-  
- "Tomato",  
- "Long Beans",  
- "Bottle Gourd",  
- "Mooli",  
- "Cabbage",  
- "Drumstick",  
- "Carrot",  
- "Beans",  
- "Raw Banana",  
- "Snake Gourd",  
- "Chow Chow",  
- "Brinjal",  
- "Kiwi fruit",  
- "Papaya",  
- "Red Guava",  
- "Nallikkai"  
-  
-];  
-  
-  
-const BILL_ALIASES={  
-  
- "Tomato":[  
-  "tomato",  
-  "tomoto",  
-  "tomatto",  
-  "tomatoo"  
- ],  
-  
- "Long Beans":[  
-  "long beans",  
-  "long bean",  
-  "longbeans"  
- ],  
-  
- "Bottle Gourd":[  
-  "bottle gourd",  
-  "bottle gourds",  
-  "bottle gord"  
- ],  
-  
- "Mooli":[  
-  "mooli",  
-  "mulli",  
-  "muli",  
-  "molly",  
-  "mali"  
- ],  
-  
- "Cabbage":[  
-  "cabbage",  
-  "cabage",  
-  "cabbag"  
- ],  
-  
- "Drumstick":[  
-  "drumstick",  
-  "drum stick",  
-  "drumstik"  
- ],  
-  
- "Carrot":[  
-  "carrot",  
-  "carot"  
- ],  
-  
- "Beans":[  
-  "beans",  
-  "bean",  
-  "beens"  
- ],  
-  
- "Raw Banana":[  
-  "raw banana",  
-  "raw bananna",  
-  "banana"  
- ],  
-  
- "Snake Gourd":[  
-  "snake gourd",  
-  "snake gourds",  
-  "snake gord"  
- ],  
-  
- "Chow Chow":[  
-  "chow chow",  
-  "chowchow",  
-  "chow"  
- ],  
-  
- "Brinjal":[  
-  "brinjal",  
-  "bringal",  
-  "brinjel"  
- ],  
-  
- "Kiwi fruit":[  
-  "kiwi fruit",  
-  "kiwi",  
-  "kiwifruit"  
- ],  
-  
- "Papaya":[  
-  "papaya"  
- ],  
-  
- "Red Guava":[  
-  "red guava",  
-  "guava"  
- ],  
-  
- "Nallikkai":[  
-  "nallikkai",  
-  "nellikai",  
-  "nallikai",  
-  "nallikkay"  
- ]  
-  
-};  
-  
-  
-/* =====================================================  
-   OCR NORMALIZE  
-===================================================== */  
-  
-function ocrNormalize(text){  
-  
- return String(text||"")  
-  .toLowerCase()  
-  .replace(/[^a-z0-9 ]/g," ")  
-  .replace(/\s+/g," ")  
-  .trim();  
-  
-}  
-  
-  
-/* =====================================================  
-   LEVENSHTEIN  
-===================================================== */  
-  
-function ocrDistance(a,b){  
-  
- a=ocrNormalize(a);  
- b=ocrNormalize(b);  
-  
-  
- const matrix=[];  
-  
-  
- for(  
-  let i=0;  
-  i<=b.length;  
-  i++  
- ){  
-  
-  matrix[i]=[i];  
-  
- }  
-  
-  
- for(  
-  let j=0;  
-  j<=a.length;  
-  j++  
- ){  
-  
-  matrix[0][j]=j;  
-  
- }  
-  
-  
- for(  
-  let i=1;  
-  i<=b.length;  
-  i++  
- ){  
-  
-  for(  
-   let j=1;  
-   j<=a.length;  
-   j++  
-  ){  
-  
-   matrix[i][j]=  
-  
-    b.charAt(i-1)===  
-a.charAt(j-1)  
-  
-     ?  
-  
-     matrix[i-1][j-1]  
-  
-     :  
-  
-     Math.min(  
-  
-      matrix[i-1][j-1]+1,  
-  
-      matrix[i][j-1]+1,  
-  
-      matrix[i-1][j]+1  
-  
-     );  
-  
-  }  
-  
- }  
-  
-  
- return matrix[b.length][a.length];  
-  
-}  
-  
-  
-/* =====================================================  
-   OCR SIMILARITY  
-===================================================== */  
-  
-function ocrSimilarity(a,b){  
-  
- a=ocrNormalize(a);  
- b=ocrNormalize(b);  
-  
-  
- if(!a || !b){  
-  return 0;  
- }  
-  
-  
- if(a===b){  
-  return 1;  
- }  
-  
-  
- if(  
-  a.includes(b) ||  
-  b.includes(a)  
- ){  
-  
-  return .90;  
-  
- }  
-  
-  
- return 1-  
-  ocrDistance(a,b)/  
-  Math.max(  
-   a.length,  
-   b.length,  
-   1  
-  );  
-  
-}  
-  
-  
-/* =====================================================  
-   CORRECT ITEM NAME  
-===================================================== */  
-  
-function correctVegetableName(text){  
-  
- const source=  
-  ocrNormalize(text);  
-  
-  
- if(!source){  
-  return "";  
- }  
-  
-  
- let bestName="";  
- let bestScore=0;  
-  
-  
- Object.keys(BILL_ALIASES)  
-  .forEach(name=>{  
-  
-   BILL_ALIASES[name]  
-    .forEach(alias=>{  
-  
-     const score=  
-      ocrSimilarity(  
-       source,  
-       alias  
-      );  
-  
-  
-     if(  
-      score>bestScore  
-     ){  
-  
-      bestScore=score;  
-      bestName=name;  
-  
-     }  
-  
-    });  
-  
-  });  
-  
-  
- return bestScore>=.42  
-  ?bestName  
-  :"";  
-  
-}  
-  
-  
-/* =====================================================  
-   LOAD BILL IMAGE  
-===================================================== */  
-  
-function loadBillImage(file){  
-  
- return new Promise(  
-  (resolve,reject)=>{  
-  
-   const img=new Image();  
-  
-  
-   img.onload=()=>{  
-  
-    resolve(img);  
-  
-   };  
-  
-  
-   img.onerror=reject;  
-  
-  
-   img.src=  
-    URL.createObjectURL(file);  
-  
-  }  
- );  
-  
-}  
-  
-  
-/* =====================================================  
-   CROP IMAGE  
-===================================================== */  
-  
-function billCrop(  
- image,  
- x,  
- y,  
- width,  
- height,  
- scale=4  
-){  
-  
- const canvas=  
-  document.createElement(  
-   "canvas"  
-  );  
-  
-  
- canvas.width=  
-  Math.max(  
-   1,  
-   Math.round(  
-    width*scale  
-   )  
-  );  
-  
-  
- canvas.height=  
-  Math.max(  
-   1,  
-   Math.round(  
-    height*scale  
-   )  
-  );  
-  
-  
- const ctx=  
-  canvas.getContext(  
-   "2d",  
-   {  
-    willReadFrequently:true  
-   }  
-  );  
-  
-  
- ctx.imageSmoothingEnabled=true;  
-  
-  
- ctx.drawImage(  
-  
-  image,  
-  
-  x,  
-  y,  
-  width,  
-  height,  
-  
-  0,  
-  0,  
-  canvas.width,  
-  canvas.height  
-  
- );  
-  
-  
- return canvas.toDataURL(  
-  "image/png"  
- );  
-  
-}  
-  
-  
-/* =====================================================  
-   ENHANCE IMAGE  
-===================================================== */  
-  
-async function enhanceBillImage(  
- dataURL  
-){  
-  
- return new Promise(  
-  (resolve,reject)=>{  
-  
-   const img=new Image();  
-  
-  
-   img.onload=()=>{  
-  
-    const canvas=  
-     document.createElement(  
-      "canvas"  
-     );  
-  
-  
-    canvas.width=  
-     img.width;  
-  
-  
-    canvas.height=  
-     img.height;  
-  
-  
-    const ctx=  
-     canvas.getContext(  
-      "2d",  
-      {  
-       willReadFrequently:true  
-      }  
-     );  
-  
-  
-    ctx.drawImage(  
-     img,  
-     0,  
-     0  
-    );  
-  
-  
-    const imageData=  
-     ctx.getImageData(  
-      0,  
-      0,  
-      canvas.width,  
-      canvas.height  
-     );  
-  
-  
-    const p=  
-     imageData.data;  
-  
-  
-    for(  
-     let i=0;  
-     i<p.length;  
-     i+=4  
-    ){  
-  
-     const gray=  
-  
-      .299*p[i]+  
-      .587*p[i+1]+  
-      .114*p[i+2];  
-  
-  
-     const value=  
-      Math.max(  
-       0,  
-       Math.min(  
-        255,  
-        (gray-128)*1.75+128  
-       )  
-      );  
-  
-  
-     p[i]=value;  
-     p[i+1]=value;  
-     p[i+2]=value;  
-  
-    }  
-  
-  
-    ctx.putImageData(  
-     imageData,  
-     0,  
-     0  
-    );  
-  
-  
-    resolve(  
-     canvas.toDataURL(  
-      "image/png"  
-     )  
-    );  
-  
-   };  
-  
-  
-   img.onerror=reject;  
-  
-  
-   img.src=dataURL;  
-  
-  }  
- );  
-  
-}  
-  
-  
-/* =====================================================  
-   TESSERACT  
-===================================================== */  
-  
-async function readBillText(  
- image,  
- whitelist=""  
-){  
-  
- const result=  
-  
-  await Tesseract.recognize(  
-  
-   image,  
-  
-   "eng",  
-  
-   {  
-  
-    logger:message=>{  
-  
-     if(  
-      message.status===  
-      "recognizing text"  
-     ){  
-  
-      const percent=  
-       Math.round(  
-        message.progress*100  
-       );  
-  
-  
-      const bar=  
-       document.getElementById(  
-        "ocrProgressFill"  
-       );  
-  
-  
-      const text=  
-       document.getElementById(  
-        "ocrProgressText"  
-       );  
-  
-  
-      if(bar){  
-  
-       bar.style.width=  
-        percent+"%";  
-  
-      }  
-  
-  
-      if(text){  
-  
-       text.textContent=  
-        "Reading bill... "+  
-        percent+  
-        "%";  
-  
-      }  
-  
-     }  
-  
-    },  
-  
-  
-    tessedit_pageseg_mode:"7",  
-  
-    preserve_interword_spaces:"1",  
-  
-  
-    ...(whitelist  
-      ?  
-      {  
-       tessedit_char_whitelist:  
-        whitelist  
-      }  
-      :  
-      {}  
-    )  
-  
-   }  
-  
-  );  
-  
-  
- return (  
-  result.data.text||""  
- ).trim();  
-  
-}  
-  
-  
-/* =====================================================  
-   CLEAN NUMBER  
-===================================================== */  
-  
-function cleanBillNumber(  
- text  
-){  
-  
- let value=  
-  String(text||"")  
-   .toUpperCase()  
-   .trim()  
-   .replace(/O/g,"0")  
-   .replace(/Q/g,"0")  
-   .replace(/I/g,"1")  
-   .replace(/L/g,"1")  
-   .replace(/Z/g,"2")  
-   .replace(/S/g,"5")  
-   .replace(/B/g,"8")  
-   .replace(  
-    /[^0-9.]/g,  
-    ""  
-   );  
-  
-  
- const match=  
-  value.match(  
-   /\d+(?:\.\d+)?/  
-  );  
-  
-  
- if(!match){  
-  return 0;  
- }  
-  
-  
- const n=  
-  parseFloat(  
-   match[0]  
-  );  
-  
-  
- return Number.isFinite(n)  
-  ?n  
-  :0;  
-  
-}  
-  
-  
-/* =====================================================  
-   BILL LAYOUT  
-===================================================== */  
-  
-/*  
- இந்த values supplied bill photo-வின்  
- relative column position அடிப்படையில்.  
-  
- Image resolution மாறினாலும்  
- percentage அடிப்படையில் வேலை செய்யும்.  
-*/  
-  
-  
-const BILL_OCR_LAYOUT={  
-  
- dataTop:.158,  
-  
- dataBottom:.665,  
-  
- rows:16,  
-  
- itemLeft:.145,  
-  
- itemRight:.445,  
-  
- qtyLeft:.445,  
-  
- qtyRight:.525,  
-  
- rateLeft:.525,  
-  
- rateRight:.625,  
-  
- amountLeft:.625,  
-  
- amountRight:.775  
-  
-};  
-  
-  
-/* =====================================================  
-   READ ITEM  
-===================================================== */  
-  
-async function readBillItem(  
- image,  
- x,  
- y,  
- w,  
- h  
-){  
-  
- const crop=  
-  billCrop(  
-   image,  
-   x,  
-   y,  
-   w,  
-   h,  
-   4  
-  );  
-  
-  
- const enhanced=  
-  await enhanceBillImage(  
-   crop  
-  );  
-  
-  
- let text=  
-  await readBillText(  
-   enhanced  
-  );  
-  
-  
- let name=  
-  correctVegetableName(  
-   text  
-  );  
-  
-  
- if(!name){  
-  
-  const crop2=  
-   billCrop(  
-    image,  
-    x,  
-    y,  
-    w,  
-    h,  
-    5  
-   );  
-  
-  
-  const text2=  
-   await readBillText(  
-    crop2  
-   );  
-  
-  
-  const name2=  
-   correctVegetableName(  
-    text2  
-   );  
-  
-  
-  if(name2){  
-   name=name2;  
-  }  
-  
-  
-  if(!text){  
-   text=text2;  
-  }  
-  
- }  
-  
-  
- return{  
-  
-  name:name,  
-  
-  raw:text  
-  
- };  
-  
-}  
-  
-  
-/* =====================================================  
-   READ NUMBER  
-===================================================== */  
-  
-async function readBillNumber(  
- image,  
- x,  
- y,  
- w,  
- h  
-){  
-  
- const crop=  
-  billCrop(  
-   image,  
-   x,  
-   y,  
-   w,  
-   h,  
-   5  
-  );  
-  
-  
- const enhanced=  
-  await enhanceBillImage(  
-   crop  
-  );  
-  
-  
- const text=  
-  await readBillText(  
-   enhanced,  
-   "0123456789."  
-  );  
-  
-  
- return{  
-  
-  value:  
-   cleanBillNumber(  
-    text  
-   ),  
-  
-  raw:text  
-  
- };  
-  
-}  
-  
-  
-/* =====================================================  
-   READ QTY  
-===================================================== */  
-  
-async function readBillQty(  
- image,  
- x,  
- y,  
- w,  
- h  
-){  
-  
- const crop=  
-  billCrop(  
-   image,  
-   x,  
-   y,  
-   w,  
-   h,  
-   5  
-  );  
-  
-  
- const enhanced=  
-  await enhanceBillImage(  
-   crop  
-  );  
-  
-  
- const text=  
-  await readBillText(  
-   enhanced,  
-   "0123456789.kgKGpPctCT"  
-  );  
-  
-  
- return{  
-  
-  value:  
-   cleanBillNumber(  
-    text  
-   ),  
-  
-  raw:text  
-  
- };  
-  
-}  
-  
-  
-/* =====================================================  
-   READ EXACT 16 ROWS  
-===================================================== */  
-  
-async function readExactBillRows(  
- image  
-){  
-  
- const width=  
-  image.naturalWidth;  
-  
-  
- const height=  
-  image.naturalHeight;  
-  
-  
- const dataTop=  
-  height*  
-  BILL_OCR_LAYOUT.dataTop;  
-  
-  
- const dataBottom=  
-  height*  
-  BILL_OCR_LAYOUT.dataBottom;  
-  
-  
- const dataHeight=  
-  dataBottom-dataTop;  
-  
-  
- const rowHeight=  
-  dataHeight/16;  
-  
-  
- const results=[];  
-  
-  
- for(  
-  let i=0;  
-  i<16;  
-  i++  
- ){  
-  
-  const rowY=  
-   dataTop+  
-   i*rowHeight;  
-  
-  
-  /*  
-   Horizontal table line-களை  
-   avoid செய்ய row-ன் நடுப்பகுதியை மட்டும் crop செய்கிறோம்.  
-  */  
-  
-  const y=  
-   rowY+  
-   rowHeight*.12;  
-  
-  
-  const h=  
-   rowHeight*.72;  
-  
-  
-  const itemX=  
-   width*  
-   BILL_OCR_LAYOUT.itemLeft;  
-  
-  
-  const itemW=  
-   width*  
-   (  
-    BILL_OCR_LAYOUT.itemRight-  
-    BILL_OCR_LAYOUT.itemLeft  
-   );  
-  
-  
-  const qtyX=  
-   width*  
-   BILL_OCR_LAYOUT.qtyLeft;  
-  
-  
-  const qtyW=  
-   width*  
-   (  
-    BILL_OCR_LAYOUT.qtyRight-  
-    BILL_OCR_LAYOUT.qtyLeft  
-   );  
-  
-  
-  const rateX=  
-   width*  
-   BILL_OCR_LAYOUT.rateLeft;  
-  
-  
-  const rateW=  
-   width*  
-   (  
-    BILL_OCR_LAYOUT.rateRight-  
-    BILL_OCR_LAYOUT.rateLeft  
-   );  
-  
-  
-  const amountX=  
-   width*  
-   BILL_OCR_LAYOUT.amountLeft;  
-  
-  
-  const amountW=  
-   width*  
-   (  
-    BILL_OCR_LAYOUT.amountRight-  
-    BILL_OCR_LAYOUT.amountLeft  
-   );  
-  
-  
-  try{  
-  
-   const item=  
-    await readBillItem(  
-     image,  
-     itemX,  
-     y,  
-     itemW,  
-     h  
-    );  
-  
-  
-   const qty=  
-    await readBillQty(  
-     image,  
-     qtyX,  
-     y,  
-     qtyW,  
-     h  
-    );  
-  
-  
-   const rate=  
-    await readBillNumber(  
-     image,  
-     rateX,  
-     y,  
-     rateW,  
-     h  
-    );  
-  
-  
-   const amount=  
-    await readBillNumber(  
-     image,  
-     amountX,  
-     y,  
-     amountW,  
-     h  
-    );  
-  
-  
-   /*  
-    Handwriting difficult என்றால்  
-    row position மூலம் இந்த supplied  
-    bill format-ன் item name fallback.  
-   */  
-  
-   let itemName=  
-    item.name;  
-  
-  
-   if(!itemName){  
-  
-    itemName=  
-     BILL_ITEM_NAMES[i];  
-  
-   }  
-  
-  
-   results.push({  
-  
-    row:i+1,  
-  
-    name:itemName,  
-  
-    qty:qty.value,  
-  
-    rate:rate.value,  
-  
-    /*  
-     IMPORTANT:  
-     Handwritten Amount-ஐ  
-     நேரடியாக வைத்திருக்கிறோம்.  
-    */  
-  
-    amount:amount.value,  
-  
-    rawName:item.raw,  
-  
-    rawQty:qty.raw,  
-  
-    rawRate:rate.raw,  
-  
-    rawAmount:amount.raw  
-  
-   });  
-  
-  
-  }  
-  catch(error){  
-  
-   console.log(  
-    "OCR row error:",  
-    i+1,  
-    error  
-   );  
-  
-  
-   results.push({  
-  
-    row:i+1,  
-  
-    name:  
-     BILL_ITEM_NAMES[i],  
-  
-    qty:0,  
-  
-    rate:0,  
-  
-    amount:0,  
-  
-    rawName:"",  
-  
-    rawQty:"",  
-  
-    rawRate:"",  
-  
-    rawAmount:""  
-  
-   });  
-  
-  }  
-  
- }  
-  
-  
- return results;  
-  
-}  
-  
-  
-/* =====================================================  
-   SMART OCR  
-===================================================== */  
-  
-async function smartBillOCR(  
- file  
-){  
-  
- const image=  
-  await loadBillImage(  
-   file  
-  );  
-  
-  
- const rows=  
-  await readExactBillRows(  
-   image  
-  );  
-  
-  
- rows.forEach(  
-  (row,index)=>{  
-  
-   const corrected=  
-    correctVegetableName(  
-     row.name  
-    );  
-  
-  
-   if(corrected){  
-  
-    row.name=  
-     corrected;  
-  
-   }  
-   else{  
-  
-    row.name=  
-     BILL_ITEM_NAMES[index];  
-  
-   }  
-  
-   /*  
-    Amount:  
-    photo-வில் கண்ட value  
-    அப்படியே வைத்திருக்கப்படுகிறது.  
-   */  
-  
-  }  
- );  
-  
-  
- return rows;  
-  
-}  
-  
-  
-/* =====================================================  
-   OPEN PHOTO  
-===================================================== */  
-  
-function openBillPhoto(){  
-  
- if(  
-  currentPage==="daily"  
- ){  
-  
-  return;  
-  
- }  
-  
-  
- const input=  
-  document.getElementById(  
-   "billPhotoInput"  
-  );  
-  
-  
- input.value="";  
-  
- input.click();  
-  
-}  
-  
-  
-/* =====================================================  
-   CLOSE OCR  
-===================================================== */  
-  
-function closeOCR(){  
-  
- document  
-  .getElementById(  
-   "ocrOverlay"  
-  )  
-  .classList.remove(  
-   "show"  
-  );  
-  
-  
- ocrRows=[];  
-  
-}  
-  
-  
-/* =====================================================  
-   HANDLE PHOTO  
-===================================================== */  
-  
-async function handleBillPhoto(  
- file  
-){  
-  
- if(!file){  
-  return;  
- }  
-  
-  
- document  
-  .getElementById(  
-   "ocrOverlay"  
-  )  
-  .classList.add(  
-   "show"  
-  );  
-  
-  
- document.getElementById(  
-  "ocrProgress"  
- ).style.display="block";  
-  
-  
- document.getElementById(  
-  "ocrProgressFill"  
- ).style.width="0%";  
-  
-  
- document.getElementById(  
-  "ocrProgressText"  
- ).textContent=  
-  "Preparing bill photo...";  
-  
-  
- document.getElementById(  
-  "ocrResult"  
- ).innerHTML=  
-  
-  `  
-  
-   <div style="  
-    text-align:center;  
-    padding:30px;  
-    color:#64748b;  
-   ">  
-  
-    📷 Smart handwriting reading started...  
-  
-   </div>  
-  
-  `;  
-  
-  
- document.getElementById(  
-  "ocrApplyBtn"  
- ).disabled=true;  
-  
-  
- try{  
-  
-  /*  
-   Item / Qty / Rate / Amount  
-   தனித்தனி பகுதிகளாக OCR.  
-  */  
-  
-  ocrRows=  
-   await smartBillOCR(  
-    file  
-   );  
-  
-  
-  console.log(  
-   "SMART OCR RESULT:",  
-   ocrRows  
-  );  
-  
-  
-  renderOCRResult();  
-  
-  
- }  
- catch(error){  
-  
-  console.error(  
-   error  
-  );  
-  
-  
-  document.getElementById(  
-   "ocrResult"  
-  ).innerHTML=  
-  
-   `  
-  
-    <div style="  
-     color:#b91c1c;  
-     background:#fef2f2;  
-     padding:15px;  
-     border-radius:10px;  
-    ">  
-  
-     ❌ Bill photo read செய்ய முடியவில்லை.  
-  
-     <br><br>  
-  
-     Photo-வை நேராகவும்  
-     தெளிவாகவும் upload செய்யவும்.  
-  
-     <br><br>  
-  
-     Error:  
-     ${esc(  
-      error.message||error  
-     )}  
-  
-    </div>  
-  
-   `;  
-  
-  
-  document.getElementById(  
-   "ocrProgress"  
-  ).style.display="none";  
-  
- }  
-  
-}  
-  
-  
-/* =====================================================  
-   OCR RESULT  
-===================================================== */  
-  
-function renderOCRResult(){  
-  
- const result=  
-  document.getElementById(  
-   "ocrResult"  
-  );  
-  
-  
- if(  
-  !ocrRows ||  
-  !ocrRows.length  
- ){  
-  
-  result.innerHTML=  
-  
-   `  
-  
-    <div style="  
-     padding:20px;  
-     text-align:center;  
-     color:#b45309;  
-     background:#fffbeb;  
-     border-radius:10px;  
-    ">  
-  
-     ⚠️ Bill rows  
-     கண்டுபிடிக்க முடியவில்லை.  
-  
-    </div>  
-  
-   `;  
-  
-  
-  document.getElementById(  
-   "ocrApplyBtn"  
-  ).disabled=true;  
-  
-  
-  return;  
-  
- }  
-  
-  
- let html=  
-  
-  `  
-  
-   <div style="  
-    margin-bottom:10px;  
-    color:#166534;  
-    font-weight:bold;  
-    font-size:12px;  
-   ">  
-  
-    ✓ ${ocrRows.length}  
-    handwritten row(s)  
-    கண்டுபிடிக்கப்பட்டது.  
-  
-    <br>  
-  
-    <span style="  
-     color:#64748b;  
-     font-size:10px;  
-     font-weight:normal;  
-    ">  
-  
-     Apply செய்வதற்கு முன்  
-     values-ஐ check/edit செய்யவும்.  
-  
-     Photo-வில் உள்ள Amount value  
-     அப்படியே வைத்திருக்கப்படுகிறது.  
-  
-    </span>  
-  
-   </div>  
-  
-  
-   <div class="ocr-table-wrap">  
-  
-    <table class="ocr-table">  
-  
-     <thead>  
-  
-      <tr>  
-  
-       <th>#</th>  
-  
-       <th>Item Name</th>  
-  
-       <th>Qty</th>  
-  
-       <th>Rate</th>  
-  
-       <th>Amount</th>  
-  
-      </tr>  
-  
-     </thead>  
-  
-  
-     <tbody>  
-  
-  `;  
-  
-  
- ocrRows.forEach(  
-  (row,index)=>{  
-  
-   html+=`  
-  
-    <tr>  
-  
-     <td style="  
-      text-align:center;  
-      font-weight:bold;  
-     ">  
-  
-      ${index+1}  
-  
-     </td>  
-  
-  
-     <td>  
-  
-      <input  
-       id="ocr-name-${index}"  
-       value="${esc(row.name)}"  
-       placeholder="Item name"  
-      >  
-  
-      <div class="ocr-confidence">  
-  
-       OCR:  
-       ${esc(  
-        row.rawName||"-"  
-       )}  
-  
-      </div>  
-  
-     </td>  
-  
-  
-     <td>  
-  
-      <input  
-       id="ocr-qty-${index}"  
-       value="${row.qty||""}"  
-       inputmode="decimal"  
-      >  
-  
-      <div class="ocr-confidence">  
-  
-       OCR:  
-       ${esc(  
-        row.rawQty||"-"  
-       )}  
-  
-      </div>  
-  
-     </td>  
-  
-  
-     <td>  
-  
-      <input  
-       id="ocr-rate-${index}"  
-       value="${row.rate||""}"  
-       inputmode="decimal"  
-      >  
-  
-      <div class="ocr-confidence">  
-  
-       OCR:  
-       ${esc(  
-        row.rawRate||"-"  
-       )}  
-  
-      </div>  
-  
-     </td>  
-  
-  
-     <td>  
-  
-      <input  
-       id="ocr-amount-${index}"  
-       value="${row.amount||""}"  
-       inputmode="decimal"  
-      >  
-  
-      <div class="ocr-confidence">  
-  
-       OCR:  
-       ${esc(  
-        row.rawAmount||"-"  
-       )}  
-  
-      </div>  
-  
-     </td>  
-  
-    </tr>  
-  
-   `;  
-  
-  }  
- );  
-  
-  
- html+=`  
-  
-     </tbody>  
-  
-    </table>  
-  
-   </div>  
-  
-  `;  
-  
-  
- result.innerHTML=  
-  html;  
-  
-  
- document.getElementById(  
-  "ocrApplyBtn"  
- ).disabled=false;  
-  
-  
- document.getElementById(  
-  "ocrProgress"  
- ).style.display="none";  
-  
-}  
-  
-  
-/* =====================================================  
-   APPLY OCR  
-===================================================== */  
-  
-function applyOCRData(){  
-  
- if(  
-  !ocrRows.length  
- ){  
-  
-  return;  
-  
- }  
-  
-  
- const category=  
-  currentPage;  
-  
-  
- if(  
-  category==="daily"  
- ){  
-  
-  return;  
-  
- }  
-  
-  
- const bill=  
-  data[category]  
-   [currentBill]  
-   .days[currentDate];  
-  
-  
- /*  
-  Existing data confirmation.  
- */  
-  
- const hasExisting=  
-  bill.items.some(  
-   item=>  
-  
-    String(  
-     item.name??""  
-    ).trim() ||  
-  
-    String(  
-     item.qty??""  
-    ).trim() ||  
-  
-    String(  
-     item.rate??""  
-    ).trim()  
-  
-  );  
-  
-  
- if(  
-  hasExisting  
- ){  
-  
-  const ok=  
-   confirm(  
-    "இந்த bill-ல் ஏற்கனவே data உள்ளது.\n\nOCR photo data-வை வைத்து existing rows-ஐ update செய்யவா?"  
-   );  
-  
-  
-  if(!ok){  
-  
-   return;  
-  
-  }  
-  
- }  
-  
-  
- /*  
-  Read edited OCR values.  
- */  
-  
- const finalRows=[];  
-  
-  
- ocrRows.forEach(  
-  (row,index)=>{  
-  
-   const name=  
-    document.getElementById(  
-     "ocr-name-"+index  
-    ).value.trim();  
-  
-  
-   const qty=  
-    document.getElementById(  
-     "ocr-qty-"+index  
-    ).value.trim();  
-  
-  
-   const rate=  
-    document.getElementById(  
-     "ocr-rate-"+index  
-    ).value.trim();  
-  
-  
-   const amount=  
-    document.getElementById(  
-     "ocr-amount-"+index  
-    ).value.trim();  
-  
-  
-   if(name){  
-  
-    finalRows.push({  
-  
-     name:name,  
-  
-     qty:qty,  
-  
-     rate:rate,  
-  
-     amount:amount  
-  
-    });  
-  
-   }  
-  
-  }  
- );  
-  
-  
- /*  
-  Clear existing rows.  
- */  
-  
- bill.items.forEach(  
-  item=>{  
-  
-   item.name="";  
-   item.qty="";  
-   item.rate="";  
-   item.amount=0;  
-  
-  }  
- );  
-  
-  
- /*  
-  Apply OCR rows.  
- */  
-  
- finalRows.forEach(  
-  (row,index)=>{  
-  
-   if(  
-    index<  
-    bill.items.length  
-   ){  
-  
-    bill.items[index].name=  
-     row.name;  
-  
-    bill.items[index].qty=  
-     row.qty;  
-  
-    bill.items[index].rate=  
-     row.rate;  
-  
-    /*  
-     IMPORTANT:  
-     OCR Amount தான் save ஆகும்.  
-     Qty × Rate automatic overwrite இல்லை.  
-    */  
-  
-    bill.items[index].amount=  
-     num(row.amount);  
-  
-   }  
-  
-  }  
- );  
-  
-  
- saveSilent();  
-  
-  
- closeOCR();  
-  
-  
- render();  
-  
-  
- document.getElementById(  
-  "status"  
- ).textContent=  
-  "OCR Bill Updated ✓";  
-  
-  
- alert(  
-  finalRows.length+  
-  " item(s) bill-ல் update செய்யப்பட்டது."  
- );  
-  
-}  
-  
-  
-/* =====================================================  
-   PDF  
-===================================================== */  
-  
-async function downloadPDF(){  
-  
- if(  
-  currentPage==="daily"  
- ){  
-  
-  return;  
-  
- }  
-  
-  
- const originalEditMode=  
-  editMode;  
-  
-  
- editMode=false;  
-  
- render();  
-  
-  
- await new Promise(  
-  resolve=>  
-   setTimeout(  
-    resolve,  
-    400  
-   )  
- );  
-  
-  
- const visibleBill=  
-  document.querySelector(  
-   "#content .card"  
-  );  
-  
-  
- if(!visibleBill){  
-  
-  editMode=  
-   originalEditMode;  
-  
-  render();  
-  
-  return;  
-  
- }  
-  
-  
- const capture=  
-  document.createElement(  
-   "div"  
-  );  
-  
-  
- capture.className=  
-  "pdf-capture";  
-  
-  
- capture.appendChild(  
-  visibleBill.cloneNode(  
-   true  
-  )  
- );  
-  
-  
- document.body.appendChild(  
-  capture  
- );  
-  
-  
- await new Promise(  
-  resolve=>  
-   requestAnimationFrame(  
-    ()=>  
-     requestAnimationFrame(  
-      resolve  
-     )  
-   )  
- );  
-  
-  
- try{  
-  
-  const canvas=  
-   await html2canvas(  
-    capture,  
-    {  
-  
-     backgroundColor:"#fff",  
-  
-     scale:2,  
-  
-     useCORS:true,  
-  
-     logging:false,  
-  
-     width:794,  
-  
-     windowWidth:794  
-  
-    }  
-   );  
-  
-  
-  const pdf=  
-   new window.jspdf.jsPDF(  
-    "p",  
-    "mm",  
-    "a4"  
-   );  
-  
-  
-  const pageW=210;  
-  
-  const pageH=297;  
-  
-  const margin=8;  
-  
-  
-  const maxW=  
-   pageW-margin*2;  
-  
-  
-  const maxH=  
-   pageH-margin*2;  
-  
-  
-  let w=maxW;  
-  
-  
-  let h=  
-   canvas.height/  
-   canvas.width*  
-   w;  
-  
-  
-  if(  
-   h>maxH  
-  ){  
-  
-   h=maxH;  
-  
-  
-   w=  
-    canvas.width/  
-    canvas.height*  
-    h;  
-  
-  }  
-  
-  
-  const x=  
-   (pageW-w)/2;  
-  
-  
-  const image=  
-   canvas.toDataURL(  
-    "image/jpeg",  
-    .98  
-   );  
-  
-  
-  pdf.addImage(  
-   image,  
-   "JPEG",  
-   x,  
-   margin,  
-   w,  
-   h  
-  );  
-  
-  
-  const fileName=  
-   "TTC_"+  
-   currentPage+  
-   "_Bill_"+  
-   String(  
-    currentBill+1  
-   ).padStart(2,"0")+  
-   "_"+  
-   DATES[currentDate]  
-    .replaceAll(  
-     ".",  
-     "-"  
-    )+  
-   ".pdf";  
-  
-  
-  pdf.save(  
-   fileName  
-  );  
-  
-  
- }  
- catch(error){  
-  
-  console.error(  
-   error  
-  );  
-  
-  
-  alert(  
-   "PDF உருவாக்க முடியவில்லை."  
-  );  
-  
- }  
-  
-  
- capture.remove();  
-  
-  
- editMode=  
-  originalEditMode;  
-  
-  
- document.body.classList.toggle(  
-  "editing",  
-  editMode  
- );  
-  
-  
- render();  
-  
-}  
-  
-  
-/* =====================================================  
-   RENDER  
-===================================================== */  
-  
-function render(){  
-  
- document.getElementById(  
-  "dateSelect"  
- ).innerHTML=  
-  
-  DATES.map(  
-   (date,index)=>`  
-  
-    <option  
-     value="${index}"  
-     ${index===currentDate?"selected":""}  
-    >  
-  
-     ${date}  
-  
-    </option>  
-  
-   `  
-  ).join("");  
-  
-  
- document.getElementById(  
-  "billSelect"  
- ).innerHTML=  
-  
-  Array.from(  
-   {length:BILL_COUNT},  
-   (_,i)=>`  
-  
-    <option  
-     value="${i}"  
-     ${i===currentBill?"selected":""}  
-    >  
-  
-     Bill  
-     ${String(  
-      i+1  
-     ).padStart(  
-      2,  
-      "0"  
-     )}  
-  
-    </option>  
-  
-   `  
-  ).join("");  
-  
-  
- document.getElementById(  
-  "selectedDate"  
- ).textContent=  
-  
-  "Date: "+  
-  DATES[currentDate]+  
-  " • Bill "+  
-  String(  
-   currentBill+1  
-  ).padStart(  
-   2,  
-   "0"  
-  );  
-  
-  
- document.getElementById(  
-  "downloadBtn"  
- ).style.display=  
-  
-  currentPage==="daily"  
-   ?"none"  
-   :"inline-block";  
-  
-  
- const content=  
-  document.getElementById(  
-   "content"  
-  );  
-  
-  
- if(  
-  currentPage==="daily"  
- ){  
-  
-  content.innerHTML=  
-   renderDashboard();  
-  
- }  
- else{  
-  
-  content.innerHTML=  
-   renderBill();  
-  
- }  
-  
-}  
-  
-  
-/* =====================================================  
-   START  
-===================================================== */  
-  
-render();  
-  
-</script>  </body>  
+    }
+
+    days.push({
+
+     date:DATES[day],
+
+     billNo:
+      String(bill+1).padStart(2,"0"),
+
+     customer:"",
+
+     words:"",
+
+     items:rows
+
+    });
+
+   }
+
+   result[category].push({
+
+    billNo:
+     String(bill+1).padStart(2,"0"),
+
+    days
+
+   });
+
+  }
+
+ });
+
+ return result;
+
+}
+
+
+/* =====================================================
+   LOAD DATA
+===================================================== */
+
+function loadData(){
+
+ try{
+
+  const saved=
+   localStorage.getItem(
+    "TTC_BILLING_30_DAY"
+   );
+
+  if(saved){
+
+   const parsed=
+    JSON.parse(saved);
+
+   Object.keys(ITEMS).forEach(category=>{
+
+    if(!parsed[category]){
+
+     parsed[category]=
+      createEmptyData()[category];
+
+    }
+
+   });
+
+   return parsed;
+
+  }
+
+ }
+ catch(e){
+
+  console.log(e);
+
+ }
+
+ return createEmptyData();
+
+}
+
+
+/* =====================================================
+   SAVE
+===================================================== */
+
+function saveData(){
+
+ localStorage.setItem(
+  "TTC_BILLING_30_DAY",
+  JSON.stringify(data)
+ );
+
+ document.getElementById(
+  "status"
+ ).textContent="Saved ✓";
+
+}
+
+function saveSilent(){
+
+ localStorage.setItem(
+  "TTC_BILLING_30_DAY",
+  JSON.stringify(data)
+ );
+
+}
+
+
+/* =====================================================
+   NUMBER
+===================================================== */
+
+function num(value){
+
+ const n=parseFloat(value);
+
+ return Number.isFinite(n)
+  ?n
+  :0;
+
+}
+
+
+/* =====================================================
+   MONEY
+===================================================== */
+
+function money(value){
+
+ return num(value).toLocaleString(
+  "en-IN",
+  {
+   minimumFractionDigits:2,
+   maximumFractionDigits:2
+  }
+ );
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function esc(value){
+
+ return String(value??"")
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;");
+
+}
+
+
+/* =====================================================
+   NUMBER TO WORDS
+===================================================== */
+
+function numberToWordsIndian(amount){
+
+ amount=Math.round(num(amount));
+
+ if(amount===0){
+  return "Zero Rupees Only";
+ }
+
+ const ones=[
+
+  "",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
+  "Fourteen",
+  "Fifteen",
+  "Sixteen",
+  "Seventeen",
+  "Eighteen",
+  "Nineteen"
+
+ ];
+
+ const tens=[
+
+  "",
+  "",
+  "Twenty",
+  "Thirty",
+  "Forty",
+  "Fifty",
+  "Sixty",
+  "Seventy",
+  "Eighty",
+  "Ninety"
+
+ ];
+
+ function two(n){
+
+  if(n<20){
+   return ones[n];
+  }
+
+  return tens[Math.floor(n/10)] +
+   (n%10?" "+ones[n%10]:"");
+
+ }
+
+ function three(n){
+
+  let s="";
+
+  if(n>=100){
+
+   s=
+    ones[Math.floor(n/100)]+" Hundred";
+
+   n%=100;
+
+   if(n)s+=" ";
+
+  }
+
+  if(n){
+   s+=two(n);
+  }
+
+  return s;
+
+ }
+
+ let crore=
+  Math.floor(amount/10000000);
+
+ amount%=10000000;
+
+ let lakh=
+  Math.floor(amount/100000);
+
+ amount%=100000;
+
+ let thousand=
+  Math.floor(amount/1000);
+
+ amount%=1000;
+
+ let result="";
+
+ if(crore){
+  result+=three(crore)+" Crore ";
+ }
+
+ if(lakh){
+  result+=three(lakh)+" Lakh ";
+ }
+
+ if(thousand){
+  result+=three(thousand)+" Thousand ";
+ }
+
+ if(amount){
+  result+=three(amount);
+ }
+
+ return result.trim()+" Rupees Only";
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showPage(page){
+
+ currentPage=page;
+
+ document
+  .querySelectorAll("[data-page]")
+  .forEach(btn=>{
+
+   btn.classList.toggle(
+    "active",
+    btn.dataset.page===page
+   );
+
+  });
+
+ document.getElementById(
+  "pageTitle"
+ ).textContent=
+
+  page==="daily"
+   ?"Daily Dashboard"
+   :page+" Purchase Bills";
+
+ render();
+
+}
+
+
+function changeDate(value){
+
+ currentDate=Number(value);
+
+ render();
+
+}
+
+
+function changeBill(value){
+
+ currentBill=Number(value);
+
+ render();
+
+}
+
+
+/* =====================================================
+   EDIT
+===================================================== */
+
+function toggleEdit(){
+
+ editMode=!editMode;
+
+ document.body.classList.toggle(
+  "editing",
+  editMode
+ );
+
+ document.getElementById(
+  "editBtn"
+ ).textContent=
+
+  editMode
+   ?"✓ Done"
+   :"✎ Edit";
+
+ render();
+
+}
+
+
+/* =====================================================
+   UPDATE ITEM
+===================================================== */
+
+function updateItem(
+ category,
+ bill,
+ day,
+ index,
+ field,
+ value
+){
+
+ const item=
+  data[category]
+   [bill]
+   .days[day]
+   .items[index];
+
+ item[field]=value;
+
+ if(
+  field==="qty" ||
+  field==="rate"
+ ){
+
+  item.amount=
+   num(item.qty)*
+   num(item.rate);
+
+ }
+
+ saveSilent();
+
+ render();
+
+}
+
+
+/* =====================================================
+   UPDATE BILL
+===================================================== */
+
+function updateBill(
+ category,
+ bill,
+ day,
+ field,
+ value
+){
+
+ data[category]
+  [bill]
+  .days[day][field]=value;
+
+ saveSilent();
+
+}
+
+
+/* =====================================================
+   TOTAL
+===================================================== */
+
+function billTotal(
+ category,
+ bill,
+ day
+){
+
+ let total=0;
+
+ data[category]
+  [bill]
+  .days[day]
+  .items
+  .forEach(item=>{
+
+   if(
+    String(item.amount??"").trim()!==""
+   ){
+
+    total+=num(item.amount);
+
+   }
+   else if(
+    String(item.qty??"").trim() &&
+    String(item.rate??"").trim()
+   ){
+
+    total+=
+     num(item.qty)*
+     num(item.rate);
+
+   }
+
+  });
+
+ return total;
+
+}
+
+
+/* =====================================================
+   CATEGORY TOTAL
+===================================================== */
+
+function dailyCategoryTotal(
+ category,
+ day
+){
+
+ let total=0;
+
+ for(
+  let bill=0;
+  bill<BILL_COUNT;
+  bill++
+ ){
+
+  total+=
+   billTotal(
+    category,
+    bill,
+    day
+   );
+
+ }
+
+ return total;
+
+}
+
+
+/* =====================================================
+   GRAND TOTAL
+===================================================== */
+
+function dailyGrand(day){
+
+ let total=0;
+
+ Object.keys(ITEMS)
+  .forEach(category=>{
+
+   total+=
+    dailyCategoryTotal(
+     category,
+     day
+    );
+
+  });
+
+ return total;
+
+}
+
+
+/* =====================================================
+   INPUT FIELD
+===================================================== */
+
+function inputField(
+ category,
+ bill,
+ day,
+ index,
+ field,
+ value
+){
+
+ if(!editMode){
+
+  return esc(value);
+
+ }
+
+ return `
+
+  <input
+
+   class="cell"
+
+   value="${esc(value)}"
+
+   inputmode="${
+    field==="qty" ||
+    field==="rate"
+    ?"decimal"
+    :"text"
+   }"
+
+   onchange="updateItem(
+    '${category}',
+    ${bill},
+    ${day},
+    ${index},
+    '${field}',
+    this.value
+   )"
+
+  >
+
+ `;
+
+}
+
+
+/* =====================================================
+   BILL
+===================================================== */
+
+function renderBill(){
+
+ const category=currentPage;
+
+ const bill=
+  data[category]
+   [currentBill]
+   .days[currentDate];
+
+ const search=
+  (
+   document.getElementById(
+    "search"
+   ).value||""
+  ).toLowerCase();
+
+ let rows="";
+
+ bill.items.forEach(
+  (item,index)=>{
+
+   if(
+    search &&
+    !item.name
+     .toLowerCase()
+     .includes(search)
+   ){
+
+    return;
+
+   }
+
+   const amount=
+    String(item.amount??"").trim()!==""
+     ?num(item.amount)
+     :
+     (
+      String(item.qty??"").trim() &&
+      String(item.rate??"").trim()
+       ?
+       num(item.qty)*num(item.rate)
+       :""
+     );
+
+   rows+=`
+
+    <tr>
+
+     <td class="no">
+      ${index+1}
+     </td>
+
+     <td class="item">
+
+      ${inputField(
+       category,
+       currentBill,
+       currentDate,
+       index,
+       "name",
+       item.name
+      )}
+
+     </td>
+
+     <td class="qty">
+
+      ${inputField(
+       category,
+       currentBill,
+       currentDate,
+       index,
+       "qty",
+       item.qty
+      )}
+
+     </td>
+
+     <td class="rate">
+
+      ${inputField(
+       category,
+       currentBill,
+       currentDate,
+       index,
+       "rate",
+       item.rate
+      )}
+
+     </td>
+
+     <td class="amount">
+
+      ${
+       amount===""
+        ?""
+        :money(amount)
+      }
+
+     </td>
+
+     <td class="ps">
+      00
+     </td>
+
+    </tr>
+
+   `;
+
+  }
+ );
+
+
+ const total=
+  billTotal(
+   category,
+   currentBill,
+   currentDate
+  );
+
+
+ return `
+
+  <div class="card">
+
+   <div class="card-head">
+
+    <h2>
+     ${category} Bill
+    </h2>
+
+    <button
+     class="upload-bill-btn"
+     onclick="openBillPhoto()">
+     📷 Upload Bill
+    </button>
+
+    <span class="badge">
+
+     Bill ${bill.billNo}
+     •
+     ${bill.date}
+
+    </span>
+
+   </div>
+
+   <div class="bill-head">
+
+    <div class="bill-head-top">
+
+     <span>
+      Proprietor:
+      ${BUSINESS.proprietor}
+     </span>
+
+     <span>
+      Cell:
+      ${BUSINESS.phone}
+     </span>
+
+    </div>
+
+    ${
+     category==="Vegetable"
+
+     ?
+
+     `
+
+      <h3>
+       ${BUSINESS.supplier}
+      </h3>
+
+      <p>
+       ${BUSINESS.tagline}
+      </p>
+
+      <p>
+       ${BUSINESS.address}
+      </p>
+
+     `
+
+     :""
+    }
+
+   </div>
+
+   <div class="bill-meta">
+
+    <div>
+     Bill No. ${bill.billNo}
+    </div>
+
+    <div>
+     Date: ${bill.date}
+    </div>
+
+   </div>
+
+   <div class="customer">
+
+    M/s.
+
+    ${
+     editMode
+
+     ?
+
+     `
+
+      <input
+       value="${esc(bill.customer)}"
+       onchange="updateBill(
+        '${category}',
+        ${currentBill},
+        ${currentDate},
+        'customer',
+        this.value
+       )"
+      >
+
+     `
+
+     :
+
+     esc(bill.customer)
+
+    }
+
+   </div>
+
+   <div class="table-wrap">
+
+    <table>
+
+     <thead>
+
+      <tr>
+
+       <th>Sl.No</th>
+
+       <th>
+        Vegetable / Item Name
+       </th>
+
+       <th>Qty</th>
+
+       <th>Rate</th>
+
+       <th>Amount</th>
+
+       <th>Ps.</th>
+
+      </tr>
+
+     </thead>
+
+     <tbody>
+
+      ${rows}
+
+      <tr class="total-row">
+
+       <td
+        colspan="4"
+        style="text-align:right">
+
+        TOTAL
+
+       </td>
+
+       <td class="amount">
+
+        ₹ ${money(total)}
+
+       </td>
+
+       <td>
+        00
+       </td>
+
+      </tr>
+
+     </tbody>
+
+    </table>
+
+   </div>
+
+   <div class="words">
+
+    <strong>
+     ${numberToWordsIndian(total)}
+    </strong>
+
+   </div>
+
+  </div>
+
+ `;
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function renderDashboard(){
+
+ return `
+
+  <div class="kpis">
+
+   <div class="kpi">
+
+    <small>
+     VEGETABLE
+    </small>
+
+    <strong>
+     ₹ ${money(
+      dailyCategoryTotal(
+       "Vegetable",
+       currentDate
+      )
+     )}
+    </strong>
+
+   </div>
+
+   <div class="kpi">
+
+    <small>
+     GROCERY
+    </small>
+
+    <strong>
+     ₹ ${money(
+      dailyCategoryTotal(
+       "Grocery",
+       currentDate
+      )
+     )}
+    </strong>
+
+   </div>
+
+   <div class="kpi">
+
+    <small>
+     DAIRY
+    </small>
+
+    <strong>
+     ₹ ${money(
+      dailyCategoryTotal(
+       "Dairy",
+       currentDate
+      )
+     )}
+    </strong>
+
+   </div>
+
+   <div class="kpi">
+
+    <small>
+     HOUSEKEEPING
+    </small>
+
+    <strong>
+     ₹ ${money(
+      dailyCategoryTotal(
+       "Housekeeping",
+       currentDate
+      )
+     )}
+    </strong>
+
+   </div>
+
+  </div>
+
+  <div class="card">
+
+   <div class="card-head">
+
+    <h2>
+     Daily Bill Summary
+    </h2>
+
+    <span class="badge">
+     ${DATES[currentDate]}
+    </span>
+
+   </div>
+
+   <div class="daily-grid">
+
+    ${
+     Object.keys(ITEMS)
+      .map(category=>`
+
+       <div class="daily-item">
+
+        <span>
+         ${category}
+        </span>
+
+        <strong>
+         ₹ ${money(
+          dailyCategoryTotal(
+           category,
+           currentDate
+          )
+         )}
+        </strong>
+
+       </div>
+
+      `)
+      .join("")
+    }
+
+   </div>
+
+   <div class="grand">
+
+    <span>
+     GRAND TOTAL
+    </span>
+
+    <span>
+     ₹ ${money(
+      dailyGrand(currentDate)
+     )}
+    </span>
+
+   </div>
+
+  </div>
+
+ `;
+
+}
+
+
+/* =====================================================
+   AI VISION BILL READER
+===================================================== */
+
+/*
+ IMPORTANT:
+
+ Tesseract.js is completely removed.
+
+ Mobile photo
+      ↓
+ Base64
+      ↓
+ Vercel /api/read-bill
+      ↓
+ OpenAI Vision
+      ↓
+ Item / Qty / Rate / Amount
+      ↓
+ Editable Review
+      ↓
+ Apply to Bill
+*/
+
+
+const AI_BILL_API=
+ "https://ttc-billing.vercel.app/api/read-bill";
+
+
+/* =====================================================
+   OPEN BILL PHOTO
+===================================================== */
+
+function openBillPhoto(){
+
+ if(currentPage==="daily"){
+  return;
+ }
+
+ const input=
+  document.getElementById(
+   "billPhotoInput"
+  );
+
+ input.value="";
+
+ input.click();
+
+}
+
+
+/* =====================================================
+   CLOSE AI MODAL
+===================================================== */
+
+function closeOCR(){
+
+ document
+  .getElementById(
+   "ocrOverlay"
+  )
+  .classList.remove(
+   "show"
+  );
+
+ ocrRows=[];
+
+}
+
+
+/* =====================================================
+   FILE -> BASE64
+===================================================== */
+
+function fileToBase64(file){
+
+ return new Promise(
+  (resolve,reject)=>{
+
+   const reader=
+    new FileReader();
+
+   reader.onload=()=>{
+    resolve(reader.result);
+   };
+
+   reader.onerror=()=>{
+
+    reject(
+     new Error(
+      "Bill image read செய்ய முடியவில்லை."
+     )
+    );
+
+   };
+
+   reader.readAsDataURL(file);
+
+  }
+ );
+
+}
+
+
+/* =====================================================
+   AI VISION OCR
+===================================================== */
+
+async function smartBillOCR(file){
+
+ if(!file){
+
+  throw new Error(
+   "Bill image select செய்யவில்லை."
+  );
+
+ }
+
+
+ const imageBase64=
+  await fileToBase64(file);
+
+
+ const progress=
+  document.getElementById(
+   "ocrProgressFill"
+  );
+
+
+ const progressText=
+  document.getElementById(
+   "ocrProgressText"
+  );
+
+
+ if(progress){
+  progress.style.width="15%";
+ }
+
+
+ if(progressText){
+  progressText.textContent=
+   "Bill photo preparing...";
+ }
+
+
+ /*
+  Send photo to secure Vercel backend.
+ */
+
+ const response=
+  await fetch(
+   AI_BILL_API,
+   {
+    method:"POST",
+
+    headers:{
+     "Content-Type":
+      "application/json"
+    },
+
+    body:JSON.stringify({
+
+     image:imageBase64,
+
+     category:currentPage,
+
+     date:DATES[currentDate],
+
+     billNo:
+      String(
+       currentBill+1
+      ).padStart(
+       2,
+       "0"
+      )
+
+    })
+
+   }
+  );
+
+
+ if(progress){
+  progress.style.width="50%";
+ }
+
+
+ if(progressText){
+  progressText.textContent=
+   "AI Vision handwriting read செய்கிறது...";
+ }
+
+
+ let result;
+
+ try{
+
+  result=
+   await response.json();
+
+ }
+ catch(error){
+
+  throw new Error(
+   "AI server valid response கொடுக்கவில்லை."
+  );
+
+ }
+
+
+ if(!response.ok){
+
+  throw new Error(
+   result?.error ||
+   "AI Vision API error"
+  );
+
+ }
+
+
+ if(
+  !result.success ||
+  !result.data
+ ){
+
+  throw new Error(
+   "AI bill data கிடைக்கவில்லை."
+  );
+
+ }
+
+
+ const rows=
+  Array.isArray(
+   result.data.rows
+  )
+   ?result.data.rows
+   :[];
+
+
+ /*
+  Convert AI response.
+ */
+
+ ocrRows=
+  rows.map(
+   (row,index)=>({
+
+    row:index+1,
+
+    name:
+     String(
+      row.item||""
+     ).trim(),
+
+    qty:
+     String(
+      row.qty||""
+     ).trim(),
+
+    unit:
+     String(
+      row.unit||""
+     ).trim(),
+
+    rate:
+     String(
+      row.rate||""
+     ).trim(),
+
+    amount:
+     String(
+      row.amount||""
+     ).trim()
+
+   })
+  );
+
+
+ /*
+  Remove completely empty rows.
+ */
+
+ ocrRows=
+  ocrRows.filter(row=>
+
+   row.name||
+   row.qty||
+   row.rate||
+   row.amount
+
+  );
+
+
+ if(progress){
+  progress.style.width="100%";
+ }
+
+
+ if(progressText){
+  progressText.textContent=
+   "Bill reading completed ✓";
+ }
+
+
+ return{
+
+  rows:ocrRows,
+
+  total:
+   String(
+    result.data.total||""
+   ).trim()
+
+ };
+
+}
+
+
+/* =====================================================
+   HANDLE BILL PHOTO
+===================================================== */
+
+async function handleBillPhoto(file){
+
+ if(!file){
+  return;
+ }
+
+
+ document
+  .getElementById(
+   "ocrOverlay"
+  )
+  .classList.add(
+   "show"
+  );
+
+
+ document.getElementById(
+  "ocrProgress"
+ ).style.display="block";
+
+
+ document.getElementById(
+  "ocrProgressFill"
+ ).style.width="0%";
+
+
+ document.getElementById(
+  "ocrProgressText"
+ ).textContent=
+  "Preparing bill photo...";
+
+
+ document.getElementById(
+  "ocrApplyBtn"
+ ).disabled=true;
+
+
+ document.getElementById(
+  "ocrResult"
+ ).innerHTML=`
+
+  <div style="
+   text-align:center;
+   padding:35px 15px;
+   color:#64748b;
+  ">
+
+   <div style="
+    font-size:40px;
+    margin-bottom:12px;
+   ">
+    🤖
+   </div>
+
+   <b>
+    AI Vision Bill Reading
+   </b>
+
+   <br><br>
+
+   Handwritten
+
+   <b>Item / Qty / Rate / Amount</b>
+
+   read செய்யப்படுகிறது...
+
+   <br><br>
+
+   தயவு செய்து wait செய்யவும்.
+
+  </div>
+
+ `;
+
+
+ try{
+
+  await smartBillOCR(
+   file
+  );
+
+
+  console.log(
+   "AI VISION BILL RESULT:",
+   ocrRows
+  );
+
+
+  renderOCRResult();
+
+ }
+ catch(error){
+
+  console.error(
+   "AI BILL ERROR:",
+   error
+  );
+
+
+  document.getElementById(
+   "ocrProgress"
+  ).style.display="none";
+
+
+  document.getElementById(
+   "ocrResult"
+  ).innerHTML=`
+
+   <div style="
+    color:#b91c1c;
+    background:#fef2f2;
+    border:1px solid #fecaca;
+    padding:15px;
+    border-radius:10px;
+    font-size:11px;
+   ">
+
+    <b>
+     ❌ AI Vision Bill Reading Failed
+    </b>
+
+    <br><br>
+
+    ${esc(
+     error?.message||
+     "Unknown error"
+    )}
+
+    <br><br>
+
+    <b>Check:</b>
+
+    <br>
+
+    1. Internet connection
+
+    <br>
+
+    2. Vercel deployment
+
+    <br>
+
+    3. OPENAI_API_KEY
+
+    <br>
+
+    4. /api/read-bill endpoint
+
+   </div>
+
+  `;
+
+ }
+
+}
+
+
+/* =====================================================
+   AI RESULT TABLE
+===================================================== */
+
+function renderOCRResult(){
+
+ const result=
+  document.getElementById(
+   "ocrResult"
+  );
+
+
+ if(
+  !ocrRows||
+  !ocrRows.length
+ ){
+
+  result.innerHTML=`
+
+   <div style="
+    padding:20px;
+    text-align:center;
+    color:#b45309;
+    background:#fffbeb;
+    border-radius:10px;
+   ">
+
+    ⚠️ AI Vision
+    bill rows கண்டுபிடிக்கவில்லை.
+
+   </div>
+
+  `;
+
+
+  document.getElementById(
+   "ocrApplyBtn"
+  ).disabled=true;
+
+
+  return;
+
+ }
+
+
+ let html=`
+
+  <div style="
+   margin-bottom:10px;
+   color:#166534;
+   font-weight:bold;
+   font-size:12px;
+  ">
+
+   ✓ AI Vision
+   ${ocrRows.length}
+   row(s) read செய்துள்ளது.
+
+   <br>
+
+   <span style="
+    color:#64748b;
+    font-size:10px;
+    font-weight:normal;
+   ">
+
+    Apply செய்வதற்கு முன்
+    values-ஐ check/edit செய்யவும்.
+
+    <br>
+
+    குறிப்பாக
+    <b>Rate</b>
+    மற்றும்
+    <b>Amount</b>
+    சரிபார்க்கவும்.
+
+   </span>
+
+  </div>
+
+  <div class="ocr-table-wrap">
+
+   <table class="ocr-table">
+
+    <thead>
+
+     <tr>
+
+      <th>#</th>
+
+      <th>Item Name</th>
+
+      <th>Qty</th>
+
+      <th>Rate</th>
+
+      <th>Amount</th>
+
+     </tr>
+
+    </thead>
+
+    <tbody>
+
+ `;
+
+
+ ocrRows.forEach(
+  (row,index)=>{
+
+   html+=`
+
+    <tr>
+
+     <td style="
+      text-align:center;
+      font-weight:bold;
+     ">
+
+      ${index+1}
+
+     </td>
+
+     <td>
+
+      <input
+       id="ocr-name-${index}"
+       value="${esc(row.name)}"
+       placeholder="Item name">
+
+      <div class="ocr-confidence">
+       AI Vision
+      </div>
+
+     </td>
+
+     <td>
+
+      <input
+       id="ocr-qty-${index}"
+       value="${esc(row.qty)}"
+       inputmode="decimal">
+
+      <div class="ocr-confidence">
+       ${esc(row.unit||"")}
+      </div>
+
+     </td>
+
+     <td>
+
+      <input
+       id="ocr-rate-${index}"
+       value="${esc(row.rate)}"
+       inputmode="decimal">
+
+      <div class="ocr-confidence">
+       Handwritten Rate
+      </div>
+
+     </td>
+
+     <td>
+
+      <input
+       id="ocr-amount-${index}"
+       value="${esc(row.amount)}"
+       inputmode="decimal">
+
+      <div class="ocr-confidence">
+       Handwritten Amount
+      </div>
+
+     </td>
+
+    </tr>
+
+   `;
+
+  }
+ );
+
+
+ html+=`
+
+    </tbody>
+
+   </table>
+
+  </div>
+
+ `;
+
+
+ result.innerHTML=
+  html;
+
+
+ document.getElementById(
+  "ocrApplyBtn"
+ ).disabled=false;
+
+
+ document.getElementById(
+  "ocrProgress"
+ ).style.display="none";
+
+}
+
+
+/* =====================================================
+   APPLY AI DATA TO BILL
+===================================================== */
+
+function applyOCRData(){
+
+ if(
+  !ocrRows||
+  !ocrRows.length
+ ){
+  return;
+ }
+
+
+ const category=
+  currentPage;
+
+
+ if(category==="daily"){
+  return;
+ }
+
+
+ const bill=
+  data[category]
+   [currentBill]
+   .days[currentDate];
+
+
+ /*
+  Existing data check.
+ */
+
+ const hasExisting=
+  bill.items.some(
+   item=>
+
+    String(
+     item.name??""
+    ).trim()||
+
+    String(
+     item.qty??""
+    ).trim()||
+
+    String(
+     item.rate??""
+    ).trim()
+
+  );
+
+
+ if(hasExisting){
+
+  const ok=
+   confirm(
+    "இந்த bill-ல் ஏற்கனவே data உள்ளது.\n\nAI Vision photo data-வை வைத்து existing rows-ஐ update செய்யவா?"
+   );
+
+
+  if(!ok){
+   return;
+  }
+
+ }
+
+
+ const finalRows=[];
+
+
+ /*
+  Read edited values.
+ */
+
+ ocrRows.forEach(
+  (row,index)=>{
+
+   const name=
+    document.getElementById(
+     "ocr-name-"+index
+    )?.value.trim()||"";
+
+
+   const qty=
+    document.getElementById(
+     "ocr-qty-"+index
+    )?.value.trim()||"";
+
+
+   const rate=
+    document.getElementById(
+     "ocr-rate-"+index
+    )?.value.trim()||"";
+
+
+   const amount=
+    document.getElementById(
+     "ocr-amount-"+index
+    )?.value.trim()||"";
+
+
+   if(
+    name||
+    qty||
+    rate||
+    amount
+   ){
+
+    finalRows.push({
+
+     name:name,
+     qty:qty,
+     rate:rate,
+     amount:amount
+
+    });
+
+   }
+
+  }
+ );
+
+
+ /*
+  Clear existing bill.
+ */
+
+ bill.items.forEach(
+  item=>{
+
+   item.name="";
+   item.quality="";
+   item.qty="";
+   item.rate="";
+   item.amount=0;
+
+  }
+ );
+
+
+ /*
+  Apply AI rows.
+ */
+
+ finalRows.forEach(
+  (row,index)=>{
+
+   if(
+    index<
+    bill.items.length
+   ){
+
+    bill.items[index].name=
+     row.name;
+
+    bill.items[index].qty=
+     row.qty;
+
+    bill.items[index].rate=
+     row.rate;
+
+    /*
+     IMPORTANT:
+
+     AI handwritten Amount
+     directly saved.
+
+     NOT Qty × Rate.
+    */
+
+    bill.items[index].amount=
+     num(row.amount);
+
+   }
+
+  }
+ );
+
+
+ saveSilent();
+
+ closeOCR();
+
+ render();
+
+
+ document.getElementById(
+  "status"
+ ).textContent=
+  "AI Vision Bill Updated ✓";
+
+
+ alert(
+  finalRows.length+
+  " item(s) AI Vision மூலம் bill-ல் update செய்யப்பட்டது."
+ );
+
+}
+
+
+/* =====================================================
+   PDF
+===================================================== */
+
+async function downloadPDF(){
+
+ if(
+  currentPage==="daily"
+ ){
+  return;
+ }
+
+
+ const originalEditMode=
+  editMode;
+
+
+ editMode=false;
+
+ render();
+
+
+ await new Promise(
+  resolve=>
+   setTimeout(
+    resolve,
+    400
+   )
+ );
+
+
+ const visibleBill=
+  document.querySelector(
+   "#content .card"
+  );
+
+
+ if(!visibleBill){
+
+  editMode=
+   originalEditMode;
+
+  render();
+
+  return;
+
+ }
+
+
+ const capture=
+  document.createElement(
+   "div"
+  );
+
+
+ capture.className=
+  "pdf-capture";
+
+
+ capture.appendChild(
+  visibleBill.cloneNode(
+   true
+  )
+ );
+
+
+ document.body.appendChild(
+  capture
+ );
+
+
+ await new Promise(
+  resolve=>
+   requestAnimationFrame(
+    ()=>
+     requestAnimationFrame(
+      resolve
+     )
+   )
+ );
+
+
+ try{
+
+  const canvas=
+   await html2canvas(
+    capture,
+    {
+     backgroundColor:"#fff",
+     scale:2,
+     useCORS:true,
+     logging:false,
+     width:794,
+     windowWidth:794
+    }
+   );
+
+
+  const pdf=
+   new window.jspdf.jsPDF(
+    "p",
+    "mm",
+    "a4"
+   );
+
+
+  const pageW=210;
+
+  const pageH=297;
+
+  const margin=8;
+
+  const maxW=
+   pageW-margin*2;
+
+  const maxH=
+   pageH-margin*2;
+
+  let w=maxW;
+
+  let h=
+   canvas.height/
+   canvas.width*
+   w;
+
+
+  if(
+   h>maxH
+  ){
+
+   h=maxH;
+
+   w=
+    canvas.width/
+    canvas.height*
+    h;
+
+  }
+
+
+  const x=
+   (pageW-w)/2;
+
+
+  const image=
+   canvas.toDataURL(
+    "image/jpeg",
+    .98
+   );
+
+
+  pdf.addImage(
+   image,
+   "JPEG",
+   x,
+   margin,
+   w,
+   h
+  );
+
+
+  const fileName=
+   "TTC_"+
+   currentPage+
+   "_Bill_"+
+   String(
+    currentBill+1
+   ).padStart(
+    2,
+    "0"
+   )+
+   "_"+
+   DATES[currentDate]
+    .replaceAll(
+     ".",
+     "-"
+    )+
+   ".pdf";
+
+
+  pdf.save(
+   fileName
+  );
+
+
+ }
+ catch(error){
+
+  console.error(
+   error
+  );
+
+  alert(
+   "PDF உருவாக்க முடியவில்லை."
+  );
+
+ }
+
+
+ capture.remove();
+
+
+ editMode=
+  originalEditMode;
+
+
+ document.body.classList.toggle(
+  "editing",
+  editMode
+ );
+
+
+ render();
+
+}
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function render(){
+
+ document.getElementById(
+  "dateSelect"
+ ).innerHTML=
+
+  DATES.map(
+   (date,index)=>`
+
+    <option
+     value="${index}"
+     ${
+      index===currentDate
+       ?"selected"
+       :""
+     }>
+
+     ${date}
+
+    </option>
+
+   `
+  ).join("");
+
+
+ document.getElementById(
+  "billSelect"
+ ).innerHTML=
+
+  Array.from(
+   {
+    length:BILL_COUNT
+   },
+   (_,i)=>`
+
+    <option
+     value="${i}"
+     ${
+      i===currentBill
+       ?"selected"
+       :""
+     }>
+
+     Bill
+     ${String(
+      i+1
+     ).padStart(
+      2,
+      "0"
+     )}
+
+    </option>
+
+   `
+  ).join("");
+
+
+ document.getElementById(
+  "selectedDate"
+ ).textContent=
+
+  "Date: "+
+  DATES[currentDate]+
+  " • Bill "+
+  String(
+   currentBill+1
+  ).padStart(
+   2,
+   "0"
+  );
+
+
+ document.getElementById(
+  "downloadBtn"
+ ).style.display=
+
+  currentPage==="daily"
+   ?"none"
+   :"inline-block";
+
+
+ const content=
+  document.getElementById(
+   "content"
+  );
+
+
+ if(
+  currentPage==="daily"
+ ){
+
+  content.innerHTML=
+   renderDashboard();
+
+ }
+ else{
+
+  content.innerHTML=
+   renderBill();
+
+ }
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+render();
+
+</script>
+
+</body>
 </html>
