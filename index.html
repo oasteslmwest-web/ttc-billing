@@ -1,1 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
+<title>TTC Mobile Billing</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f1f5f9;
+    color:#111827;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+.app{
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    width:255px;
+    background:#0f172a;
+    color:white;
+    z-index:1000;
+    transform:translateX(-100%);
+    transition:.25s;
+}
+
+.sidebar.open{
+    transform:translateX(0);
+}
+
+.logo{
+    padding:22px 18px;
+    border-bottom:1px solid #263244;
+}
+
+.logo h2{
+    font-size:21px;
+}
+
+.logo p{
+    margin-top:5px;
+    color:#94a3b8;
+    font-size:12px;
+}
+
+.menu{
+    padding:15px 10px;
+}
+
+.menu button{
+    width:100%;
+    padding:13px;
+    margin-bottom:5px;
+    border:0;
+    border-radius:8px;
+    background:transparent;
+    color:#cbd5e1;
+    text-align:left;
+    cursor:pointer;
+}
+
+.menu button:hover,
+.menu button.active{
+    background:#1e293b;
+    color:white;
+}
+
+/* OVERLAY */
+
+.overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    z-index:900;
+}
+
+.overlay.show{
+    display:block;
+}
+
+/* MAIN */
+
+.main{
+    width:100%;
+}
+
+.topbar{
+    height:64px;
+    background:white;
+    border-bottom:1px solid #e5e7eb;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 14px;
+    position:sticky;
+    top:0;
+    z-index:500;
+}
+
+.top-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.menu-btn{
+    border:0;
+    background:#f1f5f9;
+    width:42px;
+    height:42px;
+    border-radius:9px;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.title{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.bill-label{
+    background:#dcfce7;
+    color:#166534;
+    padding:7px 10px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+/* CONTENT */
+
+.content{
+    padding:12px;
+    max-width:1200px;
+    margin:auto;
+}
+
+/* CARDS */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:14px;
+    box-shadow:0 2px 7px rgba(0,0,0,.05);
+}
+
+.card small{
+    color:#64748b;
+}
+
+.card strong{
+    display:block;
+    margin-top:7px;
+    font-size:20px;
+    color:#166534;
+}
+
+/* CONTROLS */
+
+.controls{
+    background:white;
+    border-radius:12px;
+    padding:12px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:12px;
+}
+
+.controls select,
+.controls input{
+    width:100%;
+    height:43px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    padding:0 10px;
+    background:white;
+    outline:none;
+}
+
+.search{
+    grid-column:1 / -1;
+}
+
+.btn{
+    min-height:43px;
+    border:0;
+    border-radius:8px;
+    padding:0 12px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.green{
+    background:#166534;
+    color:white;
+}
+
+.blue{
+    background:#2563eb;
+    color:white;
+}
+
+.orange{
+    background:#ea580c;
+    color:white;
+}
+
+.red{
+    background:#dc2626;
+    color:white;
+}
+
+.gray{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+/* UPLOAD */
+
+.upload{
+    display:none;
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+.upload.show{
+    display:block;
+}
+
+.upload h3{
+    margin-bottom:7px;
+}
+
+.upload p{
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:12px;
+}
+
+.file-box{
+    border:2px dashed #94a3b8;
+    border-radius:10px;
+    padding:20px;
+    text-align:center;
+}
+
+.preview{
+    max-width:100%;
+    max-height:300px;
+    margin-top:12px;
+    border-radius:8px;
+    display:none;
+}
+
+/* BILL */
+
+.bill-container{
+    background:white;
+    border-radius:12px;
+    padding:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    overflow:auto;
+}
+
+.bill-paper{
+    min-width:720px;
+    max-width:900px;
+    margin:auto;
+    background:white;
+}
+
+.bill-header{
+    text-align:center;
+    border:2px solid #111;
+    padding:14px;
+}
+
+.bill-header h1{
+    font-size:22px;
+}
+
+.bill-header h3{
+    margin-top:5px;
+    font-size:15px;
+}
+
+.bill-header p{
+    margin-top:4px;
+    font-size:12px;
+}
+
+.bill-info{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border:2px solid #111;
+    border-top:0;
+}
+
+.info{
+    padding:8px;
+    font-size:12px;
+}
+
+.info:first-child{
+    border-right:1px solid #111;
+}
+
+.info b{
+    display:block;
+    margin-bottom:3px;
+}
+
+.bill-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
+
+.bill-table th,
+.bill-table td{
+    border:1px solid #111;
+    padding:6px;
+    font-size:12px;
+}
+
+.bill-table th{
+    background:#f1f5f9;
+    text-align:center;
+}
+
+.bill-table th:nth-child(1){
+    width:8%;
+}
+
+.bill-table th:nth-child(2){
+    width:40%;
+}
+
+.bill-table th:nth-child(3){
+    width:14%;
+}
+
+.bill-table th:nth-child(4){
+    width:14%;
+}
+
+.bill-table th:nth-child(5){
+    width:17%;
+}
+
+.bill-table th:nth-child(6){
+    width:7%;
+}
+
+.bill-table td{
+    height:31px;
+}
+
+.bill-table td:not(:nth-child(2)){
+    text-align:center;
+}
+
+.bill-table input{
+    width:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    font-size:12px;
+}
+
+.total-row{
+    font-weight:bold;
+    background:#f8fafc;
+}
+
+.bill-footer{
+    border:2px solid #111;
+    border-top:0;
+    min-height:65px;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    font-size:12px;
+}
+
+/* MODAL */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    z-index:5000;
+    padding:10px;
+    overflow:auto;
+}
+
+.modal.show{
+    display:block;
+}
+
+.modal-box{
+    background:white;
+    max-width:900px;
+    margin:20px auto;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.modal-head{
+    background:#0f172a;
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.close{
+    background:transparent;
+    border:0;
+    color:white;
+    font-size:25px;
+}
+
+.modal-body{
+    padding:12px;
+    overflow:auto;
+}
+
+.ocr-table{
+    width:100%;
+    min-width:650px;
+    border-collapse:collapse;
+}
+
+.ocr-table th,
+.ocr-table td{
+    border:1px solid #d1d5db;
+    padding:6px;
+}
+
+.ocr-table input{
+    width:100%;
+    padding:8px;
+    border:1px solid #d1d5db;
+    border-radius:5px;
+}
+
+.modal-footer{
+    padding:12px;
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    border-top:1px solid #e5e7eb;
+}
+
+/* LOADING */
+
+.loading{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,.8);
+    z-index:8000;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:12px;
+}
+
+.loading.show{
+    display:flex;
+}
+
+.spinner{
+    width:42px;
+    height:42px;
+    border:4px solid #d1d5db;
+    border-top-color:#166534;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    bottom:18px;
+    left:50%;
+    transform:translate(-50%,20px);
+    background:#111827;
+    color:white;
+    padding:11px 15px;
+    border-radius:8px;
+    opacity:0;
+    transition:.25s;
+    z-index:9000;
+    font-size:13px;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+/* DESKTOP */
+
+@media(min-width:900px){
+
+    .sidebar{
+        transform:translateX(0);
+    }
+
+    .main{
+        margin-left:255px;
+        width:calc(100% - 255px);
+    }
+
+    .menu-btn{
+        display:none;
+    }
+
+    .overlay{
+        display:none!important;
+    }
+
+    .cards{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .controls{
+        grid-template-columns:150px 150px 1fr 90px 90px 120px 90px;
+    }
+
+    .search{
+        grid-column:auto;
+    }
+
+}
+
+/* PRINT */
+
+@media print{
+
+    .sidebar,
+    .topbar,
+    .cards,
+    .controls,
+    .upload,
+    .no-print{
+        display:none!important;
+    }
+
+    .main{
+        margin:0;
+        width:100%;
+    }
+
+    .content{
+        padding:0;
+    }
+
+    .bill-container{
+        box-shadow:none;
+        padding:0;
+    }
+
+    @page{
+        size:A4 portrait;
+        margin:10mm;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <h2>TTC Billing</h2>
+            <p>Mobile Billing System</p>
+        </div>
+
+        <div class="menu">
+
+            <button class="active" onclick="closeMenu()">
+                🏠 Dashboard
+            </button>
+
+            <button onclick="focusBill()">
+                🧾 Bill Entry
+            </button>
+
+            <button onclick="openUpload()">
+                📷 Upload Bill
+            </button>
+
+            <button onclick="saveBill()">
+                💾 Save Bill
+            </button>
+
+            <button onclick="printBill()">
+                🖨 Print
+            </button>
+
+            <button onclick="makePDF()">
+                📄 PDF
+            </button>
+
+        </div>
+
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="top-left">
+
+                <button
+                    class="menu-btn"
+                    onclick="openMenu()">
+                    ☰
+                </button>
+
+                <div class="title">
+                    TTC Billing
+                </div>
+
+            </div>
+
+            <div
+                class="bill-label"
+                id="billLabel">
+                Bill 01
+            </div>
+
+        </header>
+
+
+        <div class="content">
+
+            <!-- DASHBOARD -->
+
+            <div class="cards">
+
+                <div class="card">
+                    <small>Total Bills</small>
+                    <strong>15</strong>
+                </div>
+
+                <div class="card">
+                    <small>Current Bill</small>
+                    <strong id="currentCard">
+                        Bill 01
+                    </strong>
+                </div>
+
+                <div class="card">
+                    <small>Total Amount</small>
+                    <strong id="totalCard">
+                        ₹0
+                    </strong>
+                </div>
+
+                <div class="card">
+                    <small>Status</small>
+                    <strong>Ready</strong>
+                </div>
+
+            </div>
+
+
+            <!-- CONTROLS -->
+
+            <div class="controls">
+
+                <select id="dateSelect"
+                        onchange="changeDate()">
+                </select>
+
+                <select id="billSelect"
+                        onchange="changeBill()">
+                </select>
+
+                <input
+                    class="search"
+                    id="search"
+                    placeholder="🔍 Search item..."
+                    oninput="renderBill()"
+                >
+
+                <button
+                    class="btn green"
+                    onclick="toggleEdit()">
+                    ✏️ Edit
+                </button>
+
+                <button
+                    class="btn blue"
+                    onclick="saveBill()">
+                    💾 Save
+                </button>
+
+                <button
+                    class="btn orange"
+                    onclick="openUpload()">
+                    📷 Upload
+                </button>
+
+                <button
+                    class="btn red"
+                    onclick="makePDF()">
+                    PDF
+                </button>
+
+            </div>
+
+
+            <!-- UPLOAD -->
+
+            <div class="upload" id="uploadPanel">
+
+                <h3>📷 Handwritten Bill Upload</h3>
+
+                <p>
+                    Upload your handwritten bill photo.
+                    AI reading will be connected in the next step.
+                </p>
+
+                <div class="file-box">
+
+                    <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/*"
+                        onchange="previewImage(event)"
+                    >
+
+                    <img
+                        id="preview"
+                        class="preview"
+                    >
+
+                    <div style="margin-top:12px">
+
+                        <button
+                            class="btn green"
+                            onclick="aiComingSoon()">
+                            🤖 Read Bill with AI
+                        </button>
+
+                        <button
+                            class="btn gray"
+                            onclick="closeUpload()">
+                            Close
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BILL -->
+
+            <div
+                class="bill-container"
+                id="billArea">
+
+                <div
+                    class="bill-paper"
+                    id="billPaper">
+
+                    <div class="bill-header">
+
+                        <h1>
+                            ANANDH KUMAR V
+                        </h1>
+
+                        <h3>
+                            DRAOWPATHAMMA VEGETABLE SUPPLIER
+                        </h3>
+
+                        <p>
+                            FRESH & QUALITY PRODUCE DAILY
+                        </p>
+
+                        <p>
+                            Choodagondapalli village,
+                            Achettipalli post, Hosur Tk
+                        </p>
+
+                        <p>
+                            Phone: 74183 52068
+                        </p>
+
+                    </div>
+
+
+                    <div class="bill-info">
+
+                        <div class="info">
+
+                            <b>Bill Date</b>
+
+                            <span id="billDate">
+                                01.10.2026
+                            </span>
+
+                        </div>
+
+                        <div class="info">
+
+                            <b>Bill No</b>
+
+                            <span id="billNo">
+                                01
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <table class="bill-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Sl.No</th>
+
+                                <th>
+                                    Vegetable / Item Name
+                                </th>
+
+                                <th>Qty</th>
+
+                                <th>Rate</th>
+
+                                <th>Amount</th>
+
+                                <th>Ps.</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="billBody">
+                        </tbody>
+
+                        <tfoot>
+
+                            <tr class="total-row">
+
+                                <td colspan="4">
+                                    TOTAL
+                                </td>
+
+                                <td
+                                    id="grandTotal">
+                                    0
+                                </td>
+
+                                <td>-</td>
+
+                            </tr>
+
+                        </tfoot>
+
+                    </table>
+
+
+                    <div class="bill-footer">
+
+                        <span>
+                            Thank you
+                        </span>
+
+                        <span>
+                            Authorised Signature
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- LOADING -->
+
+<div
+    class="loading"
+    id="loading">
+
+    <div class="spinner"></div>
+
+    <b id="loadingText">
+        Loading...
+    </b>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast">
+    Saved
+</div>
+
+
+<script>
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+const STORAGE_KEY =
+    "TTC_MOBILE_BILLING";
+
+const BILL_COUNT = 15;
+
+const DATES = [];
+
+for(let i=1;i<=30;i++){
+
+    DATES.push(
+        String(i).padStart(2,"0")
+        + ".10.2026"
+    );
+
+}
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+let data =
+    loadData();
+
+let selectedDate = 0;
+
+let selectedBill = 0;
+
+let editMode = false;
+
+
+/* =====================================================
+   EMPTY DATA
+===================================================== */
+
+function createData(){
+
+    const result = {};
+
+    DATES.forEach(date=>{
+
+        result[date] = {};
+
+        for(let b=0;b<BILL_COUNT;b++){
+
+            result[date][b] = {
+
+                date:date,
+
+                billNo:
+                    String(b+1)
+                    .padStart(2,"0"),
+
+                items:
+                    Array.from(
+                        {length:20},
+                        ()=>({
+
+                            item:"",
+                            qty:"",
+                            rate:"",
+                            amount:"",
+                            ps:""
+
+                        })
+                    )
+
+            };
+
+        }
+
+    });
+
+    return result;
+}
+
+
+/* =====================================================
+   LOAD
+===================================================== */
+
+function loadData(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if(saved){
+
+            return JSON.parse(saved);
+
+        }
+
+    }catch(e){
+
+        console.log(e);
+
+    }
+
+    return createData();
+}
+
+
+/* =====================================================
+   SAVE DATA
+===================================================== */
+
+function saveData(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+}
+
+
+/* =====================================================
+   INIT
+===================================================== */
+
+function init(){
+
+    const dateSelect =
+        document.getElementById(
+            "dateSelect"
+        );
+
+    const billSelect =
+        document.getElementById(
+            "billSelect"
+        );
+
+
+    DATES.forEach(
+        (date,index)=>{
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value=index;
+
+            option.textContent=date;
+
+            dateSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    for(let i=0;i<BILL_COUNT;i++){
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value=i;
+
+        option.textContent =
+            "Bill " +
+            String(i+1)
+            .padStart(2,"0");
+
+        billSelect.appendChild(
+            option
+        );
+
+    }
+
+
+    renderBill();
+
+}
+
+
+/* =====================================================
+   CURRENT BILL
+===================================================== */
+
+function currentBill(){
+
+    return data[
+        DATES[selectedDate]
+    ][selectedBill];
+
+}
+
+
+/* =====================================================
+   CHANGE DATE
+===================================================== */
+
+function changeDate(){
+
+    selectedDate =
+        Number(
+            document.getElementById(
+                "dateSelect"
+            ).value
+        );
+
+    renderBill();
+
+}
+
+
+/* =====================================================
+   CHANGE BILL
+===================================================== */
+
+function changeBill(){
+
+    selectedBill =
+        Number(
+            document.getElementById(
+                "billSelect"
+            ).value
+        );
+
+    renderBill();
+
+}
+
+
+/* =====================================================
+   RENDER BILL
+===================================================== */
+
+function renderBill(){
+
+    const bill =
+        currentBill();
+
+    document.getElementById(
+        "billDate"
+    ).textContent =
+        bill.date;
+
+    document.getElementById(
+        "billNo"
+    ).textContent =
+        bill.billNo;
+
+    document.getElementById(
+        "billLabel"
+    ).textContent =
+        "Bill " + bill.billNo;
+
+    document.getElementById(
+        "currentCard"
+    ).textContent =
+        "Bill " + bill.billNo;
+
+
+    const tbody =
+        document.getElementById(
+            "billBody"
+        );
+
+    tbody.innerHTML="";
+
+
+    const search =
+        document.getElementById(
+            "search"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+    let total=0;
+
+
+    bill.items.forEach(
+        (row,index)=>{
+
+            if(
+                search &&
+                !String(row.item)
+                    .toLowerCase()
+                    .includes(search)
+            ){
+
+                return;
+
+            }
+
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${index+1}
+                </td>
+
+                <td>
+                    <input
+                        value="${esc(row.item)}"
+                        ${editMode ? "" : "readonly"}
+                        onchange="
+                            updateRow(
+                                ${index},
+                                'item',
+                                this.value
+                            )
+                        "
+                    >
+                </td>
+
+                <td>
+                    <input
+                        value="${esc(row.qty)}"
+                        ${editMode ? "" : "readonly"}
+                        onchange="
+                            updateRow(
+                                ${index},
+                                'qty',
+                                this.value
+                            )
+                        "
+                    >
+                </td>
+
+                <td>
+                    <input
+                        value="${esc(row.rate)}"
+                        ${editMode ? "" : "readonly"}
+                        onchange="
+                            updateRow(
+                                ${index},
+                                'rate',
+                                this.value
+                            )
+                        "
+                    >
+                </td>
+
+                <td>
+                    <input
+                        value="${esc(row.amount)}"
+                        ${editMode ? "" : "readonly"}
+                        onchange="
+                            updateRow(
+                                ${index},
+                                'amount',
+                                this.value
+                            )
+                        "
+                    >
+                </td>
+
+                <td>
+                    <input
+                        value="${esc(row.ps)}"
+                        ${editMode ? "" : "readonly"}
+                        onchange="
+                            updateRow(
+                                ${index},
+                                'ps',
+                                this.value
+                            )
+                        "
+                    >
+                </td>
+
+            `;
+
+            tbody.appendChild(tr);
+
+
+            const amount =
+                parseFloat(
+                    String(row.amount)
+                        .replace(/,/g,"")
+                );
+
+            if(!isNaN(amount)){
+
+                total += amount;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "grandTotal"
+    ).textContent =
+        money(total);
+
+    document.getElementById(
+        "totalCard"
+    ).textContent =
+        "₹" + money(total);
+
+}
+
+
+/* =====================================================
+   UPDATE
+===================================================== */
+
+function updateRow(
+    index,
+    key,
+    value
+){
+
+    currentBill()
+        .items[index][key] =
+        value;
+
+    saveData();
+
+    renderBill();
+
+}
+
+
+/* =====================================================
+   EDIT
+===================================================== */
+
+function toggleEdit(){
+
+    editMode =
+        !editMode;
+
+    renderBill();
+
+    toast(
+        editMode
+        ? "Edit mode ON"
+        : "Edit mode OFF"
+    );
+
+}
+
+
+/* =====================================================
+   SAVE
+===================================================== */
+
+function saveBill(){
+
+    saveData();
+
+    toast(
+        "Bill saved successfully"
+    );
+
+}
+
+
+/* =====================================================
+   MENU
+===================================================== */
+
+function openMenu(){
+
+    document
+        .getElementById("sidebar")
+        .classList.add("open");
+
+    document
+        .getElementById("overlay")
+        .classList.add("show");
+
+}
+
+
+function closeMenu(){
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+    document
+        .getElementById("overlay")
+        .classList.remove("show");
+
+}
+
+
+function focusBill(){
+
+    closeMenu();
+
+    document
+        .getElementById("billArea")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+
+/* =====================================================
+   UPLOAD
+===================================================== */
+
+function openUpload(){
+
+    closeMenu();
+
+    document
+        .getElementById("uploadPanel")
+        .classList.add("show");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+function closeUpload(){
+
+    document
+        .getElementById("uploadPanel")
+        .classList.remove("show");
+
+}
+
+
+/* =====================================================
+   IMAGE PREVIEW
+===================================================== */
+
+function previewImage(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file) return;
+
+    const preview =
+        document.getElementById(
+            "preview"
+        );
+
+    preview.src =
+        URL.createObjectURL(file);
+
+    preview.style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   AI PLACEHOLDER
+===================================================== */
+
+function aiComingSoon(){
+
+    alert(
+        "AI Handwriting Reader அடுத்த Step-ல் connect செய்யப்படும்.\n\n" +
+        "இப்போதைக்கு Upload Bill + mobile billing system ready."
+    );
+
+}
+
+
+/* =====================================================
+   PRINT
+===================================================== */
+
+function printBill(){
+
+    closeMenu();
+
+    window.print();
+
+}
+
+
+/* =====================================================
+   PDF
+===================================================== */
+
+async function makePDF(){
+
+    try{
+
+        showLoading(
+            "PDF உருவாக்கப்படுகிறது..."
+        );
+
+
+        const element =
+            document.getElementById(
+                "billPaper"
+            );
+
+
+        const canvas =
+            await html2canvas(
+                element,
+                {
+                    scale:2,
+                    backgroundColor:"#ffffff"
+                }
+            );
+
+
+        const image =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+
+        const {
+            jsPDF
+        } = window.jspdf;
+
+
+        const pdf =
+            new jsPDF(
+                "p",
+                "mm",
+                "a4"
+            );
+
+
+        const pageWidth =
+            pdf.internal.pageSize
+                .getWidth();
+
+        const pageHeight =
+            pdf.internal.pageSize
+                .getHeight();
+
+
+        const ratio =
+            Math.min(
+                pageWidth /
+                    canvas.width,
+
+                pageHeight /
+                    canvas.height
+            );
+
+
+        const width =
+            canvas.width * ratio;
+
+        const height =
+            canvas.height * ratio;
+
+
+        pdf.addImage(
+            image,
+            "PNG",
+            (pageWidth-width)/2,
+            8,
+            width,
+            height
+        );
+
+
+        const bill =
+            currentBill();
+
+
+        pdf.save(
+            "Bill_" +
+            bill.billNo +
+            "_" +
+            bill.date.replaceAll(
+                ".",
+                "-"
+            ) +
+            ".pdf"
+        );
+
+
+    }catch(error){
+
+        alert(
+            "PDF error: " +
+            error.message
+        );
+
+    }finally{
+
+        hideLoading();
+
+    }
+
+}
+
+
+/* =====================================================
+   MONEY
+===================================================== */
+
+function money(value){
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits:2
+        }
+    );
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function esc(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function toast(message){
+
+    const box =
+        document.getElementById(
+            "toast"
+        );
+
+    box.textContent =
+        message;
+
+    box.classList.add(
+        "show"
+    );
+
+    setTimeout(
+        ()=>{
+            box.classList.remove(
+                "show"
+            );
+        },
+        2200
+    );
+
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+function showLoading(message){
+
+    document.getElementById(
+        "loadingText"
+    ).textContent =
+        message;
+
+    document.getElementById(
+        "loading"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+function hideLoading(){
+
+    document.getElementById(
+        "loading"
+    ).classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+init();
+
+</script>
+
+</body>
+</html>
